@@ -295,8 +295,6 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-documentation">Minimal Documentation</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implement-your-own-trainer">Implement your own <cite>Trainer</cite></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-run">Multi-run</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#slurm">Slurm</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#library-design">Library Design</a></li>
 </ul>
 </li>
@@ -319,7 +317,7 @@
                 <article class="bd-article">
                   
   <section id="stable-ssl-the-self-supervised-learning-library-by-researchers-for-researchers">
-<h1><a class="toc-backref" href="#id4" role="doc-backlink">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a><a class="headerlink" href="#stable-ssl-the-self-supervised-learning-library-by-researchers-for-researchers" title="Link to this heading">#</a></h1>
+<h1><a class="toc-backref" href="#id3" role="doc-backlink">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a><a class="headerlink" href="#stable-ssl-the-self-supervised-learning-library-by-researchers-for-researchers" title="Link to this heading">#</a></h1>
 <p><em>You got a research idea? It shouldn’t take you more than 10 minutes to start from scratch and get it running with the ability to produce high quality figures/tables from the results: that’s the goal of</em> <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>.</p>
 <p>We achieve that by taking the best–and only the best–from the most eponymous AI libraries: PytorchLightning, VISSL, Wandb, Hydra, Submitit.</p>
 <a class="reference internal image-reference" href="assets/logo.jpg"><img alt="ssl logo" class="align-right" src="assets/logo.jpg" style="width: 200px;" />
@@ -327,19 +325,19 @@
 <nav class="contents" id="table-of-contents">
 <p class="topic-title">Table of Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#stable-ssl-the-self-supervised-learning-library-by-researchers-for-researchers" id="id4">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a></p>
+<li><p><a class="reference internal" href="#stable-ssl-the-self-supervised-learning-library-by-researchers-for-researchers" id="id3">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a></p>
 <ul>
-<li><p><a class="reference internal" href="#why-stable-ssl" id="id5">Why stable-SSL?</a></p></li>
-<li><p><a class="reference internal" href="#how-stable-ssl-helps-you" id="id6">How stable-SSL helps you</a></p></li>
-<li><p><a class="reference internal" href="#installation" id="id7">Installation</a></p></li>
-<li><p><a class="reference internal" href="#minimal-documentation" id="id8">Minimal Documentation</a></p></li>
-<li><p><a class="reference internal" href="#examples" id="id9">Examples</a></p></li>
+<li><p><a class="reference internal" href="#why-stable-ssl" id="id4">Why stable-SSL?</a></p></li>
+<li><p><a class="reference internal" href="#how-stable-ssl-helps-you" id="id5">How stable-SSL helps you</a></p></li>
+<li><p><a class="reference internal" href="#installation" id="id6">Installation</a></p></li>
+<li><p><a class="reference internal" href="#minimal-documentation" id="id7">Minimal Documentation</a></p></li>
+<li><p><a class="reference internal" href="#examples" id="id8">Examples</a></p></li>
 </ul>
 </li>
 </ul>
 </nav>
 <section id="why-stable-ssl">
-<h2><a class="toc-backref" href="#id5" role="doc-backlink">Why stable-SSL?</a><a class="headerlink" href="#why-stable-ssl" title="Link to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Why stable-SSL?</a><a class="headerlink" href="#why-stable-ssl" title="Link to this heading">#</a></h2>
 <p id="why">A quick search of <code class="docutils literal notranslate"><span class="pre">AI</span> <span class="pre">libraries</span></code> or <code class="docutils literal notranslate"><span class="pre">Self</span> <span class="pre">Supervised</span> <span class="pre">Learning</span> <span class="pre">libraries</span></code> will return hundreds of results. 99% will be independent project-centric libraries that can’t be reused for general purpose AI research. The other 1% includes:</p>
 <ul class="simple">
 <li><p>Framework libraries such as PytorchLightning that focus on production needs.</p></li>
@@ -349,11 +347,11 @@
 <p>Hence our goal is to fill that void.</p>
 </section>
 <section id="how-stable-ssl-helps-you">
-<h2><a class="toc-backref" href="#id6" role="doc-backlink">How stable-SSL helps you</a><a class="headerlink" href="#how-stable-ssl-helps-you" title="Link to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">How stable-SSL helps you</a><a class="headerlink" href="#how-stable-ssl-helps-you" title="Link to this heading">#</a></h2>
 <p id="how"><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> implements all the basic boilerplate code, including data loader, logging, checkpointing, optimization, etc. You only need to implement 3 methods to get started: your loss, your model, and your prediction (see <a class="reference external" href="#own_trainer">example</a> below). But if you want to customize more things, simply inherit the base <code class="docutils literal notranslate"><span class="pre">Trainer</span></code> and override any method! This could include different metrics, different data samples, different training loops, etc.</p>
 </section>
 <section id="installation">
-<h2><a class="toc-backref" href="#id7" role="doc-backlink">Installation</a><a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Installation</a><a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
 <p id="id1">The library is not yet available on PyPI. You can install it from the source code, as follows.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </pre></div>
@@ -364,7 +362,7 @@
 </div>
 </section>
 <section id="minimal-documentation">
-<h2><a class="toc-backref" href="#id8" role="doc-backlink">Minimal Documentation</a><a class="headerlink" href="#minimal-documentation" title="Link to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Minimal Documentation</a><a class="headerlink" href="#minimal-documentation" title="Link to this heading">#</a></h2>
 <section id="implement-your-own-trainer">
 <span id="minimal"></span><h3>Implement your own <cite>Trainer</cite><a class="headerlink" href="#implement-your-own-trainer" title="Link to this heading">#</a></h3>
 <p id="own-trainer">At the very least, you need to implement three methods:</p>
@@ -373,26 +371,6 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">forward</span></code>: that method that will be doing the prediction, e.g., for classification it will be p(y|x)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">compute_loss</span></code>: that method should return a scalar value used for backpropagation/training.</p></li>
 </ul>
-</section>
-<section id="multi-run">
-<h3>Multi-run<a class="headerlink" href="#multi-run" title="Link to this heading">#</a></h3>
-<p id="multirun">To launch multiple runs, add <cite>-m</cite> and specify the multiple values to try as <code class="docutils literal notranslate"><span class="pre">++group.variable=value1,value2,value3</span></code>. For instance:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>main.py<span class="w"> </span>--config-name<span class="o">=</span>simclr_cifar10_sgd<span class="w"> </span>-m<span class="w"> </span>++optim.lr<span class="o">=</span><span class="m">2</span>,5,10
-</pre></div>
-</div>
-</section>
-<section id="slurm">
-<h3>Slurm<a class="headerlink" href="#slurm" title="Link to this heading">#</a></h3>
-<p id="id2">To launch on slurm simply add <code class="docutils literal notranslate"><span class="pre">hydra/launcher=submitit_slurm</span></code> in the command line, for instance:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>main.py<span class="w"> </span>hydra/launcher<span class="o">=</span>submitit_slurm<span class="w"> </span>hydra.launcher.timeout_min<span class="o">=</span><span class="m">3</span>
-</pre></div>
-</div>
-<p><strong>Remark</strong>: All the parameters of the slurm <code class="docutils literal notranslate"><span class="pre">hydra.launcher</span></code> are given <a class="reference external" href="https://github.com/facebookresearch/hydra/blob/main/plugins/hydra_submitit_launcher/hydra_plugins/hydra_submitit_launcher/config.py">here</a> (similar to submitit).</p>
-<p>Or to specify the slurm launcher you can add in the config file:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">override hydra/launcher</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">submitit_slurm</span>
-</pre></div>
-</div>
 </section>
 <section id="library-design">
 <h3>Library Design<a class="headerlink" href="#library-design" title="Link to this heading">#</a></h3>
@@ -417,9 +395,9 @@
 </section>
 </section>
 <section id="examples">
-<h2><a class="toc-backref" href="#id9" role="doc-backlink">Examples</a><a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Examples</a><a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
 <section id="how-to-launch-experiments">
-<span id="id3"></span><h3>How to launch experiments<a class="headerlink" href="#how-to-launch-experiments" title="Link to this heading">#</a></h3>
+<span id="id2"></span><h3>How to launch experiments<a class="headerlink" href="#how-to-launch-experiments" title="Link to this heading">#</a></h3>
 <p>The file <code class="docutils literal notranslate"><span class="pre">main.py</span></code> to launch experiments is located in the <code class="docutils literal notranslate"><span class="pre">runs/</span></code> folder.</p>
 <p>The default parameters are given in the <code class="docutils literal notranslate"><span class="pre">sable_ssl/config.py</span></code> file.
 The parameters are structured in the following groups: data, model, hardware, log, optim.</p>
@@ -494,8 +472,6 @@ python3<span class="w"> </span>main.py<span class="w"> </span>--config-name<span
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-documentation">Minimal Documentation</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implement-your-own-trainer">Implement your own <cite>Trainer</cite></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-run">Multi-run</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#slurm">Slurm</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#library-design">Library Design</a></li>
 </ul>
 </li>

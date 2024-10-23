@@ -290,10 +290,9 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pass-user-arguments">Pass user arguments</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#write-and-read-your-logs-wandb-or-json">Write and Read your logs (Wandb or JSON)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#write-and-read-your-logs-wandb-or-json">Write and Read your logs (Wandb or JSON)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-run">Multi-run</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slurm">Slurm</a></li>
 </ul>
             </nav>
         </div>
@@ -389,13 +388,26 @@
 </div>
 </li>
 </ul>
-<section id="installation">
-<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h3>
-<p>To install stable-SSL, run in the terminal:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>stable-ssl
+</section>
+<section id="multi-run">
+<h2>Multi-run<a class="headerlink" href="#multi-run" title="Link to this heading">#</a></h2>
+<p id="multirun">To launch multiple runs, add <cite>-m</cite> and specify the multiple values to try as <code class="docutils literal notranslate"><span class="pre">++group.variable=value1,value2,value3</span></code>. For instance:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>main.py<span class="w"> </span>--config-name<span class="o">=</span>simclr_cifar10_sgd<span class="w"> </span>-m<span class="w"> </span>++optim.lr<span class="o">=</span><span class="m">2</span>,5,10
 </pre></div>
 </div>
 </section>
+<section id="slurm">
+<h2>Slurm<a class="headerlink" href="#slurm" title="Link to this heading">#</a></h2>
+<p id="id2">To launch on slurm simply add <code class="docutils literal notranslate"><span class="pre">hydra/launcher=submitit_slurm</span></code> in the command line, for instance:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>main.py<span class="w"> </span>hydra/launcher<span class="o">=</span>submitit_slurm<span class="w"> </span>hydra.launcher.timeout_min<span class="o">=</span><span class="m">3</span>
+</pre></div>
+</div>
+<p><strong>Remark</strong>: All the parameters of the slurm <code class="docutils literal notranslate"><span class="pre">hydra.launcher</span></code> are given <a class="reference external" href="https://github.com/facebookresearch/hydra/blob/main/plugins/hydra_submitit_launcher/hydra_plugins/hydra_submitit_launcher/config.py">here</a> (similar to submitit).</p>
+<p>Or to specify the slurm launcher you can add in the config file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">override hydra/launcher</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">submitit_slurm</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -446,10 +458,9 @@
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pass-user-arguments">Pass user arguments</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#write-and-read-your-logs-wandb-or-json">Write and Read your logs (Wandb or JSON)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#write-and-read-your-logs-wandb-or-json">Write and Read your logs (Wandb or JSON)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-run">Multi-run</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slurm">Slurm</a></li>
 </ul>
   </nav></div>
 
