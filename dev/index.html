@@ -147,11 +147,23 @@
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="config_guide.html">Configuration File Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.OptimConfig.html">OptimConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.HardwareConfig.html">HardwareConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.DataConfig.html">DataConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.LogConfig.html">LogConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.WandbConfig.html">WandbConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.WandbConfig.html">WandbConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.DataConfig.html">DataConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="ssl_methods.html">SSL Methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.SimCLR.html">SimCLR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwins.html">BarlowTwins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.VICReg.html">VICReg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.WMSE.html">WMSE</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="whats_new.html">What’s New</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -356,7 +368,7 @@
 </section>
 <section id="how-stable-ssl-helps-you">
 <h2><a class="toc-backref" href="#id5" role="doc-backlink">How stable-SSL helps you</a><a class="headerlink" href="#how-stable-ssl-helps-you" title="Link to this heading">#</a></h2>
-<p id="how"><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> implements all the basic boilerplate code, including data loader, logging, checkpointing, optimization, etc. You only need to implement 3 methods to get started: your loss, your model, and your prediction (see <a class="reference external" href="#own_trainer">example</a> below). But if you want to customize more things, simply inherit the base <code class="docutils literal notranslate"><span class="pre">Trainer</span></code> and override any method! This could include different metrics, different data samples, different training loops, etc.</p>
+<p id="how"><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> implements all the basic boilerplate code, including data loader, logging, checkpointing, optimization, etc. You only need to implement 3 methods to get started: your loss, your model, and your prediction (see <a class="reference external" href="#own_trainer">example</a> below). But if you want to customize more things, simply inherit the base <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> and override any method! This could include different metrics, different data samples, different training loops, etc.</p>
 </section>
 <section id="installation">
 <h2><a class="toc-backref" href="#id6" role="doc-backlink">Installation</a><a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>

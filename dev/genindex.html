@@ -145,11 +145,23 @@
 <li class="toctree-l1"><a class="reference internal" href="index.html">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="config_guide.html">Configuration File Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.OptimConfig.html">OptimConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.HardwareConfig.html">HardwareConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.DataConfig.html">DataConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.LogConfig.html">LogConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.WandbConfig.html">WandbConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.WandbConfig.html">WandbConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.DataConfig.html">DataConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="ssl_methods.html">SSL Methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.SimCLR.html">SimCLR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwins.html">BarlowTwins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.VICReg.html">VICReg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.WMSE.html">WMSE</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="whats_new.html">What’s New</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -254,24 +266,51 @@
 <h1 id="index">Index</h1>
 
 <div class="genindex-jumpbox">
- <a href="#D"><strong>D</strong></a>
+ <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
+ | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
  
 </div>
-<h2 id="D">D</h2>
+<h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.DataConfig.html#stable_ssl.DataConfig">DataConfig (class in stable_ssl)</a>
+      <li><a href="gen_modules/stable_ssl.BarlowTwins.html#stable_ssl.BarlowTwins">BarlowTwins (class in stable_ssl)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.LogConfig.html#stable_ssl.LogConfig.dump_path">dump_path (stable_ssl.LogConfig property)</a>
+      <li><a href="gen_modules/stable_ssl.ssl_model.joint_embedding.BarlowTwinsConfig.html#stable_ssl.ssl_model.joint_embedding.BarlowTwinsConfig">BarlowTwinsConfig (class in stable_ssl.ssl_model.joint_embedding)</a>
+</li>
+      <li><a href="gen_modules/stable_ssl.config.BaseModelConfig.html#stable_ssl.config.BaseModelConfig">BaseModelConfig (class in stable_ssl.config)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gen_modules/stable_ssl.SimCLR.html#stable_ssl.SimCLR.compute_ssl_loss">compute_ssl_loss() (stable_ssl.SimCLR method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gen_modules/stable_ssl.config.DataConfig.html#stable_ssl.config.DataConfig">DataConfig (class in stable_ssl.config)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gen_modules/stable_ssl.config.LogConfig.html#stable_ssl.config.LogConfig.dump_path">dump_path (stable_ssl.config.LogConfig property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -279,11 +318,11 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.DataConfig.html#stable_ssl.DataConfig.get_dataloaders">get_dataloaders() (stable_ssl.DataConfig method)</a>
+      <li><a href="gen_modules/stable_ssl.config.DataConfig.html#stable_ssl.config.DataConfig.get_dataloaders">get_dataloaders() (stable_ssl.config.DataConfig method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.DataConfig.html#stable_ssl.DataConfig.get_datasets">get_datasets() (stable_ssl.DataConfig method)</a>
+      <li><a href="gen_modules/stable_ssl.config.DataConfig.html#stable_ssl.config.DataConfig.get_datasets">get_datasets() (stable_ssl.config.DataConfig method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -291,7 +330,15 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.HardwareConfig.html#stable_ssl.HardwareConfig">HardwareConfig (class in stable_ssl)</a>
+      <li><a href="gen_modules/stable_ssl.config.HardwareConfig.html#stable_ssl.config.HardwareConfig">HardwareConfig (class in stable_ssl.config)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gen_modules/stable_ssl.WMSE.html#stable_ssl.WMSE.initialize_modules">initialize_modules() (stable_ssl.WMSE method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -299,7 +346,7 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.LogConfig.html#stable_ssl.LogConfig">LogConfig (class in stable_ssl)</a>
+      <li><a href="gen_modules/stable_ssl.config.LogConfig.html#stable_ssl.config.LogConfig">LogConfig (class in stable_ssl.config)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -311,7 +358,7 @@
     module
 
       <ul>
-        <li><a href="config_guide.html#module-stable_ssl">stable_ssl</a>, <a href="getting_started.html#module-stable_ssl">[1]</a>, <a href="whats_new.html#module-stable_ssl">[2]</a>
+        <li><a href="config_guide.html#module-stable_ssl">stable_ssl</a>, <a href="getting_started.html#module-stable_ssl">[1]</a>, <a href="ssl_methods.html#module-stable_ssl">[2]</a>, <a href="whats_new.html#module-stable_ssl">[3]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -320,7 +367,7 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.OptimConfig.html#stable_ssl.OptimConfig">OptimConfig (class in stable_ssl)</a>
+      <li><a href="gen_modules/stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig">OptimConfig (class in stable_ssl.config)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -328,20 +375,52 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gen_modules/stable_ssl.SimCLR.html#stable_ssl.SimCLR">SimCLR (class in stable_ssl)</a>
+</li>
+      <li><a href="gen_modules/stable_ssl.ssl_model.joint_embedding.SimCLRConfig.html#stable_ssl.ssl_model.joint_embedding.SimCLRConfig">SimCLRConfig (class in stable_ssl.ssl_model.joint_embedding)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     stable_ssl
 
       <ul>
-        <li><a href="config_guide.html#module-stable_ssl">module</a>, <a href="getting_started.html#module-stable_ssl">[1]</a>, <a href="whats_new.html#module-stable_ssl">[2]</a>
+        <li><a href="config_guide.html#module-stable_ssl">module</a>, <a href="getting_started.html#module-stable_ssl">[1]</a>, <a href="ssl_methods.html#module-stable_ssl">[2]</a>, <a href="whats_new.html#module-stable_ssl">[3]</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gen_modules/stable_ssl.ssl_model.joint_embedding.SimCLRConfig.html#stable_ssl.ssl_model.joint_embedding.SimCLRConfig.trainer">trainer() (stable_ssl.ssl_model.joint_embedding.SimCLRConfig method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gen_modules/stable_ssl.VICReg.html#stable_ssl.VICReg">VICReg (class in stable_ssl)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gen_modules/stable_ssl.ssl_model.joint_embedding.VICRegConfig.html#stable_ssl.ssl_model.joint_embedding.VICRegConfig">VICRegConfig (class in stable_ssl.ssl_model.joint_embedding)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.WandbConfig.html#stable_ssl.WandbConfig">WandbConfig (class in stable_ssl)</a>
+      <li><a href="gen_modules/stable_ssl.config.WandbConfig.html#stable_ssl.config.WandbConfig">WandbConfig (class in stable_ssl.config)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gen_modules/stable_ssl.WMSE.html#stable_ssl.WMSE">WMSE (class in stable_ssl)</a>
+</li>
+      <li><a href="gen_modules/stable_ssl.ssl_model.joint_embedding.WMSEConfig.html#stable_ssl.ssl_model.joint_embedding.WMSEConfig">WMSEConfig (class in stable_ssl.ssl_model.joint_embedding)</a>
 </li>
   </ul></td>
 </tr></table>

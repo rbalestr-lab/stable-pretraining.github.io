@@ -145,11 +145,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../config_guide.html">Configuration File Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.OptimConfig.html">OptimConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.HardwareConfig.html">HardwareConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.DataConfig.html">DataConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.LogConfig.html">LogConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.WandbConfig.html">WandbConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.config.WandbConfig.html">WandbConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.config.DataConfig.html">DataConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.ssl_model.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.ssl_model.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.ssl_model.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.ssl_model.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../ssl_methods.html">SSL Methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.SimCLR.html">SimCLR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.BarlowTwins.html">BarlowTwins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.VICReg.html">VICReg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.WMSE.html">WMSE</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../whats_new.html">What’s New</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -380,7 +392,7 @@
 
 
 <div class="viewcode-block" id="DataConfig">
-<a class="viewcode-back" href="../../../gen_modules/stable_ssl.DataConfig.html#stable_ssl.DataConfig">[docs]</a>
+<a class="viewcode-back" href="../../../gen_modules/stable_ssl.config.DataConfig.html#stable_ssl.config.DataConfig">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">DataConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for multiple datasets used for training the model.</span>
@@ -411,7 +423,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">DatasetConfig</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">datasets</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
 <div class="viewcode-block" id="DataConfig.get_datasets">
-<a class="viewcode-back" href="../../../gen_modules/stable_ssl.DataConfig.html#stable_ssl.DataConfig.get_datasets">[docs]</a>
+<a class="viewcode-back" href="../../../gen_modules/stable_ssl.config.DataConfig.html#stable_ssl.config.DataConfig.get_datasets">[docs]</a>
     <span class="k">def</span> <span class="nf">get_datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get datasets for training and validation.</span>
 
@@ -424,7 +436,7 @@
 
 
 <div class="viewcode-block" id="DataConfig.get_dataloaders">
-<a class="viewcode-back" href="../../../gen_modules/stable_ssl.DataConfig.html#stable_ssl.DataConfig.get_dataloaders">[docs]</a>
+<a class="viewcode-back" href="../../../gen_modules/stable_ssl.config.DataConfig.html#stable_ssl.config.DataConfig.get_dataloaders">[docs]</a>
     <span class="k">def</span> <span class="nf">get_dataloaders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get dataloaders for the datasets.</span>
 
