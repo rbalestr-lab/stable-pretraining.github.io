@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Computation times &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>Configuration File Guide &#8212; stable-SSL 0.1-dev documentation</title>
   
   
   
@@ -47,9 +47,11 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'sg_execution_times';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'config_guide';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="OptimConfig" href="gen_modules/stable_ssl.OptimConfig.html" />
+    <link rel="prev" title="Getting Started" href="getting_started.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -101,8 +103,6 @@
       
       
       
-        
-      
       <dialog id="pst-primary-sidebar-modal"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
@@ -142,10 +142,10 @@
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="config_guide.html">Configuration File Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Configuration File Guide</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.OptimConfig.html">OptimConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.HardwareConfig.html">HardwareConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.DataConfig.html">DataConfig</a></li>
@@ -211,7 +211,7 @@
       
       
       
-      <li><a href="_sources/sg_execution_times.rst" target="_blank"
+      <li><a href="_sources/config_guide.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -285,7 +285,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Computation times</h1>
+    <h1>Configuration File Guide</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -299,48 +299,27 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="computation-times">
-<span id="sphx-glr-sg-execution-times"></span><h1>Computation times<a class="headerlink" href="#computation-times" title="Link to this heading">#</a></h1>
-<p><strong>00:00.000</strong> total execution time for 4 files <strong>from all galleries</strong>:</p>
-<div class="docutils container">
-<style scoped>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
-</style>
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script type="text/javascript" class="init">
-$(document).ready( function () {
-    $('table.sg-datatable').DataTable({order: [[1, 'desc']]});
-} );
-</script><div class="pst-scrollable-table-container"><table class="table table-striped sg-datatable">
-<thead>
-<tr class="row-odd"><th class="head"><p>Example</p></th>
-<th class="head"><p>Time</p></th>
-<th class="head"><p>Mem (MB)</p></th>
-</tr>
-</thead>
+  <section id="configuration-file-guide">
+<span id="module-stable_ssl"></span><span id="config-guide"></span><h1>Configuration File Guide<a class="headerlink" href="#configuration-file-guide" title="Link to this heading">#</a></h1>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-even"><td><p><span class="xref std std-ref">sphx_glr_auto_examples_custom_supervised.py</span> (<code class="docutils literal notranslate"><span class="pre">../../examples/custom_supervised.py</span></code>)</p></td>
-<td><p>00:00.000</p></td>
-<td><p>0.0</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.OptimConfig.html#stable_ssl.OptimConfig" title="stable_ssl.OptimConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OptimConfig</span></code></a>([optimizer, lr, batch_size, ...])</p></td>
+<td><p>Configuration for the optimizer used for training the model.</p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="xref std std-ref">sphx_glr_auto_examples_imbalance_supervised_learning.py</span> (<code class="docutils literal notranslate"><span class="pre">../../examples/imbalance_supervised_learning.py</span></code>)</p></td>
-<td><p>00:00.000</p></td>
-<td><p>0.0</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.HardwareConfig.html#stable_ssl.HardwareConfig" title="stable_ssl.HardwareConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HardwareConfig</span></code></a>([seed, float16, gpu, ...])</p></td>
+<td><p>Hardware configuration for training.</p></td>
 </tr>
-<tr class="row-even"><td><p><span class="xref std std-ref">sphx_glr_auto_examples_train.py</span> (<code class="docutils literal notranslate"><span class="pre">../../examples/train.py</span></code>)</p></td>
-<td><p>00:00.000</p></td>
-<td><p>0.0</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.DataConfig.html#stable_ssl.DataConfig" title="stable_ssl.DataConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataConfig</span></code></a>(train_on, *args, **datasets)</p></td>
+<td><p>Configuration for multiple datasets used for training the model.</p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="xref std std-ref">sphx_glr_auto_examples_wandb_reader.py</span> (<code class="docutils literal notranslate"><span class="pre">../../examples/wandb_reader.py</span></code>)</p></td>
-<td><p>00:00.000</p></td>
-<td><p>0.0</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.LogConfig.html#stable_ssl.LogConfig" title="stable_ssl.LogConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LogConfig</span></code></a>([folder, run, load_from, level, ...])</p></td>
+<td><p>Configuration for logging and checkpointing during training.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.WandbConfig.html#stable_ssl.WandbConfig" title="stable_ssl.WandbConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WandbConfig</span></code></a>([folder, run, load_from, level, ...])</p></td>
+<td><p>Configuration for logging with Weights &amp; Biases (Wandb) during training.</p></td>
 </tr>
 </tbody>
 </table>
-</div>
 </div>
 </section>
 
@@ -355,6 +334,24 @@ $(document).ready( function () {
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="getting_started.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Getting Started</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="gen_modules/stable_ssl.OptimConfig.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">OptimConfig</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
