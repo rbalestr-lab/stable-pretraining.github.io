@@ -314,7 +314,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-configuration-log">Log Configuration (<cite>log</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#weights-and-biases-configuration-wandb">Weights and Biases Configuration (<cite>wandb</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-configuration-data">Data Configuration (<cite>data</cite>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#base-model-configuration">Base Model Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-configuration-model">Model Configuration (<cite>model</cite>)</a><ul class="nav section-nav flex-column">
 </ul>
 </li>
 </ul>
@@ -388,7 +388,56 @@
 </section>
 <section id="data-configuration-data">
 <h2>Data Configuration (<cite>data</cite>)<a class="headerlink" href="#data-configuration-data" title="Link to this heading">#</a></h2>
-<p>The <cite>data</cite> keyword defines data loading, preprocessing and data augmentation settings. The complete list of parameters for the <cite>data</cite> section can be found here:</p>
+<p>The <cite>data</cite> keyword defines data loading, preprocessing and data augmentation settings. Here is an example of how to define the <cite>data</cite> section in your YAML file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">data</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">train_on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base</span>
+<span class="w">   </span><span class="nt">base</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CIFAR10</span>
+<span class="w">      </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<span class="w">      </span><span class="nt">drop_last</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">      </span><span class="nt">shuffle</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">      </span><span class="nt">split</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">train</span>
+<span class="w">      </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">      </span><span class="nt">transforms</span><span class="p">:</span>
+<span class="w">         </span><span class="nt">view1</span><span class="p">:</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RandomResizedCrop</span>
+<span class="w">         </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<span class="w">            </span><span class="nt">scale</span><span class="p">:</span>
+<span class="w">               </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<span class="w">               </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RandomHorizontalFlip</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SpeckleNoise</span>
+<span class="w">         </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">severity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">         </span><span class="nt">p</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GaussianBlur</span>
+<span class="w">         </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">kernel_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">         </span><span class="nt">p</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
+<span class="w">         </span><span class="nt">view2</span><span class="p">:</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RandomResizedCrop</span>
+<span class="w">         </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<span class="w">            </span><span class="nt">scale</span><span class="p">:</span>
+<span class="w">               </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<span class="w">               </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RandomHorizontalFlip</span>
+<span class="w">   </span><span class="nt">test_in</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CIFAR10</span>
+<span class="w">      </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<span class="w">      </span><span class="nt">drop_last</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">      </span><span class="nt">split</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">train</span>
+<span class="w">      </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">   </span><span class="nt">test_out</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CIFAR10</span>
+<span class="w">      </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<span class="w">      </span><span class="nt">drop_last</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">      </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">      </span><span class="nt">split</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span>
+</pre></div>
+</div>
+<p>The complete list of parameters for the <cite>data</cite> section can be found here:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.DataConfig.html#stable_ssl.config.DataConfig" title="stable_ssl.config.DataConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.DataConfig</span></code></a>(train_on, *args, **datasets)</p></td>
@@ -398,8 +447,9 @@
 </table>
 </div>
 </section>
-<section id="base-model-configuration">
-<h2>Base Model Configuration<a class="headerlink" href="#base-model-configuration" title="Link to this heading">#</a></h2>
+<section id="model-configuration-model">
+<h2>Model Configuration (<cite>model</cite>)<a class="headerlink" href="#model-configuration-model" title="Link to this heading">#</a></h2>
+<p>The <cite>model</cite> keyword is used to define the model settings, including the architecture of the backbone, objectives, and more. Below is a list of parameters shared across all models:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.BaseModelConfig.html#stable_ssl.config.BaseModelConfig" title="stable_ssl.config.BaseModelConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.BaseModelConfig</span></code></a>([name, ...])</p></td>
@@ -408,6 +458,7 @@
 </tbody>
 </table>
 </div>
+<p>When defining a specific method, you can set method-specific parameters by creating a configuration class that inherits from <cite>BaseModelConfig</cite>. Examples of configurations for different methods in the library are provided below:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.SimCLRConfig.html#stable_ssl.ssl_model.joint_embedding.SimCLRConfig" title="stable_ssl.ssl_model.joint_embedding.SimCLRConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssl_model.joint_embedding.SimCLRConfig</span></code></a>(name, ...)</p></td>
@@ -479,7 +530,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-configuration-log">Log Configuration (<cite>log</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#weights-and-biases-configuration-wandb">Weights and Biases Configuration (<cite>wandb</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-configuration-data">Data Configuration (<cite>data</cite>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#base-model-configuration">Base Model Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-configuration-model">Model Configuration (<cite>model</cite>)</a><ul class="nav section-nav flex-column">
 </ul>
 </li>
 </ul>

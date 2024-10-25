@@ -309,10 +309,20 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pass-user-arguments">Pass user arguments</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#write-and-read-your-logs-wandb-or-json">Write and Read your logs (Wandb or JSON)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-run">Multi-run</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slurm">Slurm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-documentation">Minimal Documentation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implement-your-own-trainer">Implement your own <cite>Trainer</cite></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#library-design">Library Design</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-launch-runs">How to launch runs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-usage">Advanced Usage</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-params-in-command-line">Setting params in command line</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pass-user-arguments">Pass user arguments</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#write-and-read-your-logs-wandb-or-json">Write and Read your logs (Wandb or JSON)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-run">Multi-run</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#slurm">Slurm</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -326,8 +336,72 @@
                   
   <section id="module-stable_ssl">
 <span id="getting-started"></span><span id="id1"></span><h1>Getting Started<a class="headerlink" href="#module-stable_ssl" title="Link to this heading">#</a></h1>
+<section id="minimal-documentation">
+<h2>Minimal Documentation<a class="headerlink" href="#minimal-documentation" title="Link to this heading">#</a></h2>
+<section id="implement-your-own-trainer">
+<span id="minimal"></span><h3>Implement your own <cite>Trainer</cite><a class="headerlink" href="#implement-your-own-trainer" title="Link to this heading">#</a></h3>
+<p id="own-trainer">At the very least, you need to implement three methods:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">initialize_modules</span></code>: this method initializes whatever model and parameters to use for training/inference</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">forward</span></code>: that method that will be doing the prediction, e.g., for classification it will be p(y|x)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compute_loss</span></code>: that method should return a scalar value used for backpropagation/training.</p></li>
+</ul>
+</section>
+<section id="library-design">
+<h3>Library Design<a class="headerlink" href="#library-design" title="Link to this heading">#</a></h3>
+<p id="design">Stable-SSL provides all the boilerplate to quickly get started doing AI research, with a focus on Self Supervised Learning (SSL) albeit other applications can certainly build upon Stable-SSL. In short, we provide a <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> class that calls the following methods (in order):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1. INITIALIZATION PHASE:
+  - seed_everything()
+  - initialize_modules()
+  - initialize_optimizer()
+  - initialize_scheduler()
+  - load_checkpoint()
+
+2. TRAIN/EVAL PHASE:
+  - before_train_epoch()
+  - for batch in train_loader:
+    - before_train_step()
+    - train_step(batch)
+    - after_train_step()
+  - after_train_epoch()
+</pre></div>
+</div>
+<p>While the organization is related to the one provided by PytorchLightning, the goal here is to greatly reduce the codebase complexity without sacrificing performances. Think of PytorchLightning as industry driven (abstracting everything away) while Stable-SSL is academia driven (bringing everything in front of the user).</p>
+</section>
+</section>
+<section id="how-to-launch-runs">
+<h2>How to launch runs<a class="headerlink" href="#how-to-launch-runs" title="Link to this heading">#</a></h2>
+<p id="launch">First build a confif file with the parameters you want to use. The parameters should be structured in the following groups: data, model, hardware, log, optim.
+See the <a class="reference internal" href="config_guide.html#config-guide"><span class="std std-ref">Configuration File Guide</span></a> for more details.</p>
+<p>Then, create a Python script that will load the configuration and launch the run. Here is an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">stable_ssl</span>
+<span class="kn">import</span> <span class="nn">hydra</span>
+
+<span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
+<span class="w">   </span><span class="sd">&quot;&quot;&quot;Load the configuration and launch the run.&quot;&quot;&quot;</span>
+   <span class="n">args</span> <span class="o">=</span> <span class="n">stable_ssl</span><span class="o">.</span><span class="n">get_args</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>  <span class="c1"># Get the verified arguments</span>
+   <span class="n">model</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">stable_ssl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)(</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># Create model</span>
+   <span class="n">model</span><span class="p">()</span>  <span class="c1"># Call model</span>
+</pre></div>
+</div>
+<p>To launch the run using the configuration file <code class="docutils literal notranslate"><span class="pre">default_config.yaml</span></code> located in the <code class="docutils literal notranslate"><span class="pre">./configs/</span></code> folder, use the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>train.py<span class="w"> </span>--config-name<span class="w"> </span>default_config<span class="w"> </span>--config-path<span class="w"> </span>configs/
+</pre></div>
+</div>
+</section>
+<section id="advanced-usage">
+<h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Link to this heading">#</a></h2>
+<section id="setting-params-in-command-line">
+<h3>Setting params in command line<a class="headerlink" href="#setting-params-in-command-line" title="Link to this heading">#</a></h3>
+<p>You can modify/add parameters of the config file by adding <code class="docutils literal notranslate"><span class="pre">++group.variable=value</span></code> as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>main.py<span class="w"> </span>--config-name<span class="o">=</span>simclr_cifar10_sgd<span class="w"> </span>++optim.lr<span class="o">=</span><span class="m">2</span>
+</pre></div>
+</div>
+<p><strong>Remark</strong>: If <code class="docutils literal notranslate"><span class="pre">group.variable</span></code> is already in the config file you can use <code class="docutils literal notranslate"><span class="pre">group.variable=value</span></code> and if it is not you can use <code class="docutils literal notranslate"><span class="pre">+group.variable=value</span></code>. The <code class="docutils literal notranslate"><span class="pre">++</span></code> command handles both cases; thus we recommend using it.</p>
+</section>
 <section id="pass-user-arguments">
-<h2>Pass user arguments<a class="headerlink" href="#pass-user-arguments" title="Link to this heading">#</a></h2>
+<h3>Pass user arguments<a class="headerlink" href="#pass-user-arguments" title="Link to this heading">#</a></h3>
 <p id="arguments">To pass a user argument e.g., <code class="docutils literal notranslate"><span class="pre">my_arg</span></code> that is not already supported in our configs (i.e., different than <code class="docutils literal notranslate"><span class="pre">optim.lr</span></code> etc.), there are two options:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <colgroup>
@@ -366,7 +440,7 @@
 <p>Your argument can be retrieved anywhere inside your <code class="docutils literal notranslate"><span class="pre">Trainer</span></code> instance through <code class="docutils literal notranslate"><span class="pre">self.config.my_arg</span></code> with either of the two above options.</p>
 </section>
 <section id="write-and-read-your-logs-wandb-or-json">
-<h2>Write and Read your logs (Wandb or JSON)<a class="headerlink" href="#write-and-read-your-logs-wandb-or-json" title="Link to this heading">#</a></h2>
+<h3>Write and Read your logs (Wandb or JSON)<a class="headerlink" href="#write-and-read-your-logs-wandb-or-json" title="Link to this heading">#</a></h3>
 <ul id="logs">
 <li><p><strong>Loggers</strong>: We support the <a class="reference external" href="https://wandb.ai/site">Weights and Biases</a> and <a class="reference external" href="https://jsonlines.readthedocs.io/en/latest/">jsonlines</a> for logging. For the Wandb, you will need to use the following tags: <code class="docutils literal notranslate"><span class="pre">log.entity</span></code> (optional), <code class="docutils literal notranslate"><span class="pre">log.project</span></code> (optional), <code class="docutils literal notranslate"><span class="pre">log.run</span></code> (optional). They are all optional since Wandb handles its own exceptions if those are not passed by users. For jsonlines, the <code class="docutils literal notranslate"><span class="pre">log.folder</span></code> / <code class="docutils literal notranslate"><span class="pre">log.name</span></code> is where the logs will be dumped. Both are also optional. <code class="docutils literal notranslate"><span class="pre">log.folder</span></code> will be set to <code class="docutils literal notranslate"><span class="pre">./logs</span></code> and <code class="docutils literal notranslate"><span class="pre">log.name</span></code> will be set to <code class="docutils literal notranslate"><span class="pre">%Y%m%d_%H%M%S.%f</span></code> of the call. References: <code class="docutils literal notranslate"><span class="pre">stable_ssl.configs.LogConfig</span></code>, <code class="docutils literal notranslate"><span class="pre">stable_ssl.configs.WandbConfig</span></code>.</p></li>
 <li><p><strong>Logging values</strong>: we have a unified logging framework regardless of the logger you employ. You can directly use <code class="docutils literal notranslate"><span class="pre">self.log({&quot;loss&quot;:</span> <span class="pre">0.001,</span> <span class="pre">&quot;lr&quot;:</span> <span class="pre">1})</span></code> which will add an entry or row in Wandb or the text file. If you want to log many different things at once, it can be easier to “pack” your log commits, as in:</p>
@@ -410,14 +484,14 @@
 </ul>
 </section>
 <section id="multi-run">
-<h2>Multi-run<a class="headerlink" href="#multi-run" title="Link to this heading">#</a></h2>
+<h3>Multi-run<a class="headerlink" href="#multi-run" title="Link to this heading">#</a></h3>
 <p id="multirun">To launch multiple runs, add <cite>-m</cite> and specify the multiple values to try as <code class="docutils literal notranslate"><span class="pre">++group.variable=value1,value2,value3</span></code>. For instance:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>main.py<span class="w"> </span>--config-name<span class="o">=</span>simclr_cifar10_sgd<span class="w"> </span>-m<span class="w"> </span>++optim.lr<span class="o">=</span><span class="m">2</span>,5,10
 </pre></div>
 </div>
 </section>
 <section id="slurm">
-<h2>Slurm<a class="headerlink" href="#slurm" title="Link to this heading">#</a></h2>
+<h3>Slurm<a class="headerlink" href="#slurm" title="Link to this heading">#</a></h3>
 <p id="id2">To launch on slurm simply add <code class="docutils literal notranslate"><span class="pre">hydra/launcher=submitit_slurm</span></code> in the command line, for instance:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>main.py<span class="w"> </span>hydra/launcher<span class="o">=</span>submitit_slurm<span class="w"> </span>hydra.launcher.timeout_min<span class="o">=</span><span class="m">3</span>
 </pre></div>
@@ -428,6 +502,7 @@
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">override hydra/launcher</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">submitit_slurm</span>
 </pre></div>
 </div>
+</section>
 </section>
 </section>
 
@@ -477,10 +552,20 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pass-user-arguments">Pass user arguments</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#write-and-read-your-logs-wandb-or-json">Write and Read your logs (Wandb or JSON)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-run">Multi-run</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slurm">Slurm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-documentation">Minimal Documentation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implement-your-own-trainer">Implement your own <cite>Trainer</cite></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#library-design">Library Design</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-launch-runs">How to launch runs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-usage">Advanced Usage</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-params-in-command-line">Setting params in command line</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pass-user-arguments">Pass user arguments</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#write-and-read-your-logs-wandb-or-json">Write and Read your logs (Wandb or JSON)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-run">Multi-run</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#slurm">Slurm</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

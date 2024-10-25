@@ -324,30 +324,23 @@
 <p><a class="reference internal" href="#sphx-glr-download-auto-examples-train-py"><span class="std std-ref">Go to the end</span></a>
 to download the full example code.</p>
 </div>
-<p class="sphx-glr-example-title" id="sphx-glr-auto-examples-train-py">This script demonstrates how to train a model using the stable-SSL library.</p>
+<p class="sphx-glr-example-title" id="sphx-glr-auto-examples-train-py">This script demonstrates how to launch a run using the stable-SSL library.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hydra</span>
-<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span>
+<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">OmegaConf</span>
 
 <span class="kn">import</span> <span class="nn">stable_ssl</span>
 
-<span class="kn">from</span> <span class="nn">stable_ssl.model</span> <span class="kn">import</span> <span class="n">SimCLR</span>
-<span class="kn">from</span> <span class="nn">stable_ssl.model</span> <span class="kn">import</span> <span class="n">Supervised</span>
-
-<span class="n">model_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;SimCLR&quot;</span><span class="p">:</span> <span class="n">SimCLR</span><span class="p">,</span>
-    <span class="s2">&quot;Supervised&quot;</span><span class="p">:</span> <span class="n">Supervised</span><span class="p">,</span>
-<span class="p">}</span>
-
 
 <span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">):</span>
-    <span class="n">args</span> <span class="o">=</span> <span class="n">stable_ssl</span><span class="o">.</span><span class="n">get_args</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load the configuration and launch the run.&quot;&quot;&quot;</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">stable_ssl</span><span class="o">.</span><span class="n">get_args</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>  <span class="c1"># Get the verified arguments</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--- Arguments ---&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
-    <span class="n">trainer</span> <span class="o">=</span> <span class="n">model_dict</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">](</span><span class="n">args</span><span class="p">)</span>
-    <span class="n">trainer</span><span class="p">()</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">stable_ssl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)(</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># Create model</span>
+    <span class="n">model</span><span class="p">()</span>  <span class="c1"># Call model</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
