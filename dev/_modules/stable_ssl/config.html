@@ -379,8 +379,6 @@
 <span class="sd">        Number of processes participating in distributed training. Default is 1.</span>
 <span class="sd">    port : int, optional</span>
 <span class="sd">        Port number for distributed training. Default is None.</span>
-<span class="sd">    workers: int, optional</span>
-<span class="sd">        Number of workers for data loading. Default is 0 (data loaded in main process).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -388,7 +386,6 @@
     <span class="n">gpu</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">world_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">port</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a random port for distributed training if not provided.&quot;&quot;&quot;</span>
@@ -464,41 +461,22 @@
 
 
 
-<span class="c1"># @dataclass</span>
-<span class="c1"># class WandbConfig(LogConfig):</span>
-<span class="c1">#     &quot;&quot;&quot;Configuration for logging with Weights &amp; Biases (Wandb) during training.</span>
-
-<span class="c1">#     Parameters:</span>
-<span class="c1">#     -----------</span>
-<span class="c1">#     entity : str, optional</span>
-<span class="c1">#         Name of the (Weights &amp; Biases) entity. Default is None.</span>
-<span class="c1">#     project : str, optional</span>
-<span class="c1">#         Name of the (Weights &amp; Biases) project. Default is None.</span>
-<span class="c1">#     run : str, optional</span>
-<span class="c1">#         Name of the Weights &amp; Biases run. Default is None.</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-
-<span class="c1">#     entity: Optional[str] = None</span>
-<span class="c1">#     project: Optional[str] = None</span>
-<span class="c1">#     api: str = None</span>
-
-
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">TrainerConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Global configuration for training a model.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : BaseModelConfig</span>
+<span class="sd">        Model configuration.</span>
 <span class="sd">    data : DataConfig</span>
 <span class="sd">        Data configuration.</span>
 <span class="sd">    optim : OptimConfig</span>
 <span class="sd">        Optimizer configuration.</span>
-<span class="sd">    architecture : ArchitectureConfig</span>
-<span class="sd">        Model architecture configuration.</span>
 <span class="sd">    hardware : HardwareConfig</span>
 <span class="sd">        Hardware configuration.</span>
 <span class="sd">    log : LogConfig</span>
-<span class="sd">        Logging and checkpointing configuration</span>
+<span class="sd">        Logging and checkpointing configuration.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">model</span><span class="p">:</span> <span class="n">BaseModelConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">BaseModelConfig</span><span class="p">)</span>
@@ -521,12 +499,6 @@
     <span class="s2">&quot;VICReg&quot;</span><span class="p">:</span> <span class="n">VICRegConfig</span><span class="p">,</span>
     <span class="s2">&quot;WMSE&quot;</span><span class="p">:</span> <span class="n">WMSEConfig</span><span class="p">,</span>
 <span class="p">}</span>
-<span class="c1"># _LOG_CONFIGS = {</span>
-<span class="c1">#     &quot;Wandb&quot;: WandbConfig,</span>
-<span class="c1">#     &quot;wandb&quot;: WandbConfig,</span>
-<span class="c1">#     &quot;None&quot;: LogConfig,</span>
-<span class="c1">#     None: LogConfig,</span>
-<span class="c1"># }</span>
 
 
 <span class="k">def</span> <span class="nf">get_args</span><span class="p">(</span><span class="n">cfg_dict</span><span class="p">,</span> <span class="n">model_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -546,9 +518,9 @@
     <span class="n">model</span> <span class="o">=</span> <span class="n">_MODEL_CONFIGS</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">**</span><span class="n">model</span><span class="p">)</span>
 
     <span class="n">args</span> <span class="o">=</span> <span class="n">TrainerConfig</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
         <span class="n">data</span><span class="o">=</span><span class="n">DataConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="p">{})),</span>
         <span class="n">optim</span><span class="o">=</span><span class="n">OptimConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;optim&quot;</span><span class="p">,</span> <span class="p">{})),</span>
-        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
         <span class="n">hardware</span><span class="o">=</span><span class="n">HardwareConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hardware&quot;</span><span class="p">,</span> <span class="p">{})),</span>
         <span class="n">log</span><span class="o">=</span><span class="n">LogConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="p">{})),</span>
     <span class="p">)</span>
