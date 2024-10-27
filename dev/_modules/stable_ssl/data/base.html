@@ -150,10 +150,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.config.DataConfig.html">DataConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.ssl_model.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.ssl_model.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.ssl_model.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.ssl_model.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../gen_modules/stable_ssl.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../ssl_methods.html">SSL Methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -386,8 +386,8 @@
         <span class="c1">#     self.config.optim.batch_size // self.config.hardware.world_size</span>
         <span class="c1"># )</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SLURM_JOB_ID&#39;</span><span class="p">):</span>
-                <span class="n">num_workers</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SLURM_JOB_CPUS_PER_NODE&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SLURM_JOB_ID&quot;</span><span class="p">):</span>
+                <span class="n">num_workers</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SLURM_JOB_CPUS_PER_NODE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">num_workers</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>

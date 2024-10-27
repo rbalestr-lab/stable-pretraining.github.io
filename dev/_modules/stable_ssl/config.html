@@ -150,10 +150,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.DataConfig.html">DataConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.ssl_model.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.ssl_model.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.ssl_model.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.ssl_model.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../ssl_methods.html">SSL Methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -262,7 +262,16 @@
                 <article class="bd-article">
                   
   <h1>Source code for stable_ssl.config</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">make_dataclass</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Configuration for stable-ssl runs.&quot;&quot;&quot;</span>
+<span class="c1">#</span>
+<span class="c1"># Author: Hugues Van Assel &lt;vanasselhugues@gmail.com&gt;</span>
+<span class="c1">#         Randall Balestriero &lt;randallbalestriero@gmail.com&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># This source code is licensed under the license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">make_dataclass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">OmegaConf</span>
@@ -272,7 +281,7 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">LARS</span>
-<span class="kn">from</span> <span class="nn">.ssl_model.joint_embedding</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">.joint_embedding</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BarlowTwinsConfig</span><span class="p">,</span>
     <span class="n">SimCLRConfig</span><span class="p">,</span>
     <span class="n">VICRegConfig</span><span class="p">,</span>
@@ -289,8 +298,8 @@
 <span class="k">class</span> <span class="nc">OptimConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the optimizer used for training the model.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
 <span class="sd">    optimizer : str</span>
 <span class="sd">        Type of optimizer to use (e.g., &quot;AdamW&quot;, &quot;RMSprop&quot;, &quot;SGD&quot;, &quot;LARS&quot;).</span>
 <span class="sd">        Default is &quot;LARS&quot;.</span>
@@ -330,11 +339,11 @@
 
 <span class="sd">        Ensures that a valid optimizer is provided and assigns default values</span>
 <span class="sd">        for parameters like learning rate, weight decay, and others, if they</span>
-<span class="sd">        are not explicitly set. Issues warnings when defaults are used.</span>
+<span class="sd">        are not explicitly set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">==</span> <span class="s2">&quot;LARS&quot;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;[stable-SSL] Invalid optimizer: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="si">}</span><span class="s2">. Must be a &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid optimizer: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="si">}</span><span class="s2">. Must be a &quot;</span>
                 <span class="s2">&quot;torch optimizer or &#39;LARS&#39;.&quot;</span>
             <span class="p">)</span>
 
@@ -352,7 +361,7 @@
                     <span class="n">default_value</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
                     <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">default_value</span><span class="p">)</span>
                     <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;[stable-SSL] </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> not provided for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="si">}</span><span class="s2"> &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> not provided for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="si">}</span><span class="s2"> &quot;</span>
                         <span class="sa">f</span><span class="s2">&quot;optimizer. Default value of </span><span class="si">{</span><span class="n">default_value</span><span class="si">}</span><span class="s2"> is used.&quot;</span>
                     <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -367,8 +376,8 @@
 <span class="k">class</span> <span class="nc">HardwareConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Hardware configuration for training.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
 <span class="sd">    seed : int, optional</span>
 <span class="sd">        Random seed for reproducibility. Default is None.</span>
 <span class="sd">    float16 : bool, optional</span>
@@ -388,7 +397,7 @@
     <span class="n">port</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a random port for distributed training if not provided.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a random port for distributed training if not provided.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="ow">or</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">49152</span><span class="p">,</span> <span class="mi">65535</span><span class="p">)</span></div>
 
 
@@ -399,8 +408,8 @@
 <span class="k">class</span> <span class="nc">LogConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for logging and checkpointing during training.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
 <span class="sd">    folder : str, optional</span>
 <span class="sd">        Path to the folder where logs and checkpoints will be saved.</span>
 <span class="sd">        Default is the current directory + random hash folder.</span>
@@ -453,7 +462,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dump_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the full path where logs and checkpoints are stored.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the full path where logs and checkpoints are stored.</span>
 
 <span class="sd">        This path includes the base folder and the run identifier.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -486,9 +495,11 @@
     <span class="n">log</span><span class="p">:</span> <span class="n">LogConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">LogConfig</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a YAML representation of the configuration.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a YAML string of the configuration.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 
@@ -502,6 +513,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_args</span><span class="p">(</span><span class="n">cfg_dict</span><span class="p">,</span> <span class="n">model_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and return a TrainerConfig from a configuration dictionary.&quot;&quot;&quot;</span>
 
     <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">value</span>

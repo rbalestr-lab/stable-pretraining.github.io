@@ -151,10 +151,10 @@
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.DataConfig.html">DataConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="ssl_methods.html">SSL Methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -311,7 +311,6 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-configuration-optim">Optimization Configuration (<cite>optim</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-configuration-hardware">Hardware Configuration (<cite>hardware</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-configuration-log">Log Configuration (<cite>log</cite>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#weights-and-biases-configuration-wandb">Weights and Biases Configuration (<cite>wandb</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-configuration-data">Data Configuration (<cite>data</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-configuration-model">Model Configuration (<cite>model</cite>)</a><ul class="nav section-nav flex-column">
 </ul>
@@ -369,15 +368,6 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.LogConfig.html#stable_ssl.config.LogConfig" title="stable_ssl.config.LogConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.LogConfig</span></code></a>([folder, run, load_from, ...])</p></td>
 <td><p>Configuration for logging and checkpointing during training.</p></td>
 </tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="weights-and-biases-configuration-wandb">
-<h2>Weights and Biases Configuration (<cite>wandb</cite>)<a class="headerlink" href="#weights-and-biases-configuration-wandb" title="Link to this heading">#</a></h2>
-<p>Configure Weights and Biases (Wandb) integration using the <cite>wandb</cite> keyword. The complete list of parameters for the <cite>wandb</cite> section is available below:</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
 </tbody>
 </table>
 </div>
@@ -457,16 +447,16 @@
 <p>When defining a specific method, you can set method-specific parameters by creating a configuration class that inherits from <cite>BaseModelConfig</cite>. Examples of configurations for different methods in the library are provided below:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.SimCLRConfig.html#stable_ssl.ssl_model.joint_embedding.SimCLRConfig" title="stable_ssl.ssl_model.joint_embedding.SimCLRConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssl_model.joint_embedding.SimCLRConfig</span></code></a>(name, ...)</p></td>
-<td><p>Configuration for the SSL model parameters.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.SimCLRConfig.html#stable_ssl.joint_embedding.SimCLRConfig" title="stable_ssl.joint_embedding.SimCLRConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">joint_embedding.SimCLRConfig</span></code></a>(name, ...)</p></td>
+<td><p>Configuration for the SimCLR model parameters.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.BarlowTwinsConfig.html#stable_ssl.ssl_model.joint_embedding.BarlowTwinsConfig" title="stable_ssl.ssl_model.joint_embedding.BarlowTwinsConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssl_model.joint_embedding.BarlowTwinsConfig</span></code></a>(...)</p></td>
-<td><p>Configuration for the SSL model parameters.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.BarlowTwinsConfig.html#stable_ssl.joint_embedding.BarlowTwinsConfig" title="stable_ssl.joint_embedding.BarlowTwinsConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">joint_embedding.BarlowTwinsConfig</span></code></a>(name, ...)</p></td>
+<td><p>Configuration for the BarlowTwins model parameters.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.VICRegConfig.html#stable_ssl.ssl_model.joint_embedding.VICRegConfig" title="stable_ssl.ssl_model.joint_embedding.VICRegConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssl_model.joint_embedding.VICRegConfig</span></code></a>(name, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.VICRegConfig.html#stable_ssl.joint_embedding.VICRegConfig" title="stable_ssl.joint_embedding.VICRegConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">joint_embedding.VICRegConfig</span></code></a>(name, ...)</p></td>
 <td><p>Configuration for the VICreg model parameters.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.ssl_model.joint_embedding.WMSEConfig.html#stable_ssl.ssl_model.joint_embedding.WMSEConfig" title="stable_ssl.ssl_model.joint_embedding.WMSEConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ssl_model.joint_embedding.WMSEConfig</span></code></a>(name, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.WMSEConfig.html#stable_ssl.joint_embedding.WMSEConfig" title="stable_ssl.joint_embedding.WMSEConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">joint_embedding.WMSEConfig</span></code></a>(name, ...)</p></td>
 <td><p>Configuration for the WMSE model parameters.</p></td>
 </tr>
 </tbody>
@@ -524,7 +514,6 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-configuration-optim">Optimization Configuration (<cite>optim</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-configuration-hardware">Hardware Configuration (<cite>hardware</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-configuration-log">Log Configuration (<cite>log</cite>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#weights-and-biases-configuration-wandb">Weights and Biases Configuration (<cite>wandb</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-configuration-data">Data Configuration (<cite>data</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-configuration-model">Model Configuration (<cite>model</cite>)</a><ul class="nav section-nav flex-column">
 </ul>

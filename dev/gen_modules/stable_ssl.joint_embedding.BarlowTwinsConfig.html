@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>WMSE &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>BarlowTwinsConfig &#8212; stable-SSL 0.1-dev documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.WMSE';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.joint_embedding.BarlowTwinsConfig';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="What’s New" href="../whats_new.html" />
-    <link rel="prev" title="VICReg" href="stable_ssl.VICReg.html" />
+    <link rel="next" title="VICRegConfig" href="stable_ssl.joint_embedding.VICRegConfig.html" />
+    <link rel="prev" title="SimCLRConfig" href="stable_ssl.joint_embedding.SimCLRConfig.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -145,23 +145,23 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../config_guide.html">Configuration File Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../config_guide.html">Configuration File Guide</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.LogConfig.html">LogConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.DataConfig.html">DataConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">BarlowTwinsConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../ssl_methods.html">SSL Methods</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ssl_methods.html">SSL Methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.SimCLR.html">SimCLR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.BarlowTwins.html">BarlowTwins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.VICReg.html">VICReg</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">WMSE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.WMSE.html">WMSE</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../whats_new.html">What’s New</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -222,7 +222,7 @@
       
       
       
-      <li><a href="../_sources/gen_modules/stable_ssl.WMSE.rst" target="_blank"
+      <li><a href="../_sources/gen_modules/stable_ssl.joint_embedding.BarlowTwinsConfig.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -298,7 +298,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>WMSE</h1>
+    <h1>BarlowTwinsConfig</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -308,10 +308,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.WMSE"><code class="docutils literal notranslate"><span class="pre">WMSE</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.WMSE.initialize_modules"><code class="docutils literal notranslate"><span class="pre">WMSE.initialize_modules()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.joint_embedding.BarlowTwinsConfig"><code class="docutils literal notranslate"><span class="pre">BarlowTwinsConfig</span></code></a></li>
 </ul>
             </nav>
         </div>
@@ -323,33 +320,21 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="wmse">
-<h1>WMSE<a class="headerlink" href="#wmse" title="Link to this heading">#</a></h1>
+  <section id="barlowtwinsconfig">
+<h1>BarlowTwinsConfig<a class="headerlink" href="#barlowtwinsconfig" title="Link to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="stable_ssl.WMSE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.</span></span><span class="sig-name descname"><span class="pre">WMSE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/joint_embedding/wmse.html#WMSE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.WMSE" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JETrainer</span></code></p>
-<p>Whitening Mean Squared Error (WMSE) model from <a class="reference internal" href="#esss21" id="id1"><span>[ESSS21]</span></a>.</p>
-<section id="reference">
-<h2>Reference<a class="headerlink" href="#reference" title="Link to this heading">#</a></h2>
-<div role="list" class="citation-list">
-<div class="citation" id="esss21" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">ESSS21</a><span class="fn-bracket">]</span></span>
-<p>Ermolov, A., Siarohin, A., Sangineto, E., &amp; Sebe, N. (2021).
-Whitening for self-supervised representation learning.
-In International conference on machine learning (pp. 3015-3024). PMLR.</p>
-</div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="stable_ssl.WMSE.initialize_modules">
-<span class="sig-name descname"><span class="pre">initialize_modules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/joint_embedding/wmse.html#WMSE.initialize_modules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.WMSE.initialize_modules" title="Link to this definition">#</a></dt>
-<dd><p>Initialize the modules required for the model.</p>
+<dt class="sig sig-object py" id="stable_ssl.joint_embedding.BarlowTwinsConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.joint_embedding.</span></span><span class="sig-name descname"><span class="pre">BarlowTwinsConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'Supervised'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backbone_model:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'resnet18'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sync_batchnorm:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_format:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'channels_last'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pretrained:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_classifier:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projector:</span> <span class="pre">list[int]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambd:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/joint_embedding/barlow_twins.html#BarlowTwinsConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.joint_embedding.BarlowTwinsConfig" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JEConfig</span></code></p>
+<p>Configuration for the BarlowTwins model parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lambd</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – Lambda parameter for the off-diagonal loss. Default is 0.1.</p>
+</dd>
+</dl>
 </dd></dl>
 
-</section>
-</dd></dl>
-
-<span class="target" id="sphx-glr-backref-stable-ssl-wmse"></span></section>
+<span class="target" id="sphx-glr-backref-stable-ssl-joint-embedding-barlowtwinsconfig"></span></section>
 
 
                 </article>
@@ -363,20 +348,20 @@ In International conference on machine learning (pp. 3015-3024). PMLR.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="stable_ssl.VICReg.html"
+       href="stable_ssl.joint_embedding.SimCLRConfig.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">VICReg</p>
+        <p class="prev-next-title">SimCLRConfig</p>
       </div>
     </a>
     <a class="right-next"
-       href="../whats_new.html"
+       href="stable_ssl.joint_embedding.VICRegConfig.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">What’s New</p>
+        <p class="prev-next-title">VICRegConfig</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -397,10 +382,7 @@ In International conference on machine learning (pp. 3015-3024). PMLR.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.WMSE"><code class="docutils literal notranslate"><span class="pre">WMSE</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.WMSE.initialize_modules"><code class="docutils literal notranslate"><span class="pre">WMSE.initialize_modules()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.joint_embedding.BarlowTwinsConfig"><code class="docutils literal notranslate"><span class="pre">BarlowTwinsConfig</span></code></a></li>
 </ul>
   </nav></div>
 

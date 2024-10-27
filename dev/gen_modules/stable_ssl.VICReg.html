@@ -151,10 +151,10 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.LogConfig.html">LogConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.DataConfig.html">DataConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.ssl_model.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.ssl_model.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.ssl_model.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.ssl_model.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../ssl_methods.html">SSL Methods</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
@@ -324,8 +324,21 @@
 <h1>VICReg<a class="headerlink" href="#vicreg" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="stable_ssl.VICReg">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.</span></span><span class="sig-name descname"><span class="pre">VICReg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/ssl_model/joint_embedding/vicreg.html#VICReg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.VICReg" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.</span></span><span class="sig-name descname"><span class="pre">VICReg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/joint_embedding/vicreg.html#VICReg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.VICReg" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JETrainer</span></code></p>
+<p>VICReg model from <a class="reference internal" href="#bpl21" id="id1"><span>[BPL21]</span></a>.</p>
+<section id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Link to this heading">#</a></h2>
+<div role="list" class="citation-list">
+<div class="citation" id="bpl21" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">BPL21</a><span class="fn-bracket">]</span></span>
+<p>Bardes, A., Ponce, J., &amp; LeCun, Y. (2021).
+VICReg: Variance-Invariance-Covariance Regularization
+For Self-Supervised Learning.
+International Conference on Learning Representations (ICLR).</p>
+</div>
+</div>
+</section>
 </dd></dl>
 
 <span class="target" id="sphx-glr-backref-stable-ssl-vicreg"></span></section>

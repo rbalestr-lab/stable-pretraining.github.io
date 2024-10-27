@@ -151,10 +151,10 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.LogConfig.html">LogConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.DataConfig.html">DataConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.ssl_model.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.ssl_model.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.ssl_model.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.ssl_model.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../ssl_methods.html">SSL Methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -327,21 +327,17 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.config.</span></span><span class="sig-name descname"><span class="pre">HardwareConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float16</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gpu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/config.html#HardwareConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.config.HardwareConfig" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.4/library/functions.html#object" title="(in Python v3.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Hardware configuration for training.</p>
-<section id="parameters">
-<h2>Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h2>
-<dl class="simple">
-<dt>seed<span class="classifier">int, optional</span></dt><dd><p>Random seed for reproducibility. Default is None.</p>
-</dd>
-<dt>float16<span class="classifier">bool, optional</span></dt><dd><p>Whether to use mixed precision (float16) for training. Default is False.</p>
-</dd>
-<dt>gpu<span class="classifier">int, optional</span></dt><dd><p>GPU device ID to use for training. Default is 0.</p>
-</dd>
-<dt>world_size<span class="classifier">int, optional</span></dt><dd><p>Number of processes participating in distributed training. Default is 1.</p>
-</dd>
-<dt>port<span class="classifier">int, optional</span></dt><dd><p>Port number for distributed training. Default is None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Random seed for reproducibility. Default is None.</p></li>
+<li><p><strong>float16</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to use mixed precision (float16) for training. Default is False.</p></li>
+<li><p><strong>gpu</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – GPU device ID to use for training. Default is 0.</p></li>
+<li><p><strong>world_size</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Number of processes participating in distributed training. Default is 1.</p></li>
+<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Port number for distributed training. Default is None.</p></li>
+</ul>
 </dd>
 </dl>
-</section>
 </dd></dl>
 
 <span class="target" id="sphx-glr-backref-stable-ssl-config-hardwareconfig"></span></section>

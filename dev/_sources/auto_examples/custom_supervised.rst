@@ -34,7 +34,7 @@ This example demonstrates how to create a custom supervised model using the
     from torchvision import transforms
 
     import stable_ssl
-    from stable_ssl.model.supervised import Supervised
+    from stable_ssl.supervised import Supervised
 
 
     class MyCustomSupervised(Supervised):
