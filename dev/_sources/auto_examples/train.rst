@@ -20,14 +20,12 @@
 
 This script demonstrates how to launch a run using the stable-SSL library.
 
-.. GENERATED FROM PYTHON SOURCE LINES 4-25
+.. GENERATED FROM PYTHON SOURCE LINES 4-23
 
 .. code-block:: Python
 
 
     import hydra
-    from omegaconf import OmegaConf
-
     import stable_ssl
 
 

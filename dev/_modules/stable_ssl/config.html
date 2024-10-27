@@ -148,7 +148,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.WandbConfig.html">WandbConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.DataConfig.html">DataConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.ssl_model.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
@@ -421,8 +420,12 @@
 <span class="sd">        Name for the final saved model. Default is &quot;final_model&quot;.</span>
 <span class="sd">    eval_only : bool, optional</span>
 <span class="sd">        Whether to only evaluate the model without training. Default is False.</span>
-<span class="sd">    eval_each_epoch : bool, optional</span>
-<span class="sd">        Whether to evaluate the model at the end of each epoch. Default is False.</span>
+<span class="sd">    eval_epoch_freq : int, optional</span>
+<span class="sd">        Frequency of evaluation (in terms of epochs). Default is 1.</span>
+<span class="sd">    wandb_entity : str, optional</span>
+<span class="sd">        Name of the (Weights &amp; Biases) entity. Default is None.</span>
+<span class="sd">    wandb_project : str, optional</span>
+<span class="sd">        Name of the (Weights &amp; Biases) project. Default is None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">folder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -433,8 +436,9 @@
     <span class="n">save_final_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">final_model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;final_model&quot;</span>
     <span class="n">eval_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">eval_each_epoch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">api</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">eval_epoch_freq</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">wandb_entity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">wandb_project</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes logging folder and run settings.</span>
@@ -460,25 +464,23 @@
 
 
 
-<div class="viewcode-block" id="WandbConfig">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.config.WandbConfig.html#stable_ssl.config.WandbConfig">[docs]</a>
-<span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">WandbConfig</span><span class="p">(</span><span class="n">LogConfig</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for logging with Weights &amp; Biases (Wandb) during training.</span>
+<span class="c1"># @dataclass</span>
+<span class="c1"># class WandbConfig(LogConfig):</span>
+<span class="c1">#     &quot;&quot;&quot;Configuration for logging with Weights &amp; Biases (Wandb) during training.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    entity : str, optional</span>
-<span class="sd">        Name of the (Weights &amp; Biases) entity. Default is None.</span>
-<span class="sd">    project : str, optional</span>
-<span class="sd">        Name of the (Weights &amp; Biases) project. Default is None.</span>
-<span class="sd">    run : str, optional</span>
-<span class="sd">        Name of the Weights &amp; Biases run. Default is None.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="c1">#     Parameters:</span>
+<span class="c1">#     -----------</span>
+<span class="c1">#     entity : str, optional</span>
+<span class="c1">#         Name of the (Weights &amp; Biases) entity. Default is None.</span>
+<span class="c1">#     project : str, optional</span>
+<span class="c1">#         Name of the (Weights &amp; Biases) project. Default is None.</span>
+<span class="c1">#     run : str, optional</span>
+<span class="c1">#         Name of the Weights &amp; Biases run. Default is None.</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
 
-    <span class="n">entity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">project</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
-
+<span class="c1">#     entity: Optional[str] = None</span>
+<span class="c1">#     project: Optional[str] = None</span>
+<span class="c1">#     api: str = None</span>
 
 
 <span class="nd">@dataclass</span>
@@ -519,12 +521,12 @@
     <span class="s2">&quot;VICReg&quot;</span><span class="p">:</span> <span class="n">VICRegConfig</span><span class="p">,</span>
     <span class="s2">&quot;WMSE&quot;</span><span class="p">:</span> <span class="n">WMSEConfig</span><span class="p">,</span>
 <span class="p">}</span>
-<span class="n">_LOG_CONFIGS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;Wandb&quot;</span><span class="p">:</span> <span class="n">WandbConfig</span><span class="p">,</span>
-    <span class="s2">&quot;wandb&quot;</span><span class="p">:</span> <span class="n">WandbConfig</span><span class="p">,</span>
-    <span class="s2">&quot;None&quot;</span><span class="p">:</span> <span class="n">LogConfig</span><span class="p">,</span>
-    <span class="kc">None</span><span class="p">:</span> <span class="n">LogConfig</span><span class="p">,</span>
-<span class="p">}</span>
+<span class="c1"># _LOG_CONFIGS = {</span>
+<span class="c1">#     &quot;Wandb&quot;: WandbConfig,</span>
+<span class="c1">#     &quot;wandb&quot;: WandbConfig,</span>
+<span class="c1">#     &quot;None&quot;: LogConfig,</span>
+<span class="c1">#     None: LogConfig,</span>
+<span class="c1"># }</span>
 
 
 <span class="k">def</span> <span class="nf">get_args</span><span class="p">(</span><span class="n">cfg_dict</span><span class="p">,</span> <span class="n">model_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -543,15 +545,12 @@
             <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Supervised&quot;</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">_MODEL_CONFIGS</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">**</span><span class="n">model</span><span class="p">)</span>
 
-    <span class="n">log</span> <span class="o">=</span> <span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">log</span> <span class="o">=</span> <span class="n">_LOG_CONFIGS</span><span class="p">[</span><span class="n">log</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;api&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)](</span><span class="o">**</span><span class="n">log</span><span class="p">)</span>
-
     <span class="n">args</span> <span class="o">=</span> <span class="n">TrainerConfig</span><span class="p">(</span>
         <span class="n">data</span><span class="o">=</span><span class="n">DataConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="p">{})),</span>
         <span class="n">optim</span><span class="o">=</span><span class="n">OptimConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;optim&quot;</span><span class="p">,</span> <span class="p">{})),</span>
         <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
         <span class="n">hardware</span><span class="o">=</span><span class="n">HardwareConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hardware&quot;</span><span class="p">,</span> <span class="p">{})),</span>
-        <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
+        <span class="n">log</span><span class="o">=</span><span class="n">LogConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="p">{})),</span>
     <span class="p">)</span>
 
     <span class="n">args</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">=</span> <span class="n">make_dataclass</span><span class="p">(</span>
