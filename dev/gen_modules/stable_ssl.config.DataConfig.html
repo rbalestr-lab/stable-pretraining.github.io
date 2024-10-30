@@ -309,9 +309,10 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.DataConfig"><code class="docutils literal notranslate"><span class="pre">DataConfig</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.DataConfig.batch_size_train"><code class="docutils literal notranslate"><span class="pre">DataConfig.batch_size_train</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.DataConfig.get_dataloaders"><code class="docutils literal notranslate"><span class="pre">DataConfig.get_dataloaders()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.DataConfig.get_datasets"><code class="docutils literal notranslate"><span class="pre">DataConfig.get_datasets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.DataConfig.set_epoch_train_sampler"><code class="docutils literal notranslate"><span class="pre">DataConfig.set_epoch_train_sampler()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.DataConfig.train_dataset"><code class="docutils literal notranslate"><span class="pre">DataConfig.train_dataset</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -340,15 +341,9 @@
 </ul>
 </dd>
 </dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="stable_ssl.config.DataConfig.batch_size_train">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">batch_size_train</span></span><a class="headerlink" href="#stable_ssl.config.DataConfig.batch_size_train" title="Link to this definition">#</a></dt>
-<dd><p>Return the batch size for training.</p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.config.DataConfig.get_dataloaders">
-<span class="sig-name descname"><span class="pre">get_dataloaders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/data/base.html#DataConfig.get_dataloaders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.config.DataConfig.get_dataloaders" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_dataloaders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">world_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/data/base.html#DataConfig.get_dataloaders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.config.DataConfig.get_dataloaders" title="Link to this definition">#</a></dt>
 <dd><p>Get dataloaders for the datasets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -372,6 +367,18 @@
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)">dict</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.config.DataConfig.set_epoch_train_sampler">
+<span class="sig-name descname"><span class="pre">set_epoch_train_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epoch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/data/base.html#DataConfig.set_epoch_train_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.config.DataConfig.set_epoch_train_sampler" title="Link to this definition">#</a></dt>
+<dd><p>Set the epoch for the training sampler.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="stable_ssl.config.DataConfig.train_dataset">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_dataset</span></span><a class="headerlink" href="#stable_ssl.config.DataConfig.train_dataset" title="Link to this definition">#</a></dt>
+<dd><p>Return the batch size for training.</p>
 </dd></dl>
 
 </dd></dl>
@@ -425,9 +432,10 @@
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.DataConfig"><code class="docutils literal notranslate"><span class="pre">DataConfig</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.DataConfig.batch_size_train"><code class="docutils literal notranslate"><span class="pre">DataConfig.batch_size_train</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.DataConfig.get_dataloaders"><code class="docutils literal notranslate"><span class="pre">DataConfig.get_dataloaders()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.DataConfig.get_datasets"><code class="docutils literal notranslate"><span class="pre">DataConfig.get_datasets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.DataConfig.set_epoch_train_sampler"><code class="docutils literal notranslate"><span class="pre">DataConfig.set_epoch_train_sampler()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.DataConfig.train_dataset"><code class="docutils literal notranslate"><span class="pre">DataConfig.train_dataset</span></code></a></li>
 </ul>
 </li>
 </ul>
