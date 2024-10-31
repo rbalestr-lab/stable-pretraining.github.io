@@ -393,11 +393,14 @@
                 <span class="n">num_workers</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SLURM_JOB_CPUS_PER_NODE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">num_workers</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+            <span class="c1"># the pattern of use is to have n_tasks=n_gpus,</span>
+            <span class="c1"># hence all of cpus per task/node are available to gpus.</span>
+            <span class="c1"># if torch.distributed.is_available() and \</span>
+            <span class="c1">#     torch.distributed.is_initialized():</span>
+            <span class="c1">#     num_workers = max(num_workers // world_size, 1)  # workers per GPU</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Using </span><span class="si">{</span><span class="n">num_workers</span><span class="si">}</span><span class="s2"> workers (maximum available) for data loading.&quot;</span>
             <span class="p">)</span>
-            <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">is_initialized</span><span class="p">():</span>
-                <span class="n">num_workers</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">num_workers</span> <span class="o">//</span> <span class="n">world_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># workers per GPU</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">num_workers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span>
