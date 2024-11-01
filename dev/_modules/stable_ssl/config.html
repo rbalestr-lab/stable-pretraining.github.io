@@ -277,10 +277,9 @@
 <span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">OmegaConf</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">LARS</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">LARS</span><span class="p">,</span> <span class="n">get_open_port</span>
 <span class="kn">from</span> <span class="nn">.joint_embedding</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BarlowTwinsConfig</span><span class="p">,</span>
     <span class="n">SimCLRConfig</span><span class="p">,</span>
@@ -382,24 +381,52 @@
 <span class="sd">        Random seed for reproducibility. Default is None.</span>
 <span class="sd">    float16 : bool, optional</span>
 <span class="sd">        Whether to use mixed precision (float16) for training. Default is False.</span>
-<span class="sd">    gpu : int, optional</span>
+<span class="sd">    gpu_id : int, optional</span>
 <span class="sd">        GPU device ID to use for training. Default is 0.</span>
 <span class="sd">    world_size : int, optional</span>
 <span class="sd">        Number of processes participating in distributed training. Default is 1.</span>
 <span class="sd">    port : int, optional</span>
-<span class="sd">        Port number for distributed training. Default is None.</span>
+<span class="sd">        Local proc&#39;s port number for distributed training. Default is None.</span>
+<span class="sd">    launcher: str, optional</span>
+<span class="sd">        Distributed training launcher. Default is &quot;local&quot;.</span>
+<span class="sd">        Pick from &quot;torch_distributed&quot;, &quot;submitit_local&quot;, &quot;submitit_slurm&quot;.</span>
+<span class="sd">    cpus_per_task: int, optional</span>
+<span class="sd">        Number of CPUs per task for distributed training. Default is 1.</span>
+<span class="sd">    gpus_per_task: int, optional</span>
+<span class="sd">        Number of GPUs per task for distributed training. Default is 1.</span>
+<span class="sd">    tasks_per_node: int, optional</span>
+<span class="sd">        Number of tasks per node for distributed training. Default is 1.</span>
+<span class="sd">    timeout_min: int, optional</span>
+<span class="sd">        Timeout in minutes for distributed training. Default is 60.</span>
+<span class="sd">    partition: str, optional</span>
+<span class="sd">        Partition to use for distributed training. Default is &quot;gpu&quot;.</span>
+<span class="sd">    mem_gb: int, optional</span>
+<span class="sd">        Memory in GB to allocate for distributed training per task. Default is 30.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">float16</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">gpu</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">gpu_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">world_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">port</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># launcher: str = &quot;torch_distributed&quot;</span>
+    <span class="c1"># cpus_per_task: int = 1</span>
+    <span class="c1"># gpus_per_task: int = 1</span>
+    <span class="c1"># tasks_per_node: int = 1</span>
+    <span class="c1"># timeout_min: int = 60</span>
+    <span class="c1"># partition: str = &quot;gpu&quot;</span>
+    <span class="c1"># mem_gb: int = 30</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a random port for distributed training if not provided.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="ow">or</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">49152</span><span class="p">,</span> <span class="mi">65535</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="ow">or</span> <span class="n">get_open_port</span><span class="p">()</span></div>
 
+        <span class="c1"># assert self.world_size == self.tasks_per_node * self.gpus_per_task</span>
+        <span class="c1"># assert self.launcher in [</span>
+        <span class="c1">#     &quot;submitit_slurm&quot;,</span>
+        <span class="c1">#     &quot;submitit_local&quot;,</span>
+        <span class="c1">#     &quot;torch_distributed&quot;</span>
+        <span class="c1"># ]</span>
 
 
 <div class="viewcode-block" id="LogConfig">

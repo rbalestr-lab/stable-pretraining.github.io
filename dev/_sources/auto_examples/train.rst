@@ -20,7 +20,7 @@
 
 This script demonstrates how to launch a run using the stable-SSL library.
 
-.. GENERATED FROM PYTHON SOURCE LINES 4-23
+.. GENERATED FROM PYTHON SOURCE LINES 4-24
 
 .. code-block:: Python
 
@@ -37,6 +37,7 @@ This script demonstrates how to launch a run using the stable-SSL library.
         print("--- Arguments ---")
         print(args)
 
+        stable_ssl.utils.get_gpu_info()
         model = getattr(stable_ssl, args.model.name)(args)  # Create model
         model()  # Call model
 

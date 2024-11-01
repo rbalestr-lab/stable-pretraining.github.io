@@ -336,6 +336,7 @@ to download the full example code.</p>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--- Arguments ---&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
+    <span class="n">stable_ssl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_gpu_info</span><span class="p">()</span>
     <span class="n">model</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">stable_ssl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)(</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># Create model</span>
     <span class="n">model</span><span class="p">()</span>  <span class="c1"># Call model</span>
 
