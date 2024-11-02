@@ -408,7 +408,7 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">=&gt; Initializating wandb for logging in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">dump_path</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;HOME&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;HOME&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;/users/hvanasse&quot;</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;HOME&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;/users/hvanasse&quot;</span>  <span class="c1"># TODO: remove hardcoded home</span>
             <span class="n">wandb</span><span class="o">.</span><span class="n">init</span><span class="p">(</span>
                 <span class="n">entity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">wandb_entity</span><span class="p">,</span>
                 <span class="n">project</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">wandb_project</span><span class="p">,</span>
@@ -431,15 +431,23 @@
             <span class="n">world_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">world_size</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">loader</span> <span class="ow">in</span> <span class="n">dataloaders</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">=&gt; Found dataloader `</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">` with length </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">eval_only</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">dataloaders</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">train_on</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">=&gt; Found dataloader `</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">` with length/batches </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">=&gt; Per GPU Data `</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">`: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="p">)</span><span class="o">*</span><span class="n">loader</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">train_on</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">eval_only</span><span class="p">:</span>
                     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">=&gt; `</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">` will be ignored (eval_only=True).&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">train_on</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="p">),</span> <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Length of dataset </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is 0.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">eval_only</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">train_on</span><span class="p">),</span> <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">train_on</span><span class="si">}</span><span class="s2"> train datasets supplied.&quot;</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">train_on</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataloaders</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;eval_only=False and `</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">` not given.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;eval_only=False and `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">train_on</span><span class="si">}</span><span class="s2">` not given.&quot;</span>
+                <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataloaders</span> <span class="o">=</span> <span class="n">dataloaders</span>
 
         <span class="c1"># Set up the model&#39;s modules. Should be implemented by the child class.</span>
@@ -786,7 +794,9 @@
 
         <span class="c1"># Update the log buffer with the new packet.</span>
         <span class="n">packet</span> <span class="o">=</span> <span class="n">packet</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="k">assert</span> <span class="s2">&quot;_global_step&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">packet</span>
+        <span class="k">assert</span> <span class="s2">&quot;_global_step&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">packet</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="s2">&quot;&#39;_global_step&#39; is reserved but present in log packet.&quot;</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_buffer</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">commit</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_buffer</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span>
@@ -916,7 +926,9 @@
 
     <span class="k">def</span> <span class="nf">save_checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">model_only</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">world_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">get_rank</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">curr_rank</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">get_rank</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">curr_rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;On rank </span><span class="si">{</span><span class="n">curr_rank</span><span class="si">}</span><span class="s2">, only rank 0 saves the checkpoint.&quot;</span><span class="p">)</span>
                 <span class="k">return</span>
         <span class="n">saving_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">dump_path</span> <span class="o">/</span> <span class="n">name</span>
         <span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
@@ -924,6 +936,7 @@
             <span class="n">state</span><span class="p">[</span><span class="n">subname</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">model_only</span><span class="p">:</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">saving_name</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model saved at </span><span class="si">{</span><span class="n">saving_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;optimizer&quot;</span><span class="p">):</span>
             <span class="n">state</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span>
@@ -932,6 +945,9 @@
         <span class="n">state</span><span class="p">[</span><span class="s2">&quot;epoch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span>
 
         <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">saving_name</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Checkpoint (model, optimizer, scheduler, epoch) saved at </span><span class="si">{</span><span class="n">saving_name</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">generate_logging_default_bucket</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">cur_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
@@ -951,11 +967,8 @@
         <span class="k">return</span> <span class="n">bucket</span>
 
     <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">world_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cleaning distributed processes.&quot;</span><span class="p">)</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">destroy_process_group</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Not using distributed. Nothing to clean.&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cleaning distributed processes.&quot;</span><span class="p">)</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">destroy_process_group</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">gather</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">FullGatherLayer</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
