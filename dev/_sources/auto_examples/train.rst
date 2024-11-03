@@ -20,14 +20,13 @@
 
 This script demonstrates how to launch a run using the stable-SSL library.
 
-.. GENERATED FROM PYTHON SOURCE LINES 4-27
+.. GENERATED FROM PYTHON SOURCE LINES 4-26
 
 .. code-block:: Python
 
 
     import hydra
     import stable_ssl
-    import torch
 
 
     @hydra.main()
@@ -38,7 +37,7 @@ This script demonstrates how to launch a run using the stable-SSL library.
         print("--- Arguments ---")
         print(args)
 
-        torch.autograd.set_detect_anomaly(True)
+        # torch.autograd.set_detect_anomaly(True)
 
         stable_ssl.utils.get_gpu_info()
         model = getattr(stable_ssl, args.model.name)(args)  # Create model
