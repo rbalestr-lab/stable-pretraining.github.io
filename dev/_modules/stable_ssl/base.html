@@ -286,9 +286,6 @@
 <span class="kn">from</span> <span class="nn">torchmetrics.classification</span> <span class="kn">import</span> <span class="n">MulticlassAccuracy</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">.reader</span> <span class="kn">import</span> <span class="n">jsonl_run</span>
-
-
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">wandb</span>
 <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
@@ -327,7 +324,7 @@
 <span class="sd">    backbone_model : str</span>
 <span class="sd">        Neural network architecture to use for the backbone. Default is &quot;resnet9&quot;.</span>
 <span class="sd">    sync_batchnorm : bool, optional</span>
-<span class="sd">        Whether to use synchronized batch normalization. Default is False.</span>
+<span class="sd">        Whether to use synchronized batch normalization. Default is True.</span>
 <span class="sd">    memory_format : str, optional</span>
 <span class="sd">        Memory format for tensors (e.g., &quot;channels_last&quot;). Default is &quot;channels_last&quot;.</span>
 <span class="sd">    pretrained : bool, optional</span>
@@ -339,7 +336,7 @@
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Supervised&quot;</span>
     <span class="n">backbone_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;resnet18&quot;</span>
-    <span class="n">sync_batchnorm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">sync_batchnorm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">memory_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;channels_last&quot;</span>
     <span class="n">pretrained</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">with_classifier</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></div>
@@ -401,8 +398,9 @@
         <span class="c1"># Use WandB if an entity or project name is provided.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_wandb</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span>
             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">wandb_entity</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">wandb_project</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">get_rank</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">log_process</span><span class="p">)</span>
         <span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_wandb</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">=&gt; Initializating wandb for logging in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">dump_path</span><span class="si">}</span><span class="s2">.&quot;</span>
@@ -530,7 +528,7 @@
             <span class="k">except</span> <span class="n">BreakAllEpochs</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Exception during training (self.evaluate).&quot;</span><span class="p">)</span>
                 <span class="k">raise</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_wandb</span> <span class="ow">and</span> <span class="p">(</span><span class="n">wandb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_wandb</span><span class="p">:</span>
                 <span class="n">wandb</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
@@ -749,6 +747,15 @@
             <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">eval_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name_loader</span><span class="p">):</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;eval/</span><span class="si">{</span><span class="n">name_loader</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">):</span>
+                <span class="n">metric</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;eval/</span><span class="si">{</span><span class="n">name_loader</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">metric</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])},</span> <span class="n">commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_set_device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Check if CUDA is available, otherwise set to CPU.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
@@ -787,7 +794,7 @@
 
     <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="c1"># Check if the process should be logged.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">log_process</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">log_process</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">log_process</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span>
         <span class="p">):</span>
             <span class="k">return</span>
@@ -820,11 +827,6 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_log_buffer</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">table</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_log_buffer</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-            <span class="c1"># Add the rank suffix to the log.</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_buffer</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">suffix_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">/rank_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="n">wandb</span><span class="o">.</span><span class="n">log</span><span class="p">({</span><span class="n">suffix_name</span><span class="p">:</span> <span class="n">value</span><span class="p">},</span> <span class="n">step</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">global_step</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
 
         <span class="c1"># Log in jsonl.</span>
         <span class="k">else</span><span class="p">:</span>
@@ -986,13 +988,6 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">logs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_wandb</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">jsonl_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">dump_path</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>
 
@@ -1051,63 +1046,6 @@
 
     <span class="k">def</span> <span class="nf">after_eval_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
-
-    <span class="k">def</span> <span class="nf">eval_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name_loader</span><span class="p">):</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;eval/</span><span class="si">{</span><span class="n">name_loader</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">):</span>
-                <span class="n">metric</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="k">elif</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;eval/</span><span class="si">{</span><span class="n">name_loader</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">metric</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])},</span> <span class="n">commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="c1"># FIXME: to remove since this is now handled by the data config</span>
-    <span class="c1"># def dataset_to_loader(self, dataset, train):</span>
-    <span class="c1">#     if self.config.hardware.world_size &gt; 1:</span>
-    <span class="c1">#         sampler = torch.utils.data.distributed.DistributedSampler(</span>
-    <span class="c1">#             dataset, shuffle=not train, drop_last=train</span>
-    <span class="c1">#         )</span>
-    <span class="c1">#         assert self.config.optim.batch_size % self.config.hardware.world_size == 0</span>
-    <span class="c1">#         drop_last = None</span>
-    <span class="c1">#         shuffle = None</span>
-    <span class="c1">#     else:</span>
-    <span class="c1">#         sampler = None</span>
-    <span class="c1">#         drop_last = train</span>
-    <span class="c1">#         shuffle = not train</span>
-
-    <span class="c1">#     per_device_batch_size = (</span>
-    <span class="c1">#         self.config.optim.batch_size // self.config.hardware.world_size</span>
-    <span class="c1">#     )</span>
-
-    <span class="c1">#     loader = torch.utils.data.DataLoader(</span>
-    <span class="c1">#         dataset,</span>
-    <span class="c1">#         batch_size=per_device_batch_size,</span>
-    <span class="c1">#         num_workers=self.config.data.num_workers,</span>
-    <span class="c1">#         pin_memory=True,</span>
-    <span class="c1">#         sampler=sampler,</span>
-    <span class="c1">#         drop_last=drop_last,</span>
-    <span class="c1">#         shuffle=shuffle,</span>
-    <span class="c1">#     )</span>
-
-    <span class="c1">#     return loader</span>
-
-    <span class="c1"># def initialize_train_loader(self):</span>
-    <span class="c1">#     train_dataset = load_dataset(</span>
-    <span class="c1">#         dataset_name=self.config.data.dataset,</span>
-    <span class="c1">#         data_path=self.config.data.data_path,</span>
-    <span class="c1">#         train=True,</span>
-    <span class="c1">#     )</span>
-
-    <span class="c1">#     return self.dataset_to_loader(train_dataset, True)</span>
-
-    <span class="c1"># def initialize_val_loader(self):</span>
-    <span class="c1">#     eval_dataset = load_dataset(</span>
-    <span class="c1">#         dataset_name=self.config.data.dataset,</span>
-    <span class="c1">#         data_path=self.config.data.data_path,</span>
-    <span class="c1">#         train=False,</span>
-    <span class="c1">#     )</span>
-
-    <span class="c1">#     return self.dataset_to_loader(eval_dataset, False)</span>
 </pre></div>
 
                 </article>

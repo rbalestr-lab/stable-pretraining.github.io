@@ -342,13 +342,13 @@ In International Conference on Machine Learning (pp. 1597-1607). PMLR.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.SimCLR.compute_ssl_loss">
-<span class="sig-name descname"><span class="pre">compute_ssl_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h_j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/joint_embedding/simclr.html#SimCLR.compute_ssl_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.SimCLR.compute_ssl_loss" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">compute_ssl_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/joint_embedding/simclr.html#SimCLR.compute_ssl_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.SimCLR.compute_ssl_loss" title="Link to this definition">#</a></dt>
 <dd><p>Compute the contrastive loss for SimCLR.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>h_i</strong> (<a class="reference external" href="http://pytorch.org/docs/2.0/tensors.html#torch.Tensor" title="(in PyTorch v2.0)"><em>torch.Tensor</em></a>) – Latent representation of the first augmented view of the batch.</p></li>
-<li><p><strong>h_j</strong> (<a class="reference external" href="http://pytorch.org/docs/2.0/tensors.html#torch.Tensor" title="(in PyTorch v2.0)"><em>torch.Tensor</em></a>) – Latent representation of the second augmented view of the batch.</p></li>
+<li><p><strong>z_i</strong> (<a class="reference external" href="http://pytorch.org/docs/2.0/tensors.html#torch.Tensor" title="(in PyTorch v2.0)"><em>torch.Tensor</em></a>) – Latent representation of the first augmented view of the batch.</p></li>
+<li><p><strong>z_j</strong> (<a class="reference external" href="http://pytorch.org/docs/2.0/tensors.html#torch.Tensor" title="(in PyTorch v2.0)"><em>torch.Tensor</em></a>) – Latent representation of the second augmented view of the batch.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

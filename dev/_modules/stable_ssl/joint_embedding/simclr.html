@@ -292,14 +292,14 @@
 
 <div class="viewcode-block" id="SimCLR.compute_ssl_loss">
 <a class="viewcode-back" href="../../../gen_modules/stable_ssl.SimCLR.html#stable_ssl.SimCLR.compute_ssl_loss">[docs]</a>
-    <span class="k">def</span> <span class="nf">compute_ssl_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h_i</span><span class="p">,</span> <span class="n">h_j</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">compute_ssl_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the contrastive loss for SimCLR.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        h_i : torch.Tensor</span>
+<span class="sd">        z_i : torch.Tensor</span>
 <span class="sd">            Latent representation of the first augmented view of the batch.</span>
-<span class="sd">        h_j : torch.Tensor</span>
+<span class="sd">        z_j : torch.Tensor</span>
 <span class="sd">            Latent representation of the second augmented view of the batch.</span>
 
 <span class="sd">        Returns</span>
@@ -307,8 +307,7 @@
 <span class="sd">        float</span>
 <span class="sd">            The computed contrastive loss.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">h_i</span><span class="p">,</span> <span class="n">h_j</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
-
+        <span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">N</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="n">features</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
