@@ -150,7 +150,6 @@
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">HardwareConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.LogConfig.html">LogConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.DataConfig.html">DataConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
@@ -335,14 +334,6 @@
 <li><p><strong>gpu_id</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – GPU device ID to use for training. Default is 0.</p></li>
 <li><p><strong>world_size</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Number of processes participating in distributed training. Default is 1.</p></li>
 <li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Local proc’s port number for distributed training. Default is None.</p></li>
-<li><p><strong>launcher</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a><em>, </em><em>optional</em>) – Distributed training launcher. Default is “local”.
-Pick from “torch_distributed”, “submitit_local”, “submitit_slurm”.</p></li>
-<li><p><strong>cpus_per_task</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Number of CPUs per task for distributed training. Default is 1.</p></li>
-<li><p><strong>gpus_per_task</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Number of GPUs per task for distributed training. Default is 1.</p></li>
-<li><p><strong>tasks_per_node</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Number of tasks per node for distributed training. Default is 1.</p></li>
-<li><p><strong>timeout_min</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Timeout in minutes for distributed training. Default is 60.</p></li>
-<li><p><strong>partition</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a><em>, </em><em>optional</em>) – Partition to use for distributed training. Default is “gpu”.</p></li>
-<li><p><strong>mem_gb</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Memory in GB to allocate for distributed training per task. Default is 30.</p></li>
 </ul>
 </dd>
 </dl>

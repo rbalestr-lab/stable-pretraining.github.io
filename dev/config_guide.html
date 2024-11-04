@@ -150,7 +150,6 @@
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.DataConfig.html">DataConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
@@ -312,9 +311,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-configuration-hardware">Hardware Configuration (<cite>hardware</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-configuration-log">Log Configuration (<cite>log</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-configuration-data">Data Configuration (<cite>data</cite>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-configuration-model">Model Configuration (<cite>model</cite>)</a><ul class="nav section-nav flex-column">
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-configuration-model">Model Configuration (<cite>model</cite>)</a></li>
 </ul>
             </nav>
         </div>
@@ -341,7 +338,7 @@
 <p>The complete list of parameters for the <cite>optim</cite> section, including their descriptions and default values, is provided below:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig" title="stable_ssl.config.OptimConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.OptimConfig</span></code></a>([optimizer, lr, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig" title="stable_ssl.config.OptimConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.OptimConfig</span></code></a>([optimizer, lr, epochs, ...])</p></td>
 <td><p>Configuration for the 'optimizer' parameters.</p></td>
 </tr>
 </tbody>
@@ -365,7 +362,7 @@
 <p>The <cite>log</cite> keyword configures the logging settings for your run. The complete list of parameters for the <cite>log</cite> section is provided here:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.LogConfig.html#stable_ssl.config.LogConfig" title="stable_ssl.config.LogConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.LogConfig</span></code></a>([folder, run, load_from, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.LogConfig.html#stable_ssl.config.LogConfig" title="stable_ssl.config.LogConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.LogConfig</span></code></a>([api, folder, load_from, ...])</p></td>
 <td><p>Configuration for the 'log' parameters.</p></td>
 </tr>
 </tbody>
@@ -438,9 +435,6 @@
 <p>The <cite>model</cite> keyword is used to define the model settings, including the architecture of the backbone, objectives, and more. Below is a list of parameters shared across all models:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.BaseModelConfig.html#stable_ssl.config.BaseModelConfig" title="stable_ssl.config.BaseModelConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.BaseModelConfig</span></code></a>([name, ...])</p></td>
-<td><p>Base configuration for the 'model' parameters.</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -515,9 +509,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-configuration-hardware">Hardware Configuration (<cite>hardware</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-configuration-log">Log Configuration (<cite>log</cite>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-configuration-data">Data Configuration (<cite>data</cite>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-configuration-model">Model Configuration (<cite>model</cite>)</a><ul class="nav section-nav flex-column">
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-configuration-model">Model Configuration (<cite>model</cite>)</a></li>
 </ul>
   </nav></div>
 

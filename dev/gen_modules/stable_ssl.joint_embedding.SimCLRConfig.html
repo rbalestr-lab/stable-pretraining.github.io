@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="BarlowTwinsConfig" href="stable_ssl.joint_embedding.BarlowTwinsConfig.html" />
-    <link rel="prev" title="BaseModelConfig" href="stable_ssl.config.BaseModelConfig.html" />
+    <link rel="prev" title="DataConfig" href="stable_ssl.config.DataConfig.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -150,7 +150,6 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.LogConfig.html">LogConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.DataConfig.html">DataConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">SimCLRConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
@@ -327,7 +326,7 @@
 <h1>SimCLRConfig<a class="headerlink" href="#simclrconfig" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="stable_ssl.joint_embedding.SimCLRConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.joint_embedding.</span></span><span class="sig-name descname"><span class="pre">SimCLRConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'Supervised'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backbone_model:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'resnet18'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sync_batchnorm:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_format:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'channels_last'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pretrained:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_classifier:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projector:</span> <span class="pre">list[int]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/joint_embedding/simclr.html#SimCLRConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.joint_embedding.SimCLRConfig" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.joint_embedding.</span></span><span class="sig-name descname"><span class="pre">SimCLRConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'Supervised'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backbone_model:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'resnet50'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sync_batchnorm:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_format:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'channels_last'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pretrained:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projector:</span> <span class="pre">list[int]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/joint_embedding/simclr.html#SimCLRConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.joint_embedding.SimCLRConfig" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JEConfig</span></code></p>
 <p>Configuration for the SimCLR model parameters.</p>
 <dl class="field-list simple">
@@ -365,12 +364,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="stable_ssl.config.BaseModelConfig.html"
+       href="stable_ssl.config.DataConfig.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">BaseModelConfig</p>
+        <p class="prev-next-title">DataConfig</p>
       </div>
     </a>
     <a class="right-next"

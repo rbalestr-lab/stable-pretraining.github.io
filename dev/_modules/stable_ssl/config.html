@@ -149,7 +149,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.DataConfig.html">DataConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.BaseModelConfig.html">BaseModelConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
@@ -276,7 +275,6 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">OmegaConf</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">LARS</span><span class="p">,</span> <span class="n">get_open_port</span>
@@ -288,7 +286,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.supervised</span> <span class="kn">import</span> <span class="n">Supervised</span>
 <span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">DataConfig</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseModelConfig</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">ModelConfig</span>
 
 
 <div class="viewcode-block" id="OptimConfig">
@@ -304,12 +302,11 @@
 <span class="sd">        Default is &quot;LARS&quot;.</span>
 <span class="sd">    lr : float</span>
 <span class="sd">        Learning rate for the optimizer. Default is 1e0.</span>
-<span class="sd">    batch_size : int, optional</span>
-<span class="sd">        Batch size for training. Default is 256.</span>
 <span class="sd">    epochs : int, optional</span>
-<span class="sd">        Number of epochs to train the model. Default is 10.</span>
+<span class="sd">        Number of epochs to train the model. Default is 1000.</span>
 <span class="sd">    max_steps : int, optional</span>
-<span class="sd">        Maximum number of steps per epoch. Default is -1.</span>
+<span class="sd">        Maximum number of steps per epoch. If negative, no limit is set.</span>
+<span class="sd">        Default is -1.</span>
 <span class="sd">    weight_decay : float</span>
 <span class="sd">        Weight decay for the optimizer. Default is 1e-6.</span>
 <span class="sd">    momentum : float</span>
@@ -324,7 +321,6 @@
 
     <span class="n">optimizer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;LARS&quot;</span>
     <span class="n">lr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e0</span>
-    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span>
     <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
     <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
     <span class="n">weight_decay</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
@@ -387,21 +383,6 @@
 <span class="sd">        Number of processes participating in distributed training. Default is 1.</span>
 <span class="sd">    port : int, optional</span>
 <span class="sd">        Local proc&#39;s port number for distributed training. Default is None.</span>
-<span class="sd">    launcher: str, optional</span>
-<span class="sd">        Distributed training launcher. Default is &quot;local&quot;.</span>
-<span class="sd">        Pick from &quot;torch_distributed&quot;, &quot;submitit_local&quot;, &quot;submitit_slurm&quot;.</span>
-<span class="sd">    cpus_per_task: int, optional</span>
-<span class="sd">        Number of CPUs per task for distributed training. Default is 1.</span>
-<span class="sd">    gpus_per_task: int, optional</span>
-<span class="sd">        Number of GPUs per task for distributed training. Default is 1.</span>
-<span class="sd">    tasks_per_node: int, optional</span>
-<span class="sd">        Number of tasks per node for distributed training. Default is 1.</span>
-<span class="sd">    timeout_min: int, optional</span>
-<span class="sd">        Timeout in minutes for distributed training. Default is 60.</span>
-<span class="sd">    partition: str, optional</span>
-<span class="sd">        Partition to use for distributed training. Default is &quot;gpu&quot;.</span>
-<span class="sd">    mem_gb: int, optional</span>
-<span class="sd">        Memory in GB to allocate for distributed training per task. Default is 30.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -409,24 +390,11 @@
     <span class="n">gpu_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">world_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">port</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="c1"># launcher: str = &quot;torch_distributed&quot;</span>
-    <span class="c1"># cpus_per_task: int = 1</span>
-    <span class="c1"># gpus_per_task: int = 1</span>
-    <span class="c1"># tasks_per_node: int = 1</span>
-    <span class="c1"># timeout_min: int = 60</span>
-    <span class="c1"># partition: str = &quot;gpu&quot;</span>
-    <span class="c1"># mem_gb: int = 30</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a random port for distributed training if not provided.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="ow">or</span> <span class="n">get_open_port</span><span class="p">()</span></div>
 
-        <span class="c1"># assert self.world_size == self.tasks_per_node * self.gpus_per_task</span>
-        <span class="c1"># assert self.launcher in [</span>
-        <span class="c1">#     &quot;submitit_slurm&quot;,</span>
-        <span class="c1">#     &quot;submitit_local&quot;,</span>
-        <span class="c1">#     &quot;torch_distributed&quot;</span>
-        <span class="c1"># ]</span>
 
 
 <div class="viewcode-block" id="LogConfig">
@@ -437,9 +405,15 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    api: str, optional</span>
+<span class="sd">        Which logging API to use.</span>
+<span class="sd">        - Set to &quot;wandb&quot; to use Weights &amp; Biases.</span>
+<span class="sd">        - Set to &quot;None&quot; to use jsonlines.</span>
+<span class="sd">        Default is None.</span>
 <span class="sd">    folder : str, optional</span>
 <span class="sd">        Path to the folder where logs and checkpoints will be saved.</span>
-<span class="sd">        Default is the current directory + random hash folder.</span>
+<span class="sd">        If None is provided, a default path is created under `./logs`.</span>
+<span class="sd">        Default is None.</span>
 <span class="sd">    load_from : str, optional</span>
 <span class="sd">        Path to a checkpoint from which to load the model, optimizer, and scheduler.</span>
 <span class="sd">        Default is &quot;ckpt&quot;.</span>
@@ -448,24 +422,17 @@
 <span class="sd">    checkpoint_frequency : int, optional</span>
 <span class="sd">        Frequency of saving checkpoints (in terms of epochs). Default is 10.</span>
 <span class="sd">    save_final_model : bool, optional</span>
-<span class="sd">        Whether to save the final trained model. Default is False.</span>
+<span class="sd">        Whether to save the final trained model. Default is True.</span>
 <span class="sd">    final_model_name : str, optional</span>
 <span class="sd">        Name for the final saved model. Default is &quot;final_model&quot;.</span>
 <span class="sd">    eval_only : bool, optional</span>
 <span class="sd">        Whether to only evaluate the model without training. Default is False.</span>
 <span class="sd">    eval_epoch_freq : int, optional</span>
 <span class="sd">        Frequency of evaluation (in terms of epochs). Default is 1.</span>
-<span class="sd">    wandb_entity : str, optional</span>
-<span class="sd">        Name of the (Weights &amp; Biases) entity. Default is None.</span>
-<span class="sd">    wandb_project : str, optional</span>
-<span class="sd">        Name of the (Weights &amp; Biases) project. Default is None.</span>
-<span class="sd">    log_process: int, optional</span>
-<span class="sd">        Which process to log. If negative, logs all processes.</span>
-<span class="sd">        Default is 0.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">api</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">folder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">run</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">load_from</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ckpt&quot;</span>
     <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
     <span class="n">checkpoint_frequency</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
@@ -473,9 +440,6 @@
     <span class="n">final_model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;final_model&quot;</span>
     <span class="n">eval_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">eval_epoch_freq</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">wandb_entity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">wandb_project</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">log_process</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize logging folder and run settings.</span>
@@ -487,14 +451,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./logs&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">run</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S.</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_process</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wandb_entity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">wandb_project</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot log all processes to Weights &amp; Biases.&quot;</span><span class="p">)</span>
+        <span class="c1"># TODO: decide if we add another level of folder at this point.</span>
+        <span class="c1"># if self.run is None:</span>
+        <span class="c1">#     self.run = datetime.now().strftime(&quot;%Y%m%d_%H%M%S.%f&quot;)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dump_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -502,17 +462,49 @@
 
 <span class="sd">        This path includes the base folder and the run identifier.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder</span></div>
 
 
 
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">TrainerConfig</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">WandbConfig</span><span class="p">(</span><span class="n">LogConfig</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the Weights &amp; Biases logging.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    entity : str, optional</span>
+<span class="sd">        Name of the (Weights &amp; Biases) entity. Default is None.</span>
+<span class="sd">    project : str, optional</span>
+<span class="sd">        Name of the (Weights &amp; Biases) project. Default is None.</span>
+<span class="sd">    run : str, optional</span>
+<span class="sd">        Name of the Weights &amp; Biases run. Default is None.</span>
+<span class="sd">    rank_to_log: int, optional</span>
+<span class="sd">        Specifies the rank of the GPU/process to log for WandB tracking.</span>
+<span class="sd">        - Set to an integer value (e.g., 0, 1, 2) to log a specific GPU/process.</span>
+<span class="sd">        - Set to a negative value (e.g., -1) to log all processes.</span>
+<span class="sd">        Default is 0, which logs only the primary process.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">project</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">run</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">rank_to_log</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the rank to log for Weights &amp; Biases.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank_to_log</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot (yet) log all processes to Weights &amp; Biases.&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GlobalConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Global configuration for training a model.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    model : BaseModelConfig</span>
+<span class="sd">    model : ModelConfig</span>
 <span class="sd">        Model configuration.</span>
 <span class="sd">    data : DataConfig</span>
 <span class="sd">        Data configuration.</span>
@@ -524,7 +516,7 @@
 <span class="sd">        Logging and checkpointing configuration.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">model</span><span class="p">:</span> <span class="n">BaseModelConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">BaseModelConfig</span><span class="p">)</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">ModelConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">ModelConfig</span><span class="p">)</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">DataConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">DataConfig</span><span class="p">)</span>
     <span class="n">optim</span><span class="p">:</span> <span class="n">OptimConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">OptimConfig</span><span class="p">)</span>
     <span class="n">hardware</span><span class="p">:</span> <span class="n">HardwareConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">HardwareConfig</span><span class="p">)</span>
@@ -540,22 +532,31 @@
 
 
 <span class="n">_MODEL_CONFIGS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Supervised&quot;</span><span class="p">:</span> <span class="n">ModelConfig</span><span class="p">,</span>
     <span class="s2">&quot;SimCLR&quot;</span><span class="p">:</span> <span class="n">SimCLRConfig</span><span class="p">,</span>
     <span class="s2">&quot;Barlowtwins&quot;</span><span class="p">:</span> <span class="n">BarlowTwinsConfig</span><span class="p">,</span>
-    <span class="s2">&quot;Supervised&quot;</span><span class="p">:</span> <span class="n">BaseModelConfig</span><span class="p">,</span>
     <span class="s2">&quot;VICReg&quot;</span><span class="p">:</span> <span class="n">VICRegConfig</span><span class="p">,</span>
     <span class="s2">&quot;WMSE&quot;</span><span class="p">:</span> <span class="n">WMSEConfig</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">_LOG_CONFIGS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;wandb&quot;</span><span class="p">:</span> <span class="n">WandbConfig</span><span class="p">,</span>
+    <span class="kc">None</span><span class="p">:</span> <span class="n">LogConfig</span><span class="p">,</span>
+    <span class="s2">&quot;None&quot;</span><span class="p">:</span> <span class="n">LogConfig</span><span class="p">,</span>
+    <span class="s2">&quot;json&quot;</span><span class="p">:</span> <span class="n">LogConfig</span><span class="p">,</span>
+    <span class="s2">&quot;jsonlines&quot;</span><span class="p">:</span> <span class="n">LogConfig</span><span class="p">,</span>
 <span class="p">}</span>
 
 
 <span class="k">def</span> <span class="nf">get_args</span><span class="p">(</span><span class="n">cfg_dict</span><span class="p">,</span> <span class="n">model_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and return a TrainerConfig from a configuration dictionary.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and return a GlobalConfig from a configuration dictionary.&quot;&quot;&quot;</span>
+    <span class="c1"># Retrieves the named arguments that are not from known categories.</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">value</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cfg_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;optim&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;hardware&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">]</span>
     <span class="p">}</span>
 
+    <span class="c1"># TODO: clean this part.</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="p">{})</span>
     <span class="k">if</span> <span class="n">model_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -564,16 +565,21 @@
             <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Supervised&quot;</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">_MODEL_CONFIGS</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">**</span><span class="n">model</span><span class="p">)</span>
 
-    <span class="n">args</span> <span class="o">=</span> <span class="n">TrainerConfig</span><span class="p">(</span>
+    <span class="c1"># Get the logging API type and configuration.</span>
+    <span class="n">log_config</span> <span class="o">=</span> <span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">log_api</span> <span class="o">=</span> <span class="n">log_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;api&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">_LOG_CONFIGS</span><span class="p">[</span><span class="n">log_api</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">log_api</span> <span class="k">else</span> <span class="kc">None</span><span class="p">](</span><span class="o">**</span><span class="n">log_config</span><span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">GlobalConfig</span><span class="p">(</span>
         <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+        <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
         <span class="n">data</span><span class="o">=</span><span class="n">DataConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="p">{})),</span>
         <span class="n">optim</span><span class="o">=</span><span class="n">OptimConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;optim&quot;</span><span class="p">,</span> <span class="p">{})),</span>
         <span class="n">hardware</span><span class="o">=</span><span class="n">HardwareConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hardware&quot;</span><span class="p">,</span> <span class="p">{})),</span>
-        <span class="n">log</span><span class="o">=</span><span class="n">LogConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="p">{})),</span>
     <span class="p">)</span>
 
     <span class="n">args</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">=</span> <span class="n">make_dataclass</span><span class="p">(</span>
-        <span class="s2">&quot;TrainerConfig&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GlobalConfig&quot;</span><span class="p">,</span>
         <span class="n">fields</span><span class="o">=</span><span class="p">[(</span><span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()],</span>
         <span class="n">bases</span><span class="o">=</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">args</span><span class="p">),),</span>
     <span class="p">)</span>
