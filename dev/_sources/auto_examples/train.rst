@@ -20,19 +20,22 @@
 
 This script demonstrates how to launch a run using the stable-SSL library.
 
-.. GENERATED FROM PYTHON SOURCE LINES 4-26
+.. GENERATED FROM PYTHON SOURCE LINES 4-29
 
 .. code-block:: Python
 
 
     import hydra
     import stable_ssl
+    import logging
 
 
     @hydra.main()
     def main(cfg):
         """Load the configuration and launch the run."""
         args = stable_ssl.get_args(cfg)  # Get the verified arguments
+
+        logging.basicConfig(level=args.log.level, format="[stable-SSL] %(message)s")
 
         print("--- Arguments ---")
         print(args)
