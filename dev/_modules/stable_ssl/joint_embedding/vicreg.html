@@ -273,13 +273,13 @@
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="kn">from</span> <span class="nn">stable_ssl.utils</span> <span class="kn">import</span> <span class="n">FullGatherLayer</span><span class="p">,</span> <span class="n">off_diagonal</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">JEConfig</span><span class="p">,</span> <span class="n">JETrainer</span>
+<span class="kn">from</span> <span class="nn">stable_ssl.utils</span> <span class="kn">import</span> <span class="n">off_diagonal</span><span class="p">,</span> <span class="n">gather_processes</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">JointEmbeddingConfig</span><span class="p">,</span> <span class="n">JointEmbeddingModel</span>
 
 
 <div class="viewcode-block" id="VICReg">
 <a class="viewcode-back" href="../../../gen_modules/stable_ssl.VICReg.html#stable_ssl.VICReg">[docs]</a>
-<span class="k">class</span> <span class="nc">VICReg</span><span class="p">(</span><span class="n">JETrainer</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">VICReg</span><span class="p">(</span><span class="n">JointEmbeddingModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;VICReg model from [BPL21]_.</span>
 
 <span class="sd">    Reference</span>
@@ -290,18 +290,12 @@
 <span class="sd">            International Conference on Learning Representations (ICLR).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">compute_ssl_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">):</span>
+    <span class="nd">@gather_processes</span>
+    <span class="k">def</span> <span class="nf">compute_ssl_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">):</span>
+        <span class="n">repr_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">)</span>
 
-        <span class="n">repr_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">world_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">FullGatherLayer</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">z1</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">FullGatherLayer</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">z2</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">z1</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">z2</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">y</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">z_i</span> <span class="o">-</span> <span class="n">z_i</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">z_j</span> <span class="o">-</span> <span class="n">z_j</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="n">std_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">epsilon</span><span class="p">)</span>
         <span class="n">std_y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">epsilon</span><span class="p">)</span>
@@ -328,7 +322,7 @@
 <div class="viewcode-block" id="VICRegConfig">
 <a class="viewcode-back" href="../../../gen_modules/stable_ssl.joint_embedding.VICRegConfig.html#stable_ssl.VICRegConfig">[docs]</a>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">VICRegConfig</span><span class="p">(</span><span class="n">JEConfig</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">VICRegConfig</span><span class="p">(</span><span class="n">JointEmbeddingConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the VICreg model parameters.&quot;&quot;&quot;</span>
 
     <span class="n">sim_coeff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">25</span>

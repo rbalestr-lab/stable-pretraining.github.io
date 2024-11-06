@@ -323,9 +323,10 @@
 to download the full example code.</p>
 </div>
 <p class="sphx-glr-example-title" id="sphx-glr-auto-examples-train-py">This script demonstrates how to launch a run using the stable-SSL library.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hydra</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">hydra</span>
 <span class="kn">import</span> <span class="nn">stable_ssl</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">stable_ssl.utils</span> <span class="kn">import</span> <span class="n">log_and_raise</span>
 
 
 <span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
@@ -341,8 +342,21 @@ to download the full example code.</p>
     <span class="c1"># torch.autograd.set_detect_anomaly(True)</span>
 
     <span class="n">stable_ssl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_gpu_info</span><span class="p">()</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">stable_ssl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)(</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># Create model</span>
-    <span class="n">model</span><span class="p">()</span>  <span class="c1"># Call model</span>
+
+    <span class="c1"># Check if the model name is a valid attribute in stable_ssl</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">stable_ssl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+        <span class="n">model_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">stable_ssl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model_class</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># Create model instance</span>
+        <span class="n">model</span><span class="p">()</span>  <span class="c1"># Call model</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">available_models</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">attr</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">stable_ssl</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">log_and_raise</span><span class="p">(</span>
+            <span class="ne">ValueError</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;The model &#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; is not available in stable_ssl. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Available models are: </span><span class="si">{</span><span class="n">available_models</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>

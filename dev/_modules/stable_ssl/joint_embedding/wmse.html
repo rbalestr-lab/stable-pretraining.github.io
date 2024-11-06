@@ -273,12 +273,12 @@
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">JEConfig</span><span class="p">,</span> <span class="n">JETrainer</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">JointEmbeddingConfig</span><span class="p">,</span> <span class="n">JointEmbeddingModel</span>
 
 
 <div class="viewcode-block" id="WMSE">
 <a class="viewcode-back" href="../../../gen_modules/stable_ssl.WMSE.html#stable_ssl.WMSE">[docs]</a>
-<span class="k">class</span> <span class="nc">WMSE</span><span class="p">(</span><span class="n">JETrainer</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">WMSE</span><span class="p">(</span><span class="n">JointEmbeddingModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Whitening Mean Squared Error (WMSE) model from [ESSS21]_.</span>
 
 <span class="sd">    Reference</span>
@@ -299,7 +299,8 @@
         <span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">compute_ssl_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeds</span><span class="p">):</span>
+    <span class="c1"># TODO : adapt to the new gather_tensors and JointEmbeddingModel structure</span>
+    <span class="k">def</span> <span class="nf">ssl_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeds</span><span class="p">):</span>
         <span class="n">n_views</span> <span class="o">=</span> <span class="mi">2</span>
         <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">embeds</span><span class="p">)</span>
         <span class="n">bs</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">//</span> <span class="n">n_views</span>
@@ -387,7 +388,7 @@
 <div class="viewcode-block" id="WMSEConfig">
 <a class="viewcode-back" href="../../../gen_modules/stable_ssl.joint_embedding.WMSEConfig.html#stable_ssl.WMSEConfig">[docs]</a>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">WMSEConfig</span><span class="p">(</span><span class="n">JEConfig</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">WMSEConfig</span><span class="p">(</span><span class="n">JointEmbeddingConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the WMSE model parameters.&quot;&quot;&quot;</span>
 
     <span class="n">w_iter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>

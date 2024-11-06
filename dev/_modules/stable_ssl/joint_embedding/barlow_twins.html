@@ -273,13 +273,13 @@
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">JEConfig</span><span class="p">,</span> <span class="n">JETrainer</span>
-<span class="kn">from</span> <span class="nn">stable_ssl.utils</span> <span class="kn">import</span> <span class="n">off_diagonal</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">JointEmbeddingConfig</span><span class="p">,</span> <span class="n">JointEmbeddingModel</span>
+<span class="kn">from</span> <span class="nn">stable_ssl.utils</span> <span class="kn">import</span> <span class="n">off_diagonal</span><span class="p">,</span> <span class="n">gather_processes</span>
 
 
 <div class="viewcode-block" id="BarlowTwins">
 <a class="viewcode-back" href="../../../gen_modules/stable_ssl.BarlowTwins.html#stable_ssl.BarlowTwins">[docs]</a>
-<span class="k">class</span> <span class="nc">BarlowTwins</span><span class="p">(</span><span class="n">JETrainer</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">BarlowTwins</span><span class="p">(</span><span class="n">JointEmbeddingModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;BarlowTwins model from [ZJM+21]_.</span>
 
 <span class="sd">    Reference</span>
@@ -296,6 +296,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">projector</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span></div>
 
 
+    <span class="nd">@gather_processes</span>
     <span class="k">def</span> <span class="nf">compute_ssl_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">):</span>
         <span class="c1"># Empirical cross-correlation matrix.</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">(</span><span class="n">z_i</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">(</span><span class="n">z_j</span><span class="p">)</span>
@@ -314,7 +315,7 @@
 <div class="viewcode-block" id="BarlowTwinsConfig">
 <a class="viewcode-back" href="../../../gen_modules/stable_ssl.joint_embedding.BarlowTwinsConfig.html#stable_ssl.BarlowTwinsConfig">[docs]</a>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">BarlowTwinsConfig</span><span class="p">(</span><span class="n">JEConfig</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">BarlowTwinsConfig</span><span class="p">(</span><span class="n">JointEmbeddingConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the BarlowTwins model parameters.</span>
 
 <span class="sd">    Parameters</span>
