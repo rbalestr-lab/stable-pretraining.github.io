@@ -428,7 +428,7 @@
 <span class="sd">        Name for the final saved model. Default is &quot;final_model&quot;.</span>
 <span class="sd">    eval_only : bool, optional</span>
 <span class="sd">        Whether to only evaluate the model without training. Default is False.</span>
-<span class="sd">    eval_epoch_freq : int, optional</span>
+<span class="sd">    eval_every_epoch : int, optional</span>
 <span class="sd">        Frequency of evaluation (in terms of epochs). Default is 1.</span>
 <span class="sd">    log_every_step : int, optional</span>
 <span class="sd">        Frequency of logging (in terms of steps). Default is 1.</span>
@@ -442,7 +442,7 @@
     <span class="n">save_final_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">final_model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;final_model&quot;</span>
     <span class="n">eval_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">eval_epoch_freq</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">eval_every_epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">log_every_step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
