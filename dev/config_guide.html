@@ -50,7 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'config_guide';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="OptimConfig" href="gen_modules/stable_ssl.config.OptimConfig.html" />
+    <link rel="next" title="LogConfig" href="gen_modules/stable_ssl.config.LogConfig.html" />
     <link rel="prev" title="Getting Started" href="getting_started.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -146,19 +146,10 @@
 <li class="toctree-l1"><a class="reference internal" href="index.html">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Configuration File Guide</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.DataConfig.html">DataConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="ssl_methods.html">SSL Methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.SimCLR.html">SimCLR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwins.html">BarlowTwins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.VICReg.html">VICReg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.WMSE.html">WMSE</a></li>
 </ul>
@@ -338,9 +329,6 @@
 <p>The complete list of parameters for the <cite>optim</cite> section, including their descriptions and default values, is provided below:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig" title="stable_ssl.config.OptimConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.OptimConfig</span></code></a>([optimizer, lr, epochs, ...])</p></td>
-<td><p>Configuration for the 'optimizer' parameters.</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -350,9 +338,6 @@
 <p>Use the <cite>hardware</cite> keyword to configure hardware-related settings such as the number of workers or GPU usage. The complete list of parameters for the <cite>hardware</cite> section is available below:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.HardwareConfig.html#stable_ssl.config.HardwareConfig" title="stable_ssl.config.HardwareConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.HardwareConfig</span></code></a>([seed, float16, ...])</p></td>
-<td><p>Configuration for the 'hardware' parameters.</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -423,9 +408,6 @@
 <p>The complete list of parameters for the <cite>data</cite> section can be found here:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.DataConfig.html#stable_ssl.config.DataConfig" title="stable_ssl.config.DataConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.DataConfig</span></code></a>(train_on, *args, **datasets)</p></td>
-<td><p>Configuration for multiple datasets used for training the model.</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -441,18 +423,6 @@
 <p>When defining a specific method, you can set method-specific parameters by creating a configuration class that inherits from <cite>BaseModelConfig</cite>. Examples of configurations for different methods in the library are provided below:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.SimCLRConfig.html#stable_ssl.joint_embedding.SimCLRConfig" title="stable_ssl.joint_embedding.SimCLRConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">joint_embedding.SimCLRConfig</span></code></a>(name, ...)</p></td>
-<td><p>Configuration for the SimCLR model parameters.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.BarlowTwinsConfig.html#stable_ssl.joint_embedding.BarlowTwinsConfig" title="stable_ssl.joint_embedding.BarlowTwinsConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">joint_embedding.BarlowTwinsConfig</span></code></a>(name, ...)</p></td>
-<td><p>Configuration for the BarlowTwins model parameters.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.VICRegConfig.html#stable_ssl.joint_embedding.VICRegConfig" title="stable_ssl.joint_embedding.VICRegConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">joint_embedding.VICRegConfig</span></code></a>(name, ...)</p></td>
-<td><p>Configuration for the VICreg model parameters.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.joint_embedding.WMSEConfig.html#stable_ssl.joint_embedding.WMSEConfig" title="stable_ssl.joint_embedding.WMSEConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">joint_embedding.WMSEConfig</span></code></a>(name, ...)</p></td>
-<td><p>Configuration for the WMSE model parameters.</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -480,11 +450,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="gen_modules/stable_ssl.config.OptimConfig.html"
+       href="gen_modules/stable_ssl.config.LogConfig.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">OptimConfig</p>
+        <p class="prev-next-title">LogConfig</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

@@ -146,19 +146,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../config_guide.html">Configuration File Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.LogConfig.html">LogConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.DataConfig.html">DataConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../ssl_methods.html">SSL Methods</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.SimCLR.html">SimCLR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.BarlowTwins.html">BarlowTwins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.VICReg.html">VICReg</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">WMSE</a></li>
 </ul>
@@ -307,10 +298,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.WMSE"><code class="docutils literal notranslate"><span class="pre">WMSE</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.WMSE.initialize_modules"><code class="docutils literal notranslate"><span class="pre">WMSE.initialize_modules()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.WMSE"><code class="docutils literal notranslate"><span class="pre">WMSE</span></code></a></li>
 </ul>
             </nav>
         </div>
@@ -326,8 +314,8 @@
 <h1>WMSE<a class="headerlink" href="#wmse" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="stable_ssl.WMSE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.</span></span><span class="sig-name descname"><span class="pre">WMSE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/joint_embedding/wmse.html#WMSE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.WMSE" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JointEmbeddingModel</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.</span></span><span class="sig-name descname"><span class="pre">WMSE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">networks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_on</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardware</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_only</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_final_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_frequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_every_epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/joint_embedding/wmse.html#WMSE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.WMSE" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JointEmbedding</span></code></p>
 <p>Whitening Mean Squared Error (WMSE) model from <a class="reference internal" href="#esss21" id="id1"><span>[ESSS21]</span></a>.</p>
 <section id="reference">
 <h2>Reference<a class="headerlink" href="#reference" title="Link to this heading">#</a></h2>
@@ -339,12 +327,6 @@ Whitening for self-supervised representation learning.
 In International conference on machine learning (pp. 3015-3024). PMLR.</p>
 </div>
 </div>
-<dl class="py method">
-<dt class="sig sig-object py" id="stable_ssl.WMSE.initialize_modules">
-<span class="sig-name descname"><span class="pre">initialize_modules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/joint_embedding/wmse.html#WMSE.initialize_modules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.WMSE.initialize_modules" title="Link to this definition">#</a></dt>
-<dd><p>Initialize the modules required for the model.</p>
-</dd></dl>
-
 </section>
 </dd></dl>
 
@@ -396,10 +378,7 @@ In International conference on machine learning (pp. 3015-3024). PMLR.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.WMSE"><code class="docutils literal notranslate"><span class="pre">WMSE</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.WMSE.initialize_modules"><code class="docutils literal notranslate"><span class="pre">WMSE.initialize_modules()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.WMSE"><code class="docutils literal notranslate"><span class="pre">WMSE</span></code></a></li>
 </ul>
   </nav></div>
 

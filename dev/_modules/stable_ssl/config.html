@@ -145,19 +145,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../config_guide.html">Configuration File Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.DataConfig.html">DataConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../ssl_methods.html">SSL Methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.SimCLR.html">SimCLR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BarlowTwins.html">BarlowTwins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.VICReg.html">VICReg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.WMSE.html">WMSE</a></li>
 </ul>
@@ -261,141 +252,128 @@
                 <article class="bd-article">
                   
   <h1>Source code for stable_ssl.config</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;Configuration for stable-ssl runs.&quot;&quot;&quot;</span>
-<span class="c1">#</span>
-<span class="c1"># Author: Hugues Van Assel &lt;vanasselhugues@gmail.com&gt;</span>
-<span class="c1">#         Randall Balestriero &lt;randallbalestriero@gmail.com&gt;</span>
-<span class="c1">#</span>
-<span class="c1"># This source code is licensed under the license found in the</span>
-<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+<span></span><span class="c1"># # -*- coding: utf-8 -*-</span>
+<span class="c1"># &quot;&quot;&quot;Configuration for stable-ssl runs.&quot;&quot;&quot;</span>
+<span class="c1"># #</span>
+<span class="c1"># # Author: Hugues Van Assel &lt;vanasselhugues@gmail.com&gt;</span>
+<span class="c1"># #         Randall Balestriero &lt;randallbalestriero@gmail.com&gt;</span>
+<span class="c1"># #</span>
+<span class="c1"># # This source code is licensed under the license found in the</span>
+<span class="c1"># # LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">make_dataclass</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">OmegaConf</span>
+
+<span class="c1"># from omegaconf import OmegaConf</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">LARS</span><span class="p">,</span> <span class="n">get_open_port</span>
-<span class="kn">from</span> <span class="nn">.joint_embedding</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BarlowTwinsConfig</span><span class="p">,</span>
-    <span class="n">SimCLRConfig</span><span class="p">,</span>
-    <span class="n">VICRegConfig</span><span class="p">,</span>
-    <span class="n">WMSEConfig</span><span class="p">,</span>
-    <span class="n">BYOLConfig</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.supervised</span> <span class="kn">import</span> <span class="n">Supervised</span>
-<span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">DataConfig</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">ModelConfig</span>
+<span class="c1"># import torch</span>
+
+<span class="c1"># from .utils import LARS, get_open_port</span>
+<span class="c1"># from .supervised import Supervised</span>
 
 
-<div class="viewcode-block" id="OptimConfig">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig">[docs]</a>
-<span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">OptimConfig</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the &#39;optimizer&#39; parameters.</span>
+<span class="c1"># # @dataclass</span>
+<span class="c1"># # class OptimConfig:</span>
+<span class="c1"># #     &quot;&quot;&quot;Configuration for the &#39;optimizer&#39; parameters.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    optimizer : str</span>
-<span class="sd">        Type of optimizer to use (e.g., &quot;AdamW&quot;, &quot;RMSprop&quot;, &quot;SGD&quot;, &quot;LARS&quot;).</span>
-<span class="sd">        Default is &quot;LARS&quot;.</span>
-<span class="sd">    lr : float</span>
-<span class="sd">        Learning rate for the optimizer. Default is 1e0.</span>
-<span class="sd">    epochs : int, optional</span>
-<span class="sd">        Number of epochs to train the model. Default is 1000.</span>
-<span class="sd">    max_steps : int, optional</span>
-<span class="sd">        Maximum number of steps per epoch. If negative, no limit is set.</span>
-<span class="sd">        Default is -1.</span>
-<span class="sd">    weight_decay : float</span>
-<span class="sd">        Weight decay for the optimizer. Default is 1e-6.</span>
-<span class="sd">    momentum : float</span>
-<span class="sd">        Momentum for the optimizer. Default is None.</span>
-<span class="sd">    nesterov : bool</span>
-<span class="sd">        Whether to use Nesterov momentum. Default is False.</span>
-<span class="sd">    betas : Tuple[float, float], optional</span>
-<span class="sd">        Betas for the AdamW optimizer. Default is (0.9, 0.999).</span>
-<span class="sd">    grad_max_norm : float, optional</span>
-<span class="sd">        Maximum norm for gradient clipping. Default is None.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="c1"># #     Parameters</span>
+<span class="c1"># #     ----------</span>
+<span class="c1"># #     optimizer : str</span>
+<span class="c1"># #         Type of optimizer to use (e.g., &quot;AdamW&quot;, &quot;RMSprop&quot;, &quot;SGD&quot;, &quot;LARS&quot;).</span>
+<span class="c1"># #         Default is &quot;LARS&quot;.</span>
+<span class="c1"># #     lr : float</span>
+<span class="c1"># #         Learning rate for the optimizer. Default is 1e0.</span>
+<span class="c1"># #     epochs : int, optional</span>
+<span class="c1"># #         Number of epochs to train the model. Default is 1000.</span>
+<span class="c1"># #     max_steps : int, optional</span>
+<span class="c1"># #         Maximum number of steps per epoch. If negative, no limit is set.</span>
+<span class="c1"># #         Default is -1.</span>
+<span class="c1"># #     weight_decay : float</span>
+<span class="c1"># #         Weight decay for the optimizer. Default is 1e-6.</span>
+<span class="c1"># #     momentum : float</span>
+<span class="c1"># #         Momentum for the optimizer. Default is None.</span>
+<span class="c1"># #     nesterov : bool</span>
+<span class="c1"># #         Whether to use Nesterov momentum. Default is False.</span>
+<span class="c1"># #     betas : Tuple[float, float], optional</span>
+<span class="c1"># #         Betas for the AdamW optimizer. Default is (0.9, 0.999).</span>
+<span class="c1"># #     grad_max_norm : float, optional</span>
+<span class="c1"># #         Maximum norm for gradient clipping. Default is None.</span>
+<span class="c1"># #     &quot;&quot;&quot;</span>
 
-    <span class="n">optimizer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;LARS&quot;</span>
-    <span class="n">lr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e0</span>
-    <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
-    <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-    <span class="n">weight_decay</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">momentum</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">nesterov</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">betas</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">grad_max_norm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="c1"># #     optimizer: str = &quot;LARS&quot;</span>
+<span class="c1"># #     lr: float = 1e0</span>
+<span class="c1"># #     epochs: int = 1000</span>
+<span class="c1"># #     max_steps: int = -1</span>
+<span class="c1"># #     weight_decay: float = 0</span>
+<span class="c1"># #     momentum: Optional[float] = None</span>
+<span class="c1"># #     nesterov: Optional[bool] = None</span>
+<span class="c1"># #     betas: Optional[Tuple[float, float]] = None</span>
+<span class="c1"># #     grad_max_norm: Optional[float] = None</span>
 
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate and set default values for optimizer parameters.</span>
+<span class="c1"># #     def __post_init__(self):</span>
+<span class="c1"># #         &quot;&quot;&quot;Validate and set default values for optimizer parameters.</span>
 
-<span class="sd">        Ensures that a valid optimizer is provided and assigns default values</span>
-<span class="sd">        for parameters like learning rate, weight decay, and others, if they</span>
-<span class="sd">        are not explicitly set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">==</span> <span class="s2">&quot;LARS&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Invalid optimizer: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="si">}</span><span class="s2">. Must be a &quot;</span>
-                <span class="s2">&quot;torch optimizer or &#39;LARS&#39;.&quot;</span>
-            <span class="p">)</span>
+<span class="c1"># #         Ensures that a valid optimizer is provided and assigns default values</span>
+<span class="c1"># #         for parameters like learning rate, weight decay, and others, if they</span>
+<span class="c1"># #         are not explicitly set.</span>
+<span class="c1"># #         &quot;&quot;&quot;</span>
+<span class="c1"># #         if not (hasattr(torch.optim, self.optimizer) or self.optimizer == &quot;LARS&quot;):</span>
+<span class="c1"># #             raise ValueError(</span>
+<span class="c1"># #                 f&quot;Invalid optimizer: {self.optimizer}. Must be a &quot;</span>
+<span class="c1"># #                 &quot;torch optimizer or &#39;LARS&#39;.&quot;</span>
+<span class="c1"># #             )</span>
 
-        <span class="c1"># Instantiate the optimizer to get the default parameters.</span>
-        <span class="n">optimizer</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">LARS</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">==</span> <span class="s2">&quot;LARS&quot;</span> <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="n">default_params</span> <span class="o">=</span> <span class="n">optimizer</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">)])</span><span class="o">.</span><span class="n">defaults</span>
+<span class="c1"># #         # Instantiate the optimizer to get the default parameters.</span>
+<span class="c1"># #         optimizer = (</span>
+<span class="c1"># #         LARS if self.optimizer == &quot;LARS&quot; else getattr(torch.optim, self.optimizer)</span>
+<span class="c1"># #         )</span>
+<span class="c1"># #         default_params = optimizer([torch.tensor(0)]).defaults</span>
 
-        <span class="c1"># Ensure parameters are provided appropriately based on the optimizer.</span>
-        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;lr&quot;</span><span class="p">,</span> <span class="s2">&quot;weight_decay&quot;</span><span class="p">,</span> <span class="s2">&quot;momentum&quot;</span><span class="p">,</span> <span class="s2">&quot;betas&quot;</span><span class="p">,</span> <span class="s2">&quot;nesterov&quot;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">default_params</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="c1"># If a useful parameter is not provided, its default value is used.</span>
-                    <span class="n">default_value</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
-                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">default_value</span><span class="p">)</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">&#39; not provided for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="si">}</span><span class="s2"> &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;optimizer. Default value of </span><span class="si">{</span><span class="n">default_value</span><span class="si">}</span><span class="s2"> is used.&quot;</span>
-                    <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># If the parameter is useless for the optimizer, it is set to None.</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+<span class="c1"># #         # Ensure parameters are provided appropriately based on the optimizer.</span>
+<span class="c1"># #         for param in [&quot;lr&quot;, &quot;weight_decay&quot;, &quot;momentum&quot;, &quot;betas&quot;, &quot;nesterov&quot;]:</span>
+<span class="c1"># #             if param in default_params.keys():</span>
+<span class="c1"># #                 if getattr(self, param) is None:</span>
+<span class="c1"># #             # If a useful parameter is not provided, its default value is used.</span>
+<span class="c1"># #                     default_value = default_params[param]</span>
+<span class="c1"># #                     setattr(self, param, default_value)</span>
+<span class="c1"># #                     logging.warning(</span>
+<span class="c1"># #                         f&quot;&#39;{param}&#39; not provided for {self.optimizer} &quot;</span>
+<span class="c1"># #                         f&quot;optimizer. Default value of {default_value} is used.&quot;</span>
+<span class="c1"># #                     )</span>
+<span class="c1"># #             else:</span>
+<span class="c1"># #                 # If the parameter is useless for the optimizer, it is set to None.</span>
+<span class="c1"># #                 setattr(self, param, None)</span>
 
 
+<span class="c1"># @dataclass</span>
+<span class="c1"># class HardwareConfig:</span>
+<span class="c1">#     &quot;&quot;&quot;Configuration for the &#39;hardware&#39; parameters.</span>
 
-<div class="viewcode-block" id="HardwareConfig">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.config.HardwareConfig.html#stable_ssl.config.HardwareConfig">[docs]</a>
-<span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">HardwareConfig</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the &#39;hardware&#39; parameters.</span>
+<span class="c1">#     Parameters</span>
+<span class="c1">#     ----------</span>
+<span class="c1">#     seed : int, optional</span>
+<span class="c1">#         Random seed for reproducibility. Default is None.</span>
+<span class="c1">#     float16 : bool, optional</span>
+<span class="c1">#         Whether to use mixed precision (float16) for training. Default is False.</span>
+<span class="c1">#     gpu_id : int, optional</span>
+<span class="c1">#         GPU device ID to use for training. Default is 0.</span>
+<span class="c1">#     world_size : int, optional</span>
+<span class="c1">#         Number of processes participating in distributed training. Default is 1.</span>
+<span class="c1">#     port : int, optional</span>
+<span class="c1">#         Local proc&#39;s port number for distributed training. Default is None.</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    seed : int, optional</span>
-<span class="sd">        Random seed for reproducibility. Default is None.</span>
-<span class="sd">    float16 : bool, optional</span>
-<span class="sd">        Whether to use mixed precision (float16) for training. Default is False.</span>
-<span class="sd">    gpu_id : int, optional</span>
-<span class="sd">        GPU device ID to use for training. Default is 0.</span>
-<span class="sd">    world_size : int, optional</span>
-<span class="sd">        Number of processes participating in distributed training. Default is 1.</span>
-<span class="sd">    port : int, optional</span>
-<span class="sd">        Local proc&#39;s port number for distributed training. Default is None.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="c1">#     seed: Optional[int] = None</span>
+<span class="c1">#     float16: bool = False</span>
+<span class="c1">#     gpu_id: int = 0</span>
+<span class="c1">#     world_size: int = 1</span>
+<span class="c1">#     port: Optional[int] = None</span>
 
-    <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">float16</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">gpu_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">world_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">port</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a random port for distributed training if not provided.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="ow">or</span> <span class="n">get_open_port</span><span class="p">()</span></div>
-
+<span class="c1">#     def __post_init__(self):</span>
+<span class="c1">#         &quot;&quot;&quot;Set a random port for distributed training if not provided.&quot;&quot;&quot;</span>
+<span class="c1">#         self.port = self.port or get_open_port()</span>
 
 
 <div class="viewcode-block" id="LogConfig">
@@ -470,126 +448,126 @@
 
 
 
-<span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">WandbConfig</span><span class="p">(</span><span class="n">LogConfig</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the Weights &amp; Biases logging.</span>
+<span class="c1"># @dataclass</span>
+<span class="c1"># class WandbConfig(LogConfig):</span>
+<span class="c1">#     &quot;&quot;&quot;Configuration for the Weights &amp; Biases logging.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    entity : str, optional</span>
-<span class="sd">        Name of the (Weights &amp; Biases) entity. Default is None.</span>
-<span class="sd">    project : str, optional</span>
-<span class="sd">        Name of the (Weights &amp; Biases) project. Default is None.</span>
-<span class="sd">    run : str, optional</span>
-<span class="sd">        Name of the Weights &amp; Biases run. Default is None.</span>
-<span class="sd">    rank_to_log: int, optional</span>
-<span class="sd">        Specifies the rank of the GPU/process to log for WandB tracking.</span>
-<span class="sd">        - Set to an integer value (e.g., 0, 1, 2) to log a specific GPU/process.</span>
-<span class="sd">        - Set to a negative value (e.g., -1) to log all processes.</span>
-<span class="sd">        Default is 0, which logs only the primary process.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="c1">#     Parameters</span>
+<span class="c1">#     ----------</span>
+<span class="c1">#     entity : str, optional</span>
+<span class="c1">#         Name of the (Weights &amp; Biases) entity. Default is None.</span>
+<span class="c1">#     project : str, optional</span>
+<span class="c1">#         Name of the (Weights &amp; Biases) project. Default is None.</span>
+<span class="c1">#     run : str, optional</span>
+<span class="c1">#         Name of the Weights &amp; Biases run. Default is None.</span>
+<span class="c1">#     rank_to_log: int, optional</span>
+<span class="c1">#         Specifies the rank of the GPU/process to log for WandB tracking.</span>
+<span class="c1">#         - Set to an integer value (e.g., 0, 1, 2) to log a specific GPU/process.</span>
+<span class="c1">#         - Set to a negative value (e.g., -1) to log all processes.</span>
+<span class="c1">#         Default is 0, which logs only the primary process.</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
 
-    <span class="n">entity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">project</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">run</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">rank_to_log</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="c1">#     entity: Optional[str] = None</span>
+<span class="c1">#     project: Optional[str] = None</span>
+<span class="c1">#     run: Optional[str] = None</span>
+<span class="c1">#     rank_to_log: int = 0</span>
 
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the rank to log for Weights &amp; Biases.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
+<span class="c1">#     def __post_init__(self):</span>
+<span class="c1">#         &quot;&quot;&quot;Check the rank to log for Weights &amp; Biases.&quot;&quot;&quot;</span>
+<span class="c1">#         super().__post_init__()</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank_to_log</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot (yet) log all processes to Weights &amp; Biases.&quot;</span><span class="p">)</span>
-
-
-<span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">GlobalConfig</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Global configuration for training a model.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    model : ModelConfig</span>
-<span class="sd">        Model configuration.</span>
-<span class="sd">    data : DataConfig</span>
-<span class="sd">        Data configuration.</span>
-<span class="sd">    optim : OptimConfig</span>
-<span class="sd">        Optimizer configuration.</span>
-<span class="sd">    hardware : HardwareConfig</span>
-<span class="sd">        Hardware configuration.</span>
-<span class="sd">    log : LogConfig</span>
-<span class="sd">        Logging and checkpointing configuration.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">model</span><span class="p">:</span> <span class="n">ModelConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">ModelConfig</span><span class="p">)</span>
-    <span class="n">data</span><span class="p">:</span> <span class="n">DataConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">DataConfig</span><span class="p">)</span>
-    <span class="n">optim</span><span class="p">:</span> <span class="n">OptimConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">OptimConfig</span><span class="p">)</span>
-    <span class="n">hardware</span><span class="p">:</span> <span class="n">HardwareConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">HardwareConfig</span><span class="p">)</span>
-    <span class="n">log</span><span class="p">:</span> <span class="n">LogConfig</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">LogConfig</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a YAML representation of the configuration.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a YAML string of the configuration.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+<span class="c1">#         if self.rank_to_log &lt; 0:</span>
+<span class="c1">#             raise ValueError(&quot;Cannot (yet) log all processes to Weights &amp; Biases.&quot;)</span>
 
 
-<span class="n">_MODEL_CONFIGS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;Supervised&quot;</span><span class="p">:</span> <span class="n">ModelConfig</span><span class="p">,</span>
-    <span class="s2">&quot;SimCLR&quot;</span><span class="p">:</span> <span class="n">SimCLRConfig</span><span class="p">,</span>
-    <span class="s2">&quot;Barlowtwins&quot;</span><span class="p">:</span> <span class="n">BarlowTwinsConfig</span><span class="p">,</span>
-    <span class="s2">&quot;VICReg&quot;</span><span class="p">:</span> <span class="n">VICRegConfig</span><span class="p">,</span>
-    <span class="s2">&quot;WMSE&quot;</span><span class="p">:</span> <span class="n">WMSEConfig</span><span class="p">,</span>
-    <span class="s2">&quot;BYOL&quot;</span><span class="p">:</span> <span class="n">BYOLConfig</span><span class="p">,</span>
-<span class="p">}</span>
-<span class="n">_LOG_CONFIGS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;wandb&quot;</span><span class="p">:</span> <span class="n">WandbConfig</span><span class="p">,</span>
-    <span class="kc">None</span><span class="p">:</span> <span class="n">LogConfig</span><span class="p">,</span>
-    <span class="s2">&quot;None&quot;</span><span class="p">:</span> <span class="n">LogConfig</span><span class="p">,</span>
-    <span class="s2">&quot;json&quot;</span><span class="p">:</span> <span class="n">LogConfig</span><span class="p">,</span>
-    <span class="s2">&quot;jsonlines&quot;</span><span class="p">:</span> <span class="n">LogConfig</span><span class="p">,</span>
-<span class="p">}</span>
+<span class="c1"># @dataclass</span>
+<span class="c1"># class GlobalConfig:</span>
+<span class="c1">#     &quot;&quot;&quot;Global configuration for training a model.</span>
+
+<span class="c1">#     Parameters</span>
+<span class="c1">#     ----------</span>
+<span class="c1">#     model : ModelConfig</span>
+<span class="c1">#         Model configuration.</span>
+<span class="c1">#     data : DataConfig</span>
+<span class="c1">#         Data configuration.</span>
+<span class="c1">#     optim : OptimConfig</span>
+<span class="c1">#         Optimizer configuration.</span>
+<span class="c1">#     hardware : HardwareConfig</span>
+<span class="c1">#         Hardware configuration.</span>
+<span class="c1">#     log : LogConfig</span>
+<span class="c1">#         Logging and checkpointing configuration.</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+
+<span class="c1">#     model: ModelConfig = field(default_factory=ModelConfig)</span>
+<span class="c1">#     # data: DataConfig = field(default_factory=DataConfig)</span>
+<span class="c1">#     # optim: OptimConfig = field(default_factory=OptimConfig)</span>
+<span class="c1">#     hardware: HardwareConfig = field(default_factory=HardwareConfig)</span>
+<span class="c1">#     log: LogConfig = field(default_factory=LogConfig)</span>
+
+<span class="c1">#     def __repr__(self) -&gt; str:</span>
+<span class="c1">#         &quot;&quot;&quot;Return a YAML representation of the configuration.&quot;&quot;&quot;</span>
+<span class="c1">#         return OmegaConf.to_yaml(self)</span>
+
+<span class="c1">#     def __str__(self) -&gt; str:</span>
+<span class="c1">#         &quot;&quot;&quot;Return a YAML string of the configuration.&quot;&quot;&quot;</span>
+<span class="c1">#         return OmegaConf.to_yaml(self)</span>
 
 
-<span class="k">def</span> <span class="nf">get_args</span><span class="p">(</span><span class="n">cfg_dict</span><span class="p">,</span> <span class="n">model_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and return a GlobalConfig from a configuration dictionary.&quot;&quot;&quot;</span>
-    <span class="c1"># Retrieves the named arguments that are not from known categories.</span>
-    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">name</span><span class="p">:</span> <span class="n">value</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cfg_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;optim&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;hardware&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">]</span>
-    <span class="p">}</span>
+<span class="c1"># # _MODEL_CONFIGS = {</span>
+<span class="c1"># #     &quot;Supervised&quot;: ModelConfig,</span>
+<span class="c1"># #     &quot;SimCLR&quot;: SimCLRConfig,</span>
+<span class="c1"># #     &quot;Barlowtwins&quot;: BarlowTwinsConfig,</span>
+<span class="c1"># #     &quot;VICReg&quot;: VICRegConfig,</span>
+<span class="c1"># #     &quot;WMSE&quot;: WMSEConfig,</span>
+<span class="c1"># #     &quot;BYOL&quot;: BYOLConfig,</span>
+<span class="c1"># # }</span>
+<span class="c1"># _LOG_CONFIGS = {</span>
+<span class="c1">#     &quot;wandb&quot;: WandbConfig,</span>
+<span class="c1">#     None: LogConfig,</span>
+<span class="c1">#     &quot;None&quot;: LogConfig,</span>
+<span class="c1">#     &quot;json&quot;: LogConfig,</span>
+<span class="c1">#     &quot;jsonlines&quot;: LogConfig,</span>
+<span class="c1"># }</span>
 
-    <span class="c1"># TODO: clean this part.</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="k">if</span> <span class="n">model_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">model_class</span><span class="p">,</span> <span class="n">Supervised</span><span class="p">):</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Supervised&quot;</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">_MODEL_CONFIGS</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">**</span><span class="n">model</span><span class="p">)</span>
 
-    <span class="c1"># Get the logging API type and configuration.</span>
-    <span class="n">log_config</span> <span class="o">=</span> <span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">log_api</span> <span class="o">=</span> <span class="n">log_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;api&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">log</span> <span class="o">=</span> <span class="n">_LOG_CONFIGS</span><span class="p">[</span><span class="n">log_api</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">log_api</span> <span class="k">else</span> <span class="kc">None</span><span class="p">](</span><span class="o">**</span><span class="n">log_config</span><span class="p">)</span>
+<span class="c1"># def get_args(cfg_dict, model_class=None):</span>
+<span class="c1">#     &quot;&quot;&quot;Create and return a GlobalConfig from a configuration dictionary.&quot;&quot;&quot;</span>
+<span class="c1">#     # Retrieves the named arguments that are not from known categories.</span>
+<span class="c1">#     kwargs = {</span>
+<span class="c1">#         name: value</span>
+<span class="c1">#         for name, value in cfg_dict.items()</span>
+<span class="c1">#         if name not in [&quot;data&quot;, &quot;optim&quot;, &quot;model&quot;, &quot;hardware&quot;, &quot;log&quot;]</span>
+<span class="c1">#     }</span>
 
-    <span class="n">args</span> <span class="o">=</span> <span class="n">GlobalConfig</span><span class="p">(</span>
-        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
-        <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
-        <span class="n">data</span><span class="o">=</span><span class="n">DataConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="p">{})),</span>
-        <span class="n">optim</span><span class="o">=</span><span class="n">OptimConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;optim&quot;</span><span class="p">,</span> <span class="p">{})),</span>
-        <span class="n">hardware</span><span class="o">=</span><span class="n">HardwareConfig</span><span class="p">(</span><span class="o">**</span><span class="n">cfg_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hardware&quot;</span><span class="p">,</span> <span class="p">{})),</span>
-    <span class="p">)</span>
+<span class="c1">#     # TODO: clean this part.</span>
+<span class="c1">#     # model = cfg_dict.get(&quot;model&quot;, {})</span>
+<span class="c1">#     # if model_class is None:</span>
+<span class="c1">#     #     name = model.get(&quot;name&quot;, None)</span>
+<span class="c1">#     # else:</span>
+<span class="c1">#     #     if issubclass(model_class, Supervised):</span>
+<span class="c1">#     #         name = &quot;Supervised&quot;</span>
+<span class="c1">#     # model = _MODEL_CONFIGS[name](**model)</span>
 
-    <span class="n">args</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">=</span> <span class="n">make_dataclass</span><span class="p">(</span>
-        <span class="s2">&quot;GlobalConfig&quot;</span><span class="p">,</span>
-        <span class="n">fields</span><span class="o">=</span><span class="p">[(</span><span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()],</span>
-        <span class="n">bases</span><span class="o">=</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">args</span><span class="p">),),</span>
-    <span class="p">)</span>
+<span class="c1">#     # Get the logging API type and configuration.</span>
+<span class="c1">#     log_config = cfg_dict.get(&quot;log&quot;, {})</span>
+<span class="c1">#     log_api = log_config.get(&quot;api&quot;, None)</span>
+<span class="c1">#     log = _LOG_CONFIGS[log_api.lower() if log_api else None](**log_config)</span>
 
-    <span class="k">return</span> <span class="n">args</span>
+<span class="c1">#     args = GlobalConfig(</span>
+<span class="c1">#         model=None,</span>
+<span class="c1">#         log=log,</span>
+<span class="c1">#         data=DataConfig(**cfg_dict.get(&quot;data&quot;, {})),</span>
+<span class="c1">#         optim=OptimConfig(**cfg_dict.get(&quot;optim&quot;, {})),</span>
+<span class="c1">#         hardware=HardwareConfig(**cfg_dict.get(&quot;hardware&quot;, {})),</span>
+<span class="c1">#     )</span>
+
+<span class="c1">#     args.__class__ = make_dataclass(</span>
+<span class="c1">#         &quot;GlobalConfig&quot;,</span>
+<span class="c1">#         fields=[(name, type(v), v) for name, v in kwargs.items()],</span>
+<span class="c1">#         bases=(type(args),),</span>
+<span class="c1">#     )</span>
+
+<span class="c1">#     return args</span>
 </pre></div>
 
                 </article>

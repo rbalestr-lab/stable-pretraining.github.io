@@ -144,19 +144,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../config_guide.html">Configuration File Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gen_modules/stable_ssl.config.DataConfig.html">DataConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gen_modules/stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gen_modules/stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gen_modules/stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gen_modules/stable_ssl.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../ssl_methods.html">SSL Methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../gen_modules/stable_ssl.SimCLR.html">SimCLR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gen_modules/stable_ssl.BarlowTwins.html">BarlowTwins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gen_modules/stable_ssl.VICReg.html">VICReg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gen_modules/stable_ssl.WMSE.html">WMSE</a></li>
 </ul>
@@ -328,35 +319,14 @@ to download the full example code.</p>
 <span class="kn">import</span> <span class="nn">stable_ssl</span>
 <span class="kn">from</span> <span class="nn">stable_ssl.utils</span> <span class="kn">import</span> <span class="n">log_and_raise</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;log_and_raise&quot;</span><span class="p">,</span> <span class="s2">&quot;stable_ssl&quot;</span><span class="p">,</span> <span class="s2">&quot;logging&quot;</span><span class="p">]</span>
 
-<span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+
+<span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">version_base</span><span class="o">=</span><span class="s2">&quot;1.2&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load the configuration and launch the run.&quot;&quot;&quot;</span>
-    <span class="n">args</span> <span class="o">=</span> <span class="n">stable_ssl</span><span class="o">.</span><span class="n">get_args</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>  <span class="c1"># Get the verified arguments</span>
-
-    <a href="https://docs.python.org/3.4/library/logging.html#logging.basicConfig" title="logging.basicConfig" class="sphx-glr-backref-module-logging sphx-glr-backref-type-py-function"><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span></a><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">level</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;[stable-SSL] </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--- Arguments ---&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-
-    <span class="c1"># torch.autograd.set_detect_anomaly(True)</span>
-
-    <span class="n">stable_ssl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_gpu_info</span><span class="p">()</span>
-
-    <span class="c1"># Check if the model name is a valid attribute in stable_ssl</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">stable_ssl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
-        <span class="n">model_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">stable_ssl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">model_class</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># Create model instance</span>
-        <span class="n">model</span><span class="p">()</span>  <span class="c1"># Call model</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">available_models</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">attr</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">stable_ssl</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
-        <span class="p">]</span>
-        <span class="n">log_and_raise</span><span class="p">(</span>
-            <span class="ne">ValueError</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;The model &#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; is not available in stable_ssl. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Available models are: </span><span class="si">{</span><span class="n">available_models</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
+    <span class="n">conf</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
+    <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;trainer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
