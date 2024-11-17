@@ -19,25 +19,24 @@
 
 
 This script demonstrates how to launch a run using the stable-SSL library.
+python examples/train.py    --config-dir examples/configs/simclr        --config-name cifar10_requeue
 
-.. GENERATED FROM PYTHON SOURCE LINES 4-22
+.. GENERATED FROM PYTHON SOURCE LINES 7-23
 
 .. code-block:: Python
 
 
-    import logging
     import hydra
-    import stable_ssl
-    from stable_ssl.utils import log_and_raise
-
-    __all__ = ["log_and_raise", "stable_ssl", "logging"]
 
 
     @hydra.main(version_base="1.2")
     def main(cfg):
         """Load the configuration and launch the run."""
-        conf = hydra.utils.instantiate(cfg, _convert_="object")
-        conf["trainer"].execute()
+        trainer = hydra.utils.instantiate(
+            cfg.trainer, _convert_="object", _recursive_=False
+        )
+        trainer.setup()
+        trainer.launch()
 
 
     if __name__ == "__main__":

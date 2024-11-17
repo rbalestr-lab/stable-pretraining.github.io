@@ -313,20 +313,19 @@
 <p><a class="reference internal" href="#sphx-glr-download-auto-examples-train-py"><span class="std std-ref">Go to the end</span></a>
 to download the full example code.</p>
 </div>
-<p class="sphx-glr-example-title" id="sphx-glr-auto-examples-train-py">This script demonstrates how to launch a run using the stable-SSL library.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">hydra</span>
-<span class="kn">import</span> <span class="nn">stable_ssl</span>
-<span class="kn">from</span> <span class="nn">stable_ssl.utils</span> <span class="kn">import</span> <span class="n">log_and_raise</span>
-
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;log_and_raise&quot;</span><span class="p">,</span> <span class="s2">&quot;stable_ssl&quot;</span><span class="p">,</span> <span class="s2">&quot;logging&quot;</span><span class="p">]</span>
+<p class="sphx-glr-example-title" id="sphx-glr-auto-examples-train-py">This script demonstrates how to launch a run using the stable-SSL library.
+python examples/train.py    –config-dir examples/configs/simclr        –config-name cifar10_requeue</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hydra</span>
 
 
 <span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">version_base</span><span class="o">=</span><span class="s2">&quot;1.2&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load the configuration and launch the run.&quot;&quot;&quot;</span>
-    <span class="n">conf</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
-    <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;trainer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+    <span class="n">trainer</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span>
+        <span class="n">cfg</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">,</span> <span class="n">_recursive_</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+    <span class="n">trainer</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+    <span class="n">trainer</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
