@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>The Self-Supervised Learning Library by Researchers for Researchers &#8212; stable-SSL 0.1-dev documentation</title>
   
   
   
@@ -144,17 +144,13 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="config_guide.html">Configuration File Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="ssl_methods.html">SSL Methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.VICReg.html">VICReg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.WMSE.html">WMSE</a></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="ssl_methods.html">SSL Methods</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="whats_new.html">What’s New</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="whats_new/pre_release.html">Pre-Release</a></li>
 </ul>
@@ -289,7 +285,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</h1>
+    <h1>The Self-Supervised Learning Library by Researchers for Researchers</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -312,8 +308,11 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="stable-ssl-the-self-supervised-learning-library-by-researchers-for-researchers">
-<h1>Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers<a class="headerlink" href="#stable-ssl-the-self-supervised-learning-library-by-researchers-for-researchers" title="Link to this heading">#</a></h1>
+  <a class="reference internal image-reference" href="https://github.com/rbalestr-lab/stable-SSL/raw/main/docs/source/figures/logo.jpg"><img alt="ssl logo" class="align-right" src="https://github.com/rbalestr-lab/stable-SSL/raw/main/docs/source/figures/logo.jpg" style="width: 200px;" />
+</a>
+<p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/"><img alt="Documentation" src="https://img.shields.io/badge/Documentation-blue.svg" /></a> <a class="reference external" href="https://github.com/rbalestr-lab/stable-SSL/tree/main/benchmarks"><img alt="Benchmark" src="https://img.shields.io/badge/Benchmarks-blue.svg" /></a> <a class="reference external" href="https://dl.circleci.com/status-badge/redirect/gh/rbalestr-lab/stable-SSL/tree/main"><img alt="CircleCI" src="https://dl.circleci.com/status-badge/img/gh/rbalestr-lab/stable-SSL/tree/main.svg?style=svg" /></a> <a class="reference external" href="https://pytorch.org/get-started/locally/"><img alt="Pytorch" src="https://img.shields.io/badge/PyTorch_1.8+-ee4c2c?logo=pytorch&amp;logoColor=white" /></a> <a class="reference external" href="https://github.com/psf/black"><img alt="Black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a> <a class="reference external" href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a> <a class="reference external" href="https://wandb.ai/site"><img alt="WandB" src="https://raw.githubusercontent.com/wandb/assets/main/wandb-github-badge-gradient.svg" /></a></p>
+<section id="the-self-supervised-learning-library-by-researchers-for-researchers">
+<h1>The Self-Supervised Learning Library by Researchers for Researchers<a class="headerlink" href="#the-self-supervised-learning-library-by-researchers-for-researchers" title="Link to this heading">#</a></h1>
 <p><em>You got a research idea? It shouldn’t take you more than 10 minutes to start from scratch and get it running with the ability to produce high quality figures/tables from the results: that’s the goal of stable-SSL.</em></p>
 <p>We achieve that by taking the best–and only the best–from the most eponymous AI libraries: PytorchLightning, VISSL, Wandb, Hydra, Submitit.</p>
 <p><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> implements all the basic boilerplate code, including data loader, logging, checkpointing, optimization, etc. You only need to implement 3 methods to get started: your loss, your model, and your prediction (see <a class="reference external" href="#own_trainer">example</a> below). But if you want to customize more things, simply inherit the base <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> and override any method! This could include different metrics, different data samples, different training loops, etc.</p>
