@@ -300,12 +300,12 @@
             <span class="p">]</span>
         <span class="p">)</span>
 
-        <span class="n">loss_ssl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_ssl_loss</span><span class="p">(</span><span class="o">*</span><span class="n">projections</span><span class="p">)</span>
+        <span class="n">loss_ssl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="o">*</span><span class="n">projections</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;train/loss_ssl&quot;</span><span class="p">:</span> <span class="n">loss_ssl</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
-            <span class="s2">&quot;train/loss_backbone_classifier&quot;</span><span class="p">:</span> <span class="n">loss_backbone_classifier</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
-            <span class="s2">&quot;train/loss_projector_classifier&quot;</span><span class="p">:</span> <span class="n">loss_proj_classifier</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+            <span class="s2">&quot;train/loss_ssl&quot;</span><span class="p">:</span> <span class="n">loss_ssl</span><span class="p">,</span>
+            <span class="s2">&quot;train/loss_backbone_classifier&quot;</span><span class="p">:</span> <span class="n">loss_backbone_classifier</span><span class="p">,</span>
+            <span class="s2">&quot;train/loss_projector_classifier&quot;</span><span class="p">:</span> <span class="n">loss_proj_classifier</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 
