@@ -153,7 +153,6 @@
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BYOLLoss.html">BYOLLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
 </ul>
 </details></li>
 </ul>
@@ -349,8 +348,8 @@ These components can be sourced from stable-SSL itself, popular libraries like P
 <h2>Minimal Documentation<a class="headerlink" href="#minimal-documentation" title="Link to this heading">#</a></h2>
 <section id="library-design">
 <h3>Library Design<a class="headerlink" href="#library-design" title="Link to this heading">#</a></h3>
-<p id="design"><code class="docutils literal notranslate"><span class="pre">Stable-SSL</span></code> provides all the boilerplate to quickly get started with AI research, focusing on Self-Supervised Learning (SSL), albeit other applications can certainly build upon Stable-SSL.
-At its core, <code class="docutils literal notranslate"><span class="pre">Stable-SSL</span></code> provides a <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> class that sequentially calls the following methods:</p>
+<p id="design"><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides all the boilerplate to quickly get started with AI research, focusing on Self-Supervised Learning (SSL), albeit other applications can certainly build upon <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>.
+At its core, <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides a <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> class that sequentially calls the following methods:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1. INITIALIZATION PHASE:
   - seed_everything()
   - initialize_modules()
@@ -365,17 +364,17 @@ At its core, <code class="docutils literal notranslate"><span class="pre">Stable
   - after_fit_epoch()
 </pre></div>
 </div>
-<p>While the organization is similar to that of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code>, the goal of <code class="docutils literal notranslate"><span class="pre">Stable-SSL</span></code> is to significantly reduce codebase complexity without sacrificing performance. Think of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code> as industry-driven (abstracting everything away), whereas <code class="docutils literal notranslate"><span class="pre">Stable-SSL</span></code> is academia-driven (bringing everything to the forefront for the user).</p>
+<p>While the organization is similar to that of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code>, the goal of <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is to significantly reduce codebase complexity without sacrificing performance. Think of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code> as industry-driven (abstracting everything away), whereas <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is academia-driven (bringing everything to the forefront for the user).</p>
 </section>
 <section id="how-to-launch-runs">
 <h3>How to launch runs<a class="headerlink" href="#how-to-launch-runs" title="Link to this heading">#</a></h3>
-<p id="launch">When using <code class="docutils literal notranslate"><span class="pre">Stable-SSL</span></code>, we recommend relying on configuration files to specify the parameters, typically using <code class="docutils literal notranslate"><span class="pre">Hydra</span></code> (see <a class="reference external" href="https://hydra.cc/">Hydra documentation</a>).</p>
+<p id="launch">When using <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>, we recommend relying on configuration files to specify the parameters, typically using <code class="docutils literal notranslate"><span class="pre">Hydra</span></code> (see <a class="reference external" href="https://hydra.cc/">Hydra documentation</a>).</p>
 <p>The parameters are organized into the following groups:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: Defines the dataset, loading, and augmentation pipelines. Only the dataset specified by <code class="docutils literal notranslate"><span class="pre">train_on</span></code> is used for training.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">networks</span></code>: Specifies the neural network modules, with a required <code class="docutils literal notranslate"><span class="pre">backbone</span></code> as the model’s core.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">objective</span></code>: Defines the model’s loss function.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">optim</span></code>: Contains optimization parameters, including <code class="docutils literal notranslate"><span class="pre">epochs</span></code>, <code class="docutils literal notranslate"><span class="pre">max_steps</span></code> (per epoch), and optimizer/scheduler settings.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">optim</span></code>: Contains optimization parameters, including <code class="docutils literal notranslate"><span class="pre">epochs</span></code>, <code class="docutils literal notranslate"><span class="pre">max_steps</span></code> (per epoch), and <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> / <code class="docutils literal notranslate"><span class="pre">scheduler</span></code> settings.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">hardware</span></code>: Specifies the hardware used, including the number of GPUs, CPUs, etc.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">logger</span></code>: Configures model performance monitoring. APIs like <a class="reference external" href="https://wandb.ai/home">WandB</a> are supported.</p></li>
 </ul>

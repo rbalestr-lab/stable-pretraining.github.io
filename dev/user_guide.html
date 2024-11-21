@@ -152,7 +152,6 @@
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BYOLLoss.html">BYOLLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
 </ul>
 </details></li>
 </ul>
@@ -295,13 +294,15 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-step-define-your-model">First step: define your model</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-objective">The objective</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-configuration-optim">Optimization Configuration (<cite>optim</cite>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware">Hardware</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-configuration-log">Log Configuration (<cite>log</cite>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-configuration-data">Data Configuration (<cite>data</cite>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-configuration-model">Model Configuration (<cite>model</cite>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-step-define-your-base-trainer-module">First step: define your base <code class="docutils literal notranslate"><span class="pre">trainer</span></code> module</a><ul class="nav section-nav flex-column">
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-objective-to-minimize-objective">The objective to minimize (<code class="docutils literal notranslate"><span class="pre">objective</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-configuration-optim">Optimization Configuration (<code class="docutils literal notranslate"><span class="pre">optim</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-hardware">Hardware (<code class="docutils literal notranslate"><span class="pre">hardware</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-configuration-data">Data Configuration (<code class="docutils literal notranslate"><span class="pre">data</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-configuration-logger">Log Configuration (<code class="docutils literal notranslate"><span class="pre">logger</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#networks-configuration-networks">Networks Configuration (<code class="docutils literal notranslate"><span class="pre">networks</span></code>)</a></li>
 </ul>
             </nav>
         </div>
@@ -315,26 +316,40 @@
                   
   <section id="module-stable_ssl">
 <span id="user-guide"></span><span id="id1"></span><h1>User Guide<a class="headerlink" href="#module-stable_ssl" title="Link to this heading">#</a></h1>
-<p>This guide explains how to construct a configuration file to launch a run with <code class="docutils literal notranslate"><span class="pre">stable_ssl</span></code>. The configuration file is written in YAML format, and various sections map to different configuration classes corresponding to optimization, hardware, log, data and model settings.</p>
-<section id="first-step-define-your-model">
-<h2>First step: define your model<a class="headerlink" href="#first-step-define-your-model" title="Link to this heading">#</a></h2>
+<p>This guide provides instructions for launching runs with <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>.</p>
+<p>To make the process streamlined and efficient, we recommend using configuration files to define parameters and utilizing <a class="reference external" href="https://hydra.cc/">Hydra</a> to manage these configurations.</p>
+<p><strong>General Idea.</strong> <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is designed to minimize boilerplate code, providing a highly flexible framework with minimal hardcoded utilities. Most modules in the pipeline are modular and can instantiate objects from various sources, including <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>, <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code>, <code class="docutils literal notranslate"><span class="pre">torchmetrics</span></code>, or even custom objects provided by the user. This allows you to seamlessly integrate your own components into the pipeline while leveraging the capabilities of <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>.</p>
+<section id="first-step-define-your-base-trainer-module">
+<h2>First step: define your base <code class="docutils literal notranslate"><span class="pre">trainer</span></code> module<a class="headerlink" href="#first-step-define-your-base-trainer-module" title="Link to this heading">#</a></h2>
+<p>In <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>, the main <code class="docutils literal notranslate"><span class="pre">trainer</span></code> object must inherit from the <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> class. This class serves as the primary entry point for the training loop and provides all the essential methods required to train and evaluate your model effectively.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.BaseModel.html#stable_ssl.BaseModel" title="stable_ssl.BaseModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseModel</span></code></a>(data, networks, objective, ...[, ...])</p></td>
 <td><p>Base class for training a model.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.JointEmbedding.html#stable_ssl.JointEmbedding" title="stable_ssl.JointEmbedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JointEmbedding</span></code></a>(data, networks, objective, ...)</p></td>
+</tbody>
+</table>
+</div>
+<p>More specifically, if you want to train a self-supervised learning model, you can inherit from the following classes, depending on the type of model you are interested in:</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.JointEmbedding.html#stable_ssl.JointEmbedding" title="stable_ssl.JointEmbedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JointEmbedding</span></code></a>(data, networks, objective, ...)</p></td>
 <td><p>Joint embedding version of Base Model.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.SelfDistillation.html#stable_ssl.SelfDistillation" title="stable_ssl.SelfDistillation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelfDistillation</span></code></a>(data, networks, objective, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.SelfDistillation.html#stable_ssl.SelfDistillation" title="stable_ssl.SelfDistillation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelfDistillation</span></code></a>(data, networks, objective, ...)</p></td>
 <td><p>Base class for training a self-distillation SSL model.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<p>Here is what this instantiation looks like in the YAML configuration file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.JointEmbedding</span>
+</pre></div>
+</div>
 </section>
-<section id="the-objective">
-<h2>The objective<a class="headerlink" href="#the-objective" title="Link to this heading">#</a></h2>
+<section id="the-objective-to-minimize-objective">
+<h2>The objective to minimize (<code class="docutils literal notranslate"><span class="pre">objective</span></code>)<a class="headerlink" href="#the-objective-to-minimize-objective" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">objective</span></code> keyword is used to define the loss function for your model. <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> offers a variety of loss functions to suit different training needs. Below is a list of the available loss functions:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.NTXEntLoss.html#stable_ssl.NTXEntLoss" title="stable_ssl.NTXEntLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NTXEntLoss</span></code></a>([temperature])</p></td>
@@ -352,26 +367,36 @@
 </tbody>
 </table>
 </div>
-</section>
-<section id="optimization-configuration-optim">
-<h2>Optimization Configuration (<cite>optim</cite>)<a class="headerlink" href="#optimization-configuration-optim" title="Link to this heading">#</a></h2>
-<p>The <cite>optim</cite> keyword is used to define the optimization settings for your model. Here’s an example of how to define the <cite>optim</cite> section in your YAML file:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">optim</span><span class="p">:</span>
-<span class="w">   </span><span class="nt">lr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.001</span>
-<span class="w">   </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
-<span class="w">   </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
+<p>Here’s an example of how to define the <cite>objective</cite> section in your YAML file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">objective</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.NTXEntLoss</span>
+<span class="w">   </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
 </pre></div>
 </div>
-<p>The complete list of parameters for the <cite>optim</cite> section, including their descriptions and default values, is provided below:</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
-</tbody>
-</table>
+</section>
+<section id="optimization-configuration-optim">
+<h2>Optimization Configuration (<code class="docutils literal notranslate"><span class="pre">optim</span></code>)<a class="headerlink" href="#optimization-configuration-optim" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">optim</span></code> keyword is used to define the optimization settings for your model. It allows users to specify both the <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> object and the <code class="docutils literal notranslate"><span class="pre">scheduler</span></code>. Below is an example configuration:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">optim</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<span class="w">   </span><span class="nt">max_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<span class="w">   </span><span class="nt">optimizer</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.optim.AdamW</span>
+<span class="w">      </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">      </span><span class="nt">lr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
+<span class="w">      </span><span class="nt">weight_decay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1e-6</span>
+<span class="w">   </span><span class="nt">scheduler</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.optim.lr_scheduler.OneCycleLR</span>
+<span class="w">      </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">      </span><span class="nt">max_lr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
+<span class="w">      </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.optim.epochs}</span>
+<span class="w">      </span><span class="nt">steps_per_epoch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${eval:&#39;${trainer.data._num_samples} // ${trainer.data.${trainer.train_on}.batch_size}&#39;}</span>
+</pre></div>
 </div>
 </section>
-<section id="hardware">
-<h2>Hardware<a class="headerlink" href="#hardware" title="Link to this heading">#</a></h2>
-<p>Use the <cite>hardware</cite> keyword to configure hardware-related settings such as device, world_size (number of GPUs) or CPUs per task. The complete list of parameters for the <cite>hardware</cite> section is available below:</p>
+<section id="hardware-hardware">
+<h2>Hardware (<code class="docutils literal notranslate"><span class="pre">hardware</span></code>)<a class="headerlink" href="#hardware-hardware" title="Link to this heading">#</a></h2>
+<p>Use the <cite>hardware</cite> keyword to configure hardware-related settings such as device, world_size (number of GPUs) or CPUs per task. An example is available below:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">hardware</span><span class="p">:</span>
 <span class="w">   </span><span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
 <span class="w">   </span><span class="nt">float16</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
@@ -381,81 +406,130 @@
 </pre></div>
 </div>
 </section>
-<section id="log-configuration-log">
-<h2>Log Configuration (<cite>log</cite>)<a class="headerlink" href="#log-configuration-log" title="Link to this heading">#</a></h2>
-<p>The <cite>log</cite> keyword configures the logging settings for your run. The complete list of parameters for the <cite>log</cite> section is provided here:</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.LogConfig.html#stable_ssl.config.LogConfig" title="stable_ssl.config.LogConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.LogConfig</span></code></a>([level, save_final_model, ...])</p></td>
-<td><p>Configuration for the 'log' parameters.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
 <section id="data-configuration-data">
-<h2>Data Configuration (<cite>data</cite>)<a class="headerlink" href="#data-configuration-data" title="Link to this heading">#</a></h2>
-<p>The <cite>data</cite> keyword defines data loading, preprocessing and data augmentation settings. Here is an example of how to define the <cite>data</cite> section in your YAML file:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_num_classes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<span class="nt">_num_samples</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50000</span>
-<span class="nt">base</span><span class="p">:</span>
-<span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.utils.data.DataLoader</span>
-<span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
-<span class="nt">drop_last</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
-<span class="nt">shuffle</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
-<span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.hardware.cpus_per_task}</span>
-<span class="nt">dataset</span><span class="p">:</span>
-<span class="w">   </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.datasets.CIFAR10</span>
-<span class="w">   </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~/data</span>
-<span class="w">   </span><span class="nt">train</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
-<span class="w">   </span><span class="nt">transform</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.data.MultiViewSampler</span>
-<span class="w">      </span><span class="nt">transforms</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.Compose</span>
-<span class="w">         </span><span class="l l-Scalar l-Scalar-Plain">transforms</span><span class="p p-Indicator">:</span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.RandomResizedCrop</span>
-<span class="w">            </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
-<span class="w">            </span><span class="nt">scale</span><span class="p">:</span>
-<span class="w">               </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
-<span class="w">               </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.RandomHorizontalFlip</span>
-<span class="w">            </span><span class="nt">p</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.ToImage</span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.ToDtype</span>
-<span class="w">            </span><span class="nt">dtype</span><span class="p">:</span>
+<h2>Data Configuration (<code class="docutils literal notranslate"><span class="pre">data</span></code>)<a class="headerlink" href="#data-configuration-data" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">data</span></code> keyword defines data loading, preprocessing and data augmentation settings. Here is an example of how to define the <code class="docutils literal notranslate"><span class="pre">data</span></code> section in your YAML file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">train_on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">base</span>
+<span class="nt">data</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">_num_classes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">   </span><span class="nt">_num_samples</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50000</span>
+<span class="w">   </span><span class="nt">base</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.utils.data.DataLoader</span>
+<span class="w">   </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
+<span class="w">   </span><span class="nt">drop_last</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">   </span><span class="nt">shuffle</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">   </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.hardware.cpus_per_task}</span>
+<span class="w">   </span><span class="nt">dataset</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.datasets.CIFAR10</span>
+<span class="w">      </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~/data</span>
+<span class="w">      </span><span class="nt">train</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">      </span><span class="nt">transform</span><span class="p">:</span>
+<span class="w">         </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.data.MultiViewSampler</span>
+<span class="w">         </span><span class="nt">transforms</span><span class="p">:</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.Compose</span>
+<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">transforms</span><span class="p p-Indicator">:</span>
+<span class="w">               </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.RandomResizedCrop</span>
+<span class="w">               </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<span class="w">               </span><span class="nt">scale</span><span class="p">:</span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
+<span class="w">                  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+<span class="w">               </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.RandomHorizontalFlip</span>
+<span class="w">               </span><span class="nt">p</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<span class="w">               </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.ToImage</span>
+<span class="w">               </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.ToDtype</span>
+<span class="w">               </span><span class="nt">dtype</span><span class="p">:</span>
+<span class="w">                  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.utils.str_to_dtype</span>
+<span class="w">                  </span><span class="nt">_args_</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">float32</span><span class="p p-Indicator">]</span>
+<span class="w">               </span><span class="nt">scale</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.data.base.dataset.transform.transforms.0}</span>
+<span class="w">   </span><span class="nt">test_out</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.utils.data.DataLoader</span>
+<span class="w">   </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
+<span class="w">   </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.hardware.cpus_per_task}</span>
+<span class="w">   </span><span class="nt">dataset</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.datasets.CIFAR10</span>
+<span class="w">      </span><span class="nt">train</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">      </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~/data</span>
+<span class="w">      </span><span class="nt">transform</span><span class="p">:</span>
+<span class="w">         </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.Compose</span>
+<span class="w">         </span><span class="nt">transforms</span><span class="p">:</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.ToImage</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.ToDtype</span>
+<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">dtype</span><span class="p p-Indicator">:</span>
 <span class="w">               </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.utils.str_to_dtype</span>
 <span class="w">               </span><span class="nt">_args_</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">float32</span><span class="p p-Indicator">]</span>
-<span class="w">            </span><span class="nt">scale</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.data.base.dataset.transform.transforms.0}</span>
-<span class="nt">test_out</span><span class="p">:</span>
-<span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.utils.data.DataLoader</span>
-<span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
-<span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.hardware.cpus_per_task}</span>
-<span class="nt">dataset</span><span class="p">:</span>
-<span class="w">   </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.datasets.CIFAR10</span>
-<span class="w">   </span><span class="nt">train</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
-<span class="w">   </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~/data</span>
-<span class="w">   </span><span class="nt">transform</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.Compose</span>
-<span class="w">      </span><span class="nt">transforms</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.ToImage</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchvision.transforms.v2.ToDtype</span>
-<span class="w">         </span><span class="l l-Scalar l-Scalar-Plain">dtype</span><span class="p p-Indicator">:</span>
-<span class="w">            </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.utils.str_to_dtype</span>
-<span class="w">            </span><span class="nt">_args_</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">float32</span><span class="p p-Indicator">]</span>
-<span class="w">        </span><span class="w w-Error"> </span><span class="nt">scale</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">           </span><span class="w w-Error"> </span><span class="nt">scale</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">train_on</span></code> parameter specifies the dataset to train on. The <code class="docutils literal notranslate"><span class="pre">data</span></code> section can contain multiple datasets, each with its own configuration, but only one is used for training. The others can be used for evaluation.</p>
+</div>
+</section>
+<section id="log-configuration-logger">
+<h2>Log Configuration (<code class="docutils literal notranslate"><span class="pre">logger</span></code>)<a class="headerlink" href="#log-configuration-logger" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">logger</span></code> keyword is used to configure the logging settings for your run.</p>
+<p>One important section is <code class="docutils literal notranslate"><span class="pre">metrics</span></code>, which lets you define the evaluation metrics to track during training. Metrics can be specified for each dataset, as shown below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">logger</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">base_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./&quot;</span>
+<span class="w">   </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="w">   </span><span class="nt">checkpoint_frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">   </span><span class="nt">every_step</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">   </span><span class="nt">metrics</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">base</span><span class="p">:</span>
+<span class="w">         </span><span class="nt">acc1</span><span class="p">:</span>
+<span class="w">         </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchmetrics.classification.MulticlassAccuracy</span>
+<span class="w">         </span><span class="nt">num_classes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.data._num_classes}</span>
+<span class="w">         </span><span class="nt">top_k</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">         </span><span class="nt">acc5</span><span class="p">:</span>
+<span class="w">         </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchmetrics.classification.MulticlassAccuracy</span>
+<span class="w">         </span><span class="nt">num_classes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.data._num_classes}</span>
+<span class="w">         </span><span class="nt">top_k</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">      </span><span class="nt">test_out</span><span class="p">:</span>
+<span class="w">         </span><span class="nt">acc1</span><span class="p">:</span>
+<span class="w">         </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchmetrics.classification.MulticlassAccuracy</span>
+<span class="w">         </span><span class="nt">num_classes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.data._num_classes}</span>
+<span class="w">         </span><span class="nt">top_k</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">         </span><span class="nt">acc5</span><span class="p">:</span>
+<span class="w">         </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchmetrics.classification.MulticlassAccuracy</span>
+<span class="w">         </span><span class="nt">num_classes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.data._num_classes}</span>
+<span class="w">         </span><span class="nt">top_k</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
 </pre></div>
 </div>
 </section>
-<section id="model-configuration-model">
-<h2>Model Configuration (<cite>model</cite>)<a class="headerlink" href="#model-configuration-model" title="Link to this heading">#</a></h2>
-<p>The <cite>model</cite> keyword is used to define the model settings, including the architecture of the backbone, objectives, and more. Below is a list of parameters shared across all models:</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
-</tbody>
-</table>
+<section id="networks-configuration-networks">
+<h2>Networks Configuration (<code class="docutils literal notranslate"><span class="pre">networks</span></code>)<a class="headerlink" href="#networks-configuration-networks" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">networks</span></code> keyword is used to define the neural networks settings, including the architecture of the backbone, projectors etc. Below is an example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">networks</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">backbone</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.utils.load_backbone</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resnet18</span>
+<span class="w">      </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;CIFAR10&quot;</span>
+<span class="w">   </span><span class="nt">projector</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Sequential</span>
+<span class="w">      </span><span class="nt">_args_</span><span class="p">:</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Linear</span>
+<span class="w">         </span><span class="nt">in_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512</span>
+<span class="w">         </span><span class="nt">out_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2048</span>
+<span class="w">         </span><span class="nt">bias</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.BatchNorm1d</span>
+<span class="w">         </span><span class="nt">num_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.networks.projector._args_.0.out_features}</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.ReLU</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Linear</span>
+<span class="w">         </span><span class="nt">in_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.networks.projector._args_.0.out_features}</span>
+<span class="w">         </span><span class="nt">out_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">128</span>
+<span class="w">         </span><span class="nt">bias</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">   </span><span class="nt">projector_classifier</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Linear</span>
+<span class="w">      </span><span class="nt">in_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">128</span>
+<span class="w">      </span><span class="nt">out_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.data._num_classes}</span>
+<span class="w">   </span><span class="nt">backbone_classifier</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Linear</span>
+<span class="w">      </span><span class="nt">in_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512</span>
+<span class="w">      </span><span class="nt">out_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.data._num_classes}</span>
+</pre></div>
 </div>
-<p>When defining a specific method, you can set method-specific parameters by creating a configuration class that inherits from <cite>BaseModelConfig</cite>. Examples of configurations for different methods in the library are provided below:</p>
+<p>The various components defined above can be accessed through the dictionary <code class="docutils literal notranslate"><span class="pre">self.networks</span></code> in your trainer class. This allows you to define the forward pass, compute losses, and specify evaluation metrics efficiently.</p>
 </section>
 </section>
 
@@ -505,13 +579,15 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-step-define-your-model">First step: define your model</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-objective">The objective</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-configuration-optim">Optimization Configuration (<cite>optim</cite>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware">Hardware</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-configuration-log">Log Configuration (<cite>log</cite>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-configuration-data">Data Configuration (<cite>data</cite>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-configuration-model">Model Configuration (<cite>model</cite>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-step-define-your-base-trainer-module">First step: define your base <code class="docutils literal notranslate"><span class="pre">trainer</span></code> module</a><ul class="nav section-nav flex-column">
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-objective-to-minimize-objective">The objective to minimize (<code class="docutils literal notranslate"><span class="pre">objective</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-configuration-optim">Optimization Configuration (<code class="docutils literal notranslate"><span class="pre">optim</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-hardware">Hardware (<code class="docutils literal notranslate"><span class="pre">hardware</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-configuration-data">Data Configuration (<code class="docutils literal notranslate"><span class="pre">data</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-configuration-logger">Log Configuration (<code class="docutils literal notranslate"><span class="pre">logger</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#networks-configuration-networks">Networks Configuration (<code class="docutils literal notranslate"><span class="pre">networks</span></code>)</a></li>
 </ul>
   </nav></div>
 
