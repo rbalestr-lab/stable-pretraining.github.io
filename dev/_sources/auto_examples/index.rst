@@ -35,23 +35,6 @@ Below are example scripts showing how to use the library in various scenarios.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This script demonstrates how to launch a run using the stable-SSL library.">
-
-.. only:: html
-
-  .. image:: /auto_examples/images/thumb/sphx_glr_train_thumb.png
-    :alt:
-
-  :ref:`sphx_glr_auto_examples_train.py`
-
-.. raw:: html
-
-      <div class="sphx-glr-thumbnail-title">This script demonstrates how to launch a run using the stable-SSL library.</div>
-    </div>
-
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to create a custom supervised model using the">
 
 .. only:: html
@@ -95,7 +78,6 @@ Below are example scripts showing how to use the library in various scenarios.
    :hidden:
 
    /auto_examples/wandb_reader
-   /auto_examples/train
    /auto_examples/custom_supervised
    /auto_examples/imbalance_supervised_learning
 

@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**00:00.000** total execution time for 4 files **from auto_examples**:
+**00:00.000** total execution time for 3 files **from auto_examples**:
 
 .. container::
 
@@ -36,9 +36,6 @@ Computation times
      - 00:00.000
      - 0.0
    * - :ref:`sphx_glr_auto_examples_imbalance_supervised_learning.py` (``imbalance_supervised_learning.py``)
-     - 00:00.000
-     - 0.0
-   * - :ref:`sphx_glr_auto_examples_train.py` (``train.py``)
      - 00:00.000
      - 0.0
    * - :ref:`sphx_glr_auto_examples_wandb_reader.py` (``wandb_reader.py``)
