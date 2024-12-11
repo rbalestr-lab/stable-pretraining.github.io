@@ -314,20 +314,68 @@
 <h1>BaseModel<a class="headerlink" href="#basemodel" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="stable_ssl.BaseModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.</span></span><span class="sig-name descname"><span class="pre">BaseModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_on</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardware</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/base.html#BaseModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.BaseModel" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.</span></span><span class="sig-name descname"><span class="pre">BaseModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modules</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardware</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/base.html#BaseModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.BaseModel" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://pytorch.org/docs/2.0/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
 <p>Base class for training a model.</p>
+<p>That method provides a general boilerplate for all the internal operations
+that always occur no matter the actual application and project. This includes
+training, evaluation, checkpointing, restarting training, … the internals
+can be modified from the configs.</p>
+<p>This class should be subclassed by your specific method (see examples).</p>
+<p>Execution flow when calling <cite>launch</cite>:</p>
+<ul>
+<li><p>self.before_fit (nothing by default)</p></li>
+<li><p>self.fit (executes all the training/intermitent evaluation by default)
+- for <cite>self.optim[“epochs”]</cite> epochs:</p>
+<blockquote>
+<div><ul>
+<li><p>self.fit_epoch (one training epoch by default)
+- self.before_fit_epoch (setup in train mode)
+- loop over mini-batches</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>self.before_fit_step (moves data to device)</p></li>
+<li><p>self.fit_step</p></li>
+<li><p>self.after_fit_step (nothing by default)</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>self.after_fit_epoch</p></li>
+</ul>
+</li>
+<li><p>self.evaluate (if asked by user config, looping over all non train datasets)
+- self.before_eval (setup in eval mode)
+- loop over mini-batches</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>self.before_eval_step (moves data to device)</p></li>
+<li><p>self.eval_step</p></li>
+<li><p>self.after_eval_step (nothing by default)</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>self.after_eval</p></li>
+</ul>
+</li>
+<li><p>save intermitent checkpoint if asked by user config</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>save final checkpoint if asked by user config</p></li>
+</ul>
+</li>
+<li><p>self.after_fit (evaluates by default)</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Data configuration.</p></li>
-<li><p><strong>network</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Network configuration.</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Data mapper of name-&gt;mini-batch. The <cite>train</cite> name is used for training.
+Any other name is used for validation.</p></li>
+<li><p><strong>modules</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Modules (NNs) configuration.</p></li>
 <li><p><strong>objective</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Objective configuration.</p></li>
-<li><p><strong>train_on</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – Name of the dataset to train on.</p></li>
 <li><p><strong>hardware</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Hardware configuration.</p></li>
 <li><p><strong>optim</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Optimizer configuration.</p></li>
 <li><p><strong>logger</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Logger configuration.</p></li>
-<li><p><strong>eval_only</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to only evaluate the model. Default is False.</p></li>
 </ul>
 </dd>
 </dl>

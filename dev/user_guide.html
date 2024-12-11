@@ -324,7 +324,7 @@
 <p>In <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>, the main <code class="docutils literal notranslate"><span class="pre">trainer</span></code> object must inherit from the <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> class. This class serves as the primary entry point for the training loop and provides all the essential methods required to train and evaluate your model effectively.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.BaseModel.html#stable_ssl.BaseModel" title="stable_ssl.BaseModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseModel</span></code></a>(data, network, objective, ...[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.BaseModel.html#stable_ssl.BaseModel" title="stable_ssl.BaseModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseModel</span></code></a>(data, modules, objective, ...)</p></td>
 <td><p>Base class for training a model.</p></td>
 </tr>
 </tbody>
@@ -333,10 +333,10 @@
 <p>More specifically, if you want to train a self-supervised learning model, you can inherit from the following classes, depending on the type of model you are interested in:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.JointEmbedding.html#stable_ssl.JointEmbedding" title="stable_ssl.JointEmbedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JointEmbedding</span></code></a>(data, network, objective, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.JointEmbedding.html#stable_ssl.JointEmbedding" title="stable_ssl.JointEmbedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JointEmbedding</span></code></a>(data, modules, objective, ...)</p></td>
 <td><p>Base class for training a joint-embedding SSL model.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.SelfDistillation.html#stable_ssl.SelfDistillation" title="stable_ssl.SelfDistillation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelfDistillation</span></code></a>(data, network, objective, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.SelfDistillation.html#stable_ssl.SelfDistillation" title="stable_ssl.SelfDistillation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelfDistillation</span></code></a>(data, modules, objective, ...)</p></td>
 <td><p>Base class for training a self-distillation SSL model.</p></td>
 </tr>
 </tbody>
