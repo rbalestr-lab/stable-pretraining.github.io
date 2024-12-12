@@ -315,7 +315,7 @@
                   
   <a class="reference internal image-reference" href="https://github.com/rbalestr-lab/stable-SSL/raw/main/docs/source/figures/logo.jpg"><img alt="ssl logo" class="align-right" src="https://github.com/rbalestr-lab/stable-SSL/raw/main/docs/source/figures/logo.jpg" style="width: 200px;" />
 </a>
-<p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/"><img alt="Documentation" src="https://img.shields.io/badge/Documentation-blue.svg" /></a> <a class="reference external" href="https://github.com/rbalestr-lab/stable-SSL/tree/main/benchmarks"><img alt="Benchmark" src="https://img.shields.io/badge/Benchmarks-blue.svg" /></a> <a class="reference external" href="https://dl.circleci.com/status-badge/redirect/gh/rbalestr-lab/stable-SSL/tree/main"><img alt="CircleCI" src="https://dl.circleci.com/status-badge/img/gh/rbalestr-lab/stable-SSL/tree/main.svg?style=svg" /></a> <a class="reference external" href="https://pytorch.org/get-started/locally/"><img alt="Pytorch" src="https://img.shields.io/badge/PyTorch_1.8+-ee4c2c?logo=pytorch&amp;logoColor=white" /></a> <a class="reference external" href="https://github.com/psf/black"><img alt="Black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a> <a class="reference external" href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a> <a class="reference external" href="https://wandb.ai/site"><img alt="WandB" src="https://raw.githubusercontent.com/wandb/assets/main/wandb-github-badge-gradient.svg" /></a></p>
+<p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/"><img alt="Documentation" src="https://img.shields.io/badge/Documentation-blue.svg" /></a> <a class="reference external" href="https://github.com/rbalestr-lab/stable-SSL/tree/main/benchmarks"><img alt="Benchmark" src="https://img.shields.io/badge/Benchmarks-blue.svg" /></a> <a class="reference external" href="https://dl.circleci.com/status-badge/redirect/gh/rbalestr-lab/stable-SSL/tree/main"><img alt="CircleCI" src="https://dl.circleci.com/status-badge/img/gh/rbalestr-lab/stable-SSL/tree/main.svg?style=svg" /></a> <a class="reference external" href="https://pytorch.org/get-started/locally/"><img alt="Pytorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&amp;logoColor=white" /></a> <a class="reference external" href="https://github.com/psf/black"><img alt="Black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a> <a class="reference external" href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a> <a class="reference external" href="https://wandb.ai/site"><img alt="WandB" src="https://raw.githubusercontent.com/wandb/assets/main/wandb-github-badge-gradient.svg" /></a></p>
 <p>⚠️ This library is currently in a phase of active development. All features are subject to change without prior notice.</p>
 <section id="the-self-supervised-learning-library-by-researchers-for-researchers">
 <h1>The Self-Supervised Learning Library by Researchers for Researchers<a class="headerlink" href="#the-self-supervised-learning-library-by-researchers-for-researchers" title="Link to this heading">#</a></h1>
@@ -350,41 +350,47 @@ These components can be sourced from stable-SSL itself, popular libraries like P
 <h3>Library Design<a class="headerlink" href="#library-design" title="Link to this heading">#</a></h3>
 <p id="design"><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides all the boilerplate to quickly get started with AI research, focusing on Self-Supervised Learning (SSL), albeit other applications can certainly build upon <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>.
 At its core, <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides a <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> class that sequentially calls the following methods:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1. INITIALIZATION PHASE:
-  - seed_everything()
-  - initialize_modules()
-  - load_checkpoint()
-
-2. TRAIN/EVAL PHASE:
-  - before_fit_epoch()
-  - for batch in train_loader:
-    - before_fit_step()
-    - fit_step(batch)
-    - after_fit_step()
-  - after_fit_epoch()
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- self.before_fit (nothing by default)
+- self.fit (executes all the training/intermitent evaluation by default)
+   - for `self.optim[&quot;epochs&quot;]` epochs:
+      - self.fit_epoch (one training epoch by default)
+         - self.before_fit_epoch (setup in train mode)
+         - loop over mini-batches
+            - self.before_fit_step (moves data to device)
+            - self.fit_step (computes loss and performs optimization step)
+            - self.after_fit_step (nothing by default)
+         - self.after_fit_epoch (nothing by default)
+      - self.evaluate (if asked by user config, looping over all non train datasets)
+         - self.before_eval (setup in eval mode)
+         - loop over mini-batches
+            - self.before_eval_step (moves data to device)
+            - self.eval_step (computes eval metrics)
+            - self.after_eval_step (nothing by default)
+         - self.after_eval (nothing by default)
+      - save intermitent checkpoint if asked by user config
+   - save final checkpoint if asked by user config
+- self.after_fit (evaluates by default)
 </pre></div>
 </div>
-<p>While the organization is similar to that of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code>, the goal of <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is to significantly reduce codebase complexity without sacrificing performance. Think of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code> as industry-driven (abstracting everything away), whereas <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is academia-driven (bringing everything to the forefront for the user).</p>
+<p>While the organization is similar to that of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code>, the goal of <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is to significantly reduce codebase complexity without sacrificing performance. Think of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code> as industry-driven (abstracting everything away), whereas <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is academia-driven (providing users with complete visibility into every aspect).</p>
 </section>
 <section id="how-to-launch-runs">
 <h3>How to launch runs<a class="headerlink" href="#how-to-launch-runs" title="Link to this heading">#</a></h3>
 <p id="launch">When using <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>, we recommend relying on configuration files to specify the parameters, typically using <code class="docutils literal notranslate"><span class="pre">Hydra</span></code> (see <a class="reference external" href="https://hydra.cc/">Hydra documentation</a>).</p>
-<p>The parameters are organized into the following groups:</p>
+<p>The parameters are organized into the following groups (more details in the <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html">User Guide</a>):</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: Defines the dataset, loading, and augmentation pipelines. Only the dataset specified by <code class="docutils literal notranslate"><span class="pre">train_on</span></code> is used for training.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">networks</span></code>: Specifies the neural network modules, with a required <code class="docutils literal notranslate"><span class="pre">backbone</span></code> as the model’s core.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">objective</span></code>: Defines the model’s loss function.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">optim</span></code>: Contains optimization parameters, including <code class="docutils literal notranslate"><span class="pre">epochs</span></code>, <code class="docutils literal notranslate"><span class="pre">max_steps</span></code> (per epoch), and <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> / <code class="docutils literal notranslate"><span class="pre">scheduler</span></code> settings.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hardware</span></code>: Specifies the hardware used, including the number of GPUs, CPUs, etc.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">logger</span></code>: Configures model performance monitoring. APIs like <a class="reference external" href="https://wandb.ai/home">WandB</a> are supported.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: Defines the dataset, loading, and augmentation pipelines. Only the dataset called <code class="docutils literal notranslate"><span class="pre">train</span></code> is used for training. If there is no dataset named <code class="docutils literal notranslate"><span class="pre">train</span></code>, the model runs in evaluation mode. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#data">Example</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">modules</span></code>: Specifies the neural network modules, with a required <code class="docutils literal notranslate"><span class="pre">backbone</span></code> as the model’s core. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#module">Example</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">objective</span></code>: Defines the model’s loss function. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#objective">Example</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">optim</span></code>: Contains optimization parameters, including <code class="docutils literal notranslate"><span class="pre">epochs</span></code>, <code class="docutils literal notranslate"><span class="pre">max_steps</span></code> (per epoch), and <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> / <code class="docutils literal notranslate"><span class="pre">scheduler</span></code> settings. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#optim">Example</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hardware</span></code>: Specifies the hardware used, including the number of GPUs, CPUs, etc. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#hardware">Example</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">logger</span></code>: Configures model performance monitoring. APIs like <a class="reference external" href="https://wandb.ai/home">WandB</a> are supported. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#logger">Example</a>.</p></li>
 </ul>
-<p>Additionally, the parameter <code class="docutils literal notranslate"><span class="pre">eval_only</span></code> specifies whether the model should run in evaluation mode only, without training.</p>
-<p>For more details about configurations, we refer to the <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html">User Guide</a> section of the documentation.</p>
 <p>Then, create a Python script that will load the configuration and launch the run. Here is an example with Hydra:</p>
 <div class="highlight-python notranslate" id="run-py"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hydra</span>
 <span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">OmegaConf</span>
 
-<span class="n">OmegaConf</span><span class="o">.</span><span class="n">register_new_resolver</span><span class="p">(</span><span class="s2">&quot;eval&quot;</span><span class="p">,</span> <span class="nb">eval</span><span class="p">)</span>
+<span class="n">OmegaConf</span><span class="o">.</span><span class="n">register_new_resolver</span><span class="p">(</span><span class="s2">&quot;eval&quot;</span><span class="p">,</span> <span class="nb">eval</span><span class="p">)</span> <span class="c1"># to evaluate expressions in the config file</span>
 
 <span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">version_base</span><span class="o">=</span><span class="s2">&quot;1.2&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
