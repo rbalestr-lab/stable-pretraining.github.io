@@ -264,18 +264,20 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">submitit</span>
 <span class="kn">import</span> <span class="nn">jsonlines</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">omegaconf</span>
 <span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">asdict</span>
+
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 
 <span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">DistributedSamplerWrapper</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">reader</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">update_momentum</span>
+<span class="kn">from</span> <span class="nn">.config</span> <span class="kn">import</span> <span class="n">LoggerConfig</span><span class="p">,</span> <span class="n">WandbConfig</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">wandb</span>
@@ -284,7 +286,6 @@
         <span class="s2">&quot;Wandb module is not installed, make sure not to use wandb for logging &quot;</span>
         <span class="s2">&quot;or an error will be thrown.&quot;</span>
     <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">hydra.core.hydra_config</span> <span class="kn">import</span> <span class="n">HydraConfig</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BreakAllEpochs</span><span class="p">,</span>
     <span class="n">BreakEpoch</span><span class="p">,</span>
@@ -296,53 +297,6 @@
 <span class="p">)</span>
 
 
-<span class="c1"># https://github.com/Lightning-AI/pytorch-lightning/blob/master/src/</span>
-<span class="c1"># lightning/pytorch/overrides/distributed.py#L224</span>
-<span class="c1"># class UnrepeatedDistributedSampler(DistributedSampler):</span>
-<span class="c1">#     def __init__(self, *args: Any, **kwargs: Any) -&gt; None:</span>
-<span class="c1">#         super().__init__(*args, **kwargs)</span>
-<span class="c1">#         if not isinstance(self.dataset, Sized):</span>
-<span class="c1">#             raise TypeError(&quot;The given dataset must implement the `__len__` method.&quot;)</span>
-<span class="c1">#         self.num_samples = len(range(self.rank, len(self.dataset), self.num_replicas))</span>
-<span class="c1">#         self.total_size = len(self.dataset)</span>
-<span class="c1">#         # If any process has at least one batch, every other process needs to</span>
-<span class="c1">#         # have at least one batch, or the DistributedDataParallel could lock up.</span>
-<span class="c1">#         assert self.num_samples &gt;= 1 or self.total_size == 0</span>
-
-<span class="c1">#     @override</span>
-<span class="c1">#     def __iter__(self) -&gt; Iterator[List[int]]:</span>
-<span class="c1">#         if not isinstance(self.dataset, Sized):</span>
-<span class="c1">#             raise TypeError(&quot;The given dataset must implement the `__len__` method.&quot;)</span>
-<span class="c1">#         if self.shuffle:</span>
-<span class="c1">#             # deterministically shuffle based on epoch</span>
-<span class="c1">#             g = torch.Generator()</span>
-<span class="c1">#             g.manual_seed(self.epoch)</span>
-<span class="c1">#             indices = torch.randperm(len(self.dataset), generator=g).tolist()</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             indices = list(range(len(self.dataset)))</span>
-
-<span class="c1">#         assert len(indices) == self.total_size</span>
-
-<span class="c1">#         # subsample</span>
-<span class="c1">#         indices = indices[self.rank : self.total_size : self.num_replicas]</span>
-<span class="c1">#         assert len(indices) == self.num_samples</span>
-
-<span class="c1">#         return iter(indices)</span>
-
-
-<span class="c1"># class UnrepeatedDistributedSamplerWrapper(UnrepeatedDistributedSampler):</span>
-
-<span class="c1">#     def __init__(</span>
-<span class="c1">#         self, sampler: Union[Sampler, Iterable], *args: Any, **kwargs: Any</span>
-<span class="c1">#     ) -&gt; None:</span>
-<span class="c1">#         super().__init__(_DatasetSamplerWrapper(sampler), *args, **kwargs)</span>
-
-<span class="c1">#     @override</span>
-<span class="c1">#     def __iter__(self) -&gt; Iterator:</span>
-<span class="c1">#         self.dataset.reset()</span>
-<span class="c1">#         return (self.dataset[index] for index in super().__iter__())</span>
-
-
 <div class="viewcode-block" id="BaseModel">
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseModel.html#stable_ssl.BaseModel">[docs]</a>
 <span class="k">class</span> <span class="nc">BaseModel</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -350,8 +304,8 @@
 
 <span class="sd">    That method provides a general boilerplate for all the internal operations</span>
 <span class="sd">    that always occur no matter the actual application and project. This includes</span>
-<span class="sd">    training, evaluation, checkpointing, restarting training, ... the internals</span>
-<span class="sd">    can be modified from the configs.</span>
+<span class="sd">    training, evaluation, checkpointing, restarting training, ...</span>
+<span class="sd">    The internals can be modified from the configs.</span>
 
 <span class="sd">    This class should be subclassed by your specific method (see examples).</span>
 
@@ -381,8 +335,8 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    data: dict</span>
-<span class="sd">        Data mapper of name-&gt;mini-batch. The `train` name is used for training.</span>
-<span class="sd">        Any other name is used for validation.</span>
+<span class="sd">        Data mapper of name-&gt;mini-batch. The dataset named `train` is used for training.</span>
+<span class="sd">        Any other dataset is used for validation.</span>
 <span class="sd">    module: dict</span>
 <span class="sd">        Module (NNs) configuration.</span>
 <span class="sd">    objective: dict</span>
@@ -406,7 +360,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_hardware</span> <span class="o">=</span> <span class="n">hardware</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_optim</span> <span class="o">=</span> <span class="n">optim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logger</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_logger_defaults</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">)</span>
+
+        <span class="c1"># Set the logger defaults.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">asdict</span><span class="p">(</span><span class="n">LoggerConfig</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">bool</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wandb&quot;</span><span class="p">),</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asdict</span><span class="p">(</span><span class="n">WandbConfig</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]))</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">set_optim_defaults</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_optim</span><span class="p">)</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
         <span class="n">c</span><span class="p">[</span><span class="s2">&quot;trainer&quot;</span><span class="p">][</span><span class="s2">&quot;logger&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span>
@@ -448,7 +409,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;entity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">entity</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;project&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">project</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">name</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">id</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">id</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">- entity: </span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">entity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">- project: </span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">project</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">- name: </span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -546,27 +507,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">load_checkpoint</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=&gt; SETUP OF </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> COMPLETED&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">set_logger_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
-        <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;dump_path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="s2">&quot;dump_path&quot;</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">HydraConfig</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wandb&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">bool</span> <span class="ow">and</span> <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;entity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;entity&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;project&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;project&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-        <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;level&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-        <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;save_final_model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save_final_model&quot;</span><span class="p">,</span> <span class="s2">&quot;final&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;eval_every_epoch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;eval_every_epoch&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;every_step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;every_step&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;checkpoint_frequency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkpoint_frequency&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="n">logger</span><span class="p">[</span><span class="s2">&quot;checkpoint_model_only&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkpoint_model_only&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">set_optim_defaults</span><span class="p">(</span><span class="n">optim</span><span class="p">):</span>
         <span class="n">optim</span><span class="p">[</span><span class="s2">&quot;accumulation_steps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;accumulation_steps&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -591,7 +531,7 @@
 <div class="viewcode-block" id="BaseModel.launch">
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseModel.html#stable_ssl.BaseModel.launch">[docs]</a>
     <span class="k">def</span> <span class="nf">launch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Routine that is launchd after the class is initialized.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Routine that is launched after the class is initialized.</span>
 
 <span class="sd">        This will commonly consist of training + evaluation.</span>
 <span class="sd">        Can be customized by the user to fit the use-cases.</span>
@@ -1004,7 +944,7 @@
             <span class="k">return</span> <span class="n">reader</span><span class="o">.</span><span class="n">wandb</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;entity&quot;</span><span class="p">],</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;project&quot;</span><span class="p">],</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;ID&quot;</span><span class="p">],</span>
                 <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span>
             <span class="p">)</span>
 
@@ -1144,6 +1084,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">loss_backbone_classifier</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">loss_proj_classifier</span> <span class="o">=</span> <span class="mi">0</span>
+
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;train/loss_ssl&quot;</span><span class="p">:</span> <span class="n">loss_ssl</span><span class="p">,</span>
             <span class="s2">&quot;train/loss_backbone_classifier&quot;</span><span class="p">:</span> <span class="n">loss_backbone_classifier</span><span class="p">,</span>

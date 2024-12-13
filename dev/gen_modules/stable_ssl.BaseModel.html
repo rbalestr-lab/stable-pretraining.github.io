@@ -319,8 +319,8 @@
 <p>Base class for training a model.</p>
 <p>That method provides a general boilerplate for all the internal operations
 that always occur no matter the actual application and project. This includes
-training, evaluation, checkpointing, restarting training, … the internals
-can be modified from the configs.</p>
+training, evaluation, checkpointing, restarting training, …
+The internals can be modified from the configs.</p>
 <p>This class should be subclassed by your specific method (see examples).</p>
 <p>Execution flow when calling <cite>launch</cite>:</p>
 <ul>
@@ -369,8 +369,8 @@ can be modified from the configs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Data mapper of name-&gt;mini-batch. The <cite>train</cite> name is used for training.
-Any other name is used for validation.</p></li>
+<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Data mapper of name-&gt;mini-batch. The dataset named <cite>train</cite> is used for training.
+Any other dataset is used for validation.</p></li>
 <li><p><strong>module</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Module (NNs) configuration.</p></li>
 <li><p><strong>objective</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Objective configuration.</p></li>
 <li><p><strong>hardware</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Hardware configuration.</p></li>
@@ -396,7 +396,7 @@ registered hooks while the latter silently ignores them.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.BaseModel.launch">
 <span class="sig-name descname"><span class="pre">launch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/base.html#BaseModel.launch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.BaseModel.launch" title="Link to this definition">#</a></dt>
-<dd><p>Routine that is launchd after the class is initialized.</p>
+<dd><p>Routine that is launched after the class is initialized.</p>
 <p>This will commonly consist of training + evaluation.
 Can be customized by the user to fit the use-cases.
 This is just a boilerplate version that provides minimal things.</p>
