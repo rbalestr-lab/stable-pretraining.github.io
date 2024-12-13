@@ -277,7 +277,7 @@
 <span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">DistributedSamplerWrapper</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">reader</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">update_momentum</span>
-<span class="kn">from</span> <span class="nn">.config</span> <span class="kn">import</span> <span class="n">LoggerConfig</span><span class="p">,</span> <span class="n">WandbConfig</span>
+<span class="kn">from</span> <span class="nn">.config</span> <span class="kn">import</span> <span class="n">LoggerConfig</span><span class="p">,</span> <span class="n">WandbConfig</span><span class="p">,</span> <span class="n">HardwareConfig</span><span class="p">,</span> <span class="n">OptimConfig</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">wandb</span>
@@ -368,12 +368,17 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wandb&quot;</span><span class="p">),</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asdict</span><span class="p">(</span><span class="n">WandbConfig</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_optim_defaults</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_optim</span><span class="p">)</span>
+        <span class="c1"># Set the hardware defaults.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hardware</span> <span class="o">=</span> <span class="n">asdict</span><span class="p">(</span><span class="n">HardwareConfig</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_hardware</span><span class="p">))</span>
+
+        <span class="c1"># Set the optimizer defaults.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optim</span> <span class="o">=</span> <span class="n">asdict</span><span class="p">(</span><span class="n">OptimConfig</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_optim</span><span class="p">))</span>
+
+        <span class="c1"># Save the full config with defaults.</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
         <span class="n">c</span><span class="p">[</span><span class="s2">&quot;trainer&quot;</span><span class="p">][</span><span class="s2">&quot;logger&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span>
+        <span class="n">c</span><span class="p">[</span><span class="s2">&quot;trainer&quot;</span><span class="p">][</span><span class="s2">&quot;hardware&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hardware</span>
         <span class="n">c</span><span class="p">[</span><span class="s2">&quot;trainer&quot;</span><span class="p">][</span><span class="s2">&quot;optim&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optim</span>
-
-        <span class="c1"># dumps to file with defaults:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;dump_path&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="s2">&quot;.hydra&quot;</span> <span class="o">/</span> <span class="s2">&quot;config.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">omegaconf</span><span class="o">.</span><span class="n">OmegaConf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
@@ -506,11 +511,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_instanciate</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_checkpoint</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=&gt; SETUP OF </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> COMPLETED&quot;</span><span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">set_optim_defaults</span><span class="p">(</span><span class="n">optim</span><span class="p">):</span>
-        <span class="n">optim</span><span class="p">[</span><span class="s2">&quot;accumulation_steps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;accumulation_steps&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">optim</span><span class="p">[</span><span class="s2">&quot;grad_max_norm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;grad_max_norm&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseModel.forward">
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseModel.html#stable_ssl.BaseModel.forward">[docs]</a>
