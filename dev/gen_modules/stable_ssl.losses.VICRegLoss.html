@@ -164,6 +164,10 @@
 </ul>
 </details></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
+</ul>
 
     </div>
 </nav></div>
@@ -324,7 +328,7 @@
 <dt class="sig sig-object py" id="stable_ssl.losses.VICRegLoss">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.losses.</span></span><span class="sig-name descname"><span class="pre">VICRegLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_coeff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std_coeff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_coeff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/losses.html#VICRegLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.losses.VICRegLoss" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://pytorch.org/docs/2.0/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
-<p>SSL objective used in VICReg <span id="id1">[BPL21]</span>.</p>
+<p>SSL objective used in VICReg <span id="id1">[<a class="reference internal" href="../bibliography.html#id7" title="Adrien Bardes, Jean Ponce, and Yann LeCun. Vicreg: variance-invariance-covariance regularization for self-supervised learning. arXiv preprint arXiv:2105.04906, 2021.">Bardes <em>et al.</em>, 2021</a>]</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -336,26 +340,6 @@ Default is 25.</p></li>
 Default is 1.</p></li>
 <li><p><strong>epsilon</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>, </em><em>optional</em>) – Small value to avoid division by zero.
 Default is 1e-4.</p></li>
-<li><p><strong>Reference</strong></p></li>
-<li><p><strong>---------</strong></p></li>
-<li><p><strong>Bardes</strong> (<em>..</em><em> [</em><em>BPL21</em><em>]</em>) – VICReg: Variance-Invariance-Covariance Regularization
-For Self-Supervised Learning.
-International Conference on Learning Representations (ICLR).</p></li>
-<li><p><strong>A.</strong> – VICReg: Variance-Invariance-Covariance Regularization
-For Self-Supervised Learning.
-International Conference on Learning Representations (ICLR).</p></li>
-<li><p><strong>Ponce</strong> – VICReg: Variance-Invariance-Covariance Regularization
-For Self-Supervised Learning.
-International Conference on Learning Representations (ICLR).</p></li>
-<li><p><strong>J.</strong> – VICReg: Variance-Invariance-Covariance Regularization
-For Self-Supervised Learning.
-International Conference on Learning Representations (ICLR).</p></li>
-<li><p><strong>LeCun</strong> (<em>&amp;</em>) – VICReg: Variance-Invariance-Covariance Regularization
-For Self-Supervised Learning.
-International Conference on Learning Representations (ICLR).</p></li>
-<li><p><strong>(</strong><strong>2021</strong><strong>)</strong><strong>.</strong> (<em>Y.</em>) – VICReg: Variance-Invariance-Covariance Regularization
-For Self-Supervised Learning.
-International Conference on Learning Representations (ICLR).</p></li>
 </ul>
 </dd>
 </dl>

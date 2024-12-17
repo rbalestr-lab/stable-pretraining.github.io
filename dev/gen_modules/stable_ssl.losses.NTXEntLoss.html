@@ -164,6 +164,10 @@
 </ul>
 </details></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
+</ul>
 
     </div>
 </nav></div>
@@ -325,23 +329,8 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.losses.</span></span><span class="sig-name descname"><span class="pre">NTXEntLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/losses.html#NTXEntLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.losses.NTXEntLoss" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://pytorch.org/docs/2.0/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
 <p>Normalized temperature-scaled cross entropy loss.</p>
-<p>Introduced in the SimCLR paper <a class="reference internal" href="#cknh20" id="id1"><span>[CKNH20]</span></a>. Also used in MoCo <a class="reference internal" href="#hfw-20" id="id2"><span>[HFW+20]</span></a>.</p>
-<section id="reference">
-<h2>Reference<a class="headerlink" href="#reference" title="Link to this heading">#</a></h2>
-<div role="list" class="citation-list">
-<div class="citation" id="cknh20" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">CKNH20</a><span class="fn-bracket">]</span></span>
-<p>Chen, T., Kornblith, S., Norouzi, M., &amp; Hinton, G. (2020).
-A Simple Framework for Contrastive Learning of Visual Representations.
-In International Conference on Machine Learning (pp. 1597-1607). PMLR.</p>
-</div>
-<div class="citation" id="hfw-20" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">HFW+20</a><span class="fn-bracket">]</span></span>
-<p>He, K., Fan, H., Wu, Y., Xie, S., &amp; Girshick, R. (2020).
-Momentum Contrast for Unsupervised Visual Representation Learning.
-IEEE/CVF Conference on Computer Vision and Pattern Recognition.</p>
-</div>
-</div>
+<p>Introduced in the SimCLR paper <span id="id1">[<a class="reference internal" href="../bibliography.html#id2" title="Ting Chen, Simon Kornblith, Mohammad Norouzi, and Geoffrey Hinton. A simple framework for contrastive learning of visual representations. In International conference on machine learning, 1597–1607. PMLR, 2020.">Chen <em>et al.</em>, 2020</a>]</span>.
+Also used in MoCo <span id="id2">[<a class="reference internal" href="../bibliography.html#id6" title="Kaiming He, Haoqi Fan, Yuxin Wu, Saining Xie, and Ross Girshick. Momentum contrast for unsupervised visual representation learning. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, 9729–9738. 2020.">He <em>et al.</em>, 2020</a>]</span>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.losses.NTXEntLoss.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/losses.html#NTXEntLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.losses.NTXEntLoss.forward" title="Link to this definition">#</a></dt>
@@ -362,7 +351,6 @@ IEEE/CVF Conference on Computer Vision and Pattern Recognition.</p>
 </dl>
 </dd></dl>
 
-</section>
 </dd></dl>
 
 <span class="target" id="sphx-glr-backref-stable-ssl-losses-ntxentloss"></span></section>
