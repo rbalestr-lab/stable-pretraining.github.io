@@ -149,7 +149,6 @@
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.JointEmbedding.html">JointEmbedding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.SelfDistillation.html">SelfDistillation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BYOLLoss.html">BYOLLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
 </ul>
@@ -355,14 +354,11 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.NTXEntLoss.html#stable_ssl.NTXEntLoss" title="stable_ssl.NTXEntLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NTXEntLoss</span></code></a>([temperature])</p></td>
 <td><p>Normalized temperature-scaled cross entropy loss.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.BYOLLoss.html#stable_ssl.BYOLLoss" title="stable_ssl.BYOLLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BYOLLoss</span></code></a>(*args, **kwargs)</p></td>
-<td><p>SSL objective used in BYOL <a class="reference internal" href="gen_modules/stable_ssl.BYOLLoss.html#gsa-20" id="id4"><span>[GSA+20]</span></a>.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.VICRegLoss.html#stable_ssl.VICRegLoss" title="stable_ssl.VICRegLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VICRegLoss</span></code></a>([sim_coeff, std_coeff, ...])</p></td>
+<td><p>SSL objective used in VICReg <span id="id4">[BPL21]</span>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.VICRegLoss.html#stable_ssl.VICRegLoss" title="stable_ssl.VICRegLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VICRegLoss</span></code></a>(sim_coeff, std_coeff, cov_coeff, ...)</p></td>
-<td><p>SSL objective used in VICReg <a class="reference internal" href="gen_modules/stable_ssl.VICRegLoss.html#bpl21" id="id5"><span>[BPL21]</span></a>.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwinsLoss.html#stable_ssl.BarlowTwinsLoss" title="stable_ssl.BarlowTwinsLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BarlowTwinsLoss</span></code></a>(lamb)</p></td>
-<td><p>SSL objective used in <a class="reference internal" href="gen_modules/stable_ssl.BarlowTwinsLoss.html#zjm-21" id="id6"><span>[ZJM+21]</span></a>.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwinsLoss.html#stable_ssl.BarlowTwinsLoss" title="stable_ssl.BarlowTwinsLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BarlowTwinsLoss</span></code></a>([lambd])</p></td>
+<td><p>SSL objective used in <span id="id5">[ZJM+21]</span>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -375,7 +371,7 @@
 </div>
 </section>
 <section id="optim">
-<span id="id7"></span><h2>optim<a class="headerlink" href="#optim" title="Link to this heading">#</a></h2>
+<span id="id6"></span><h2>optim<a class="headerlink" href="#optim" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">optim</span></code> keyword is used to define the optimization settings for your model. It allows users to specify both the <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> object and the <code class="docutils literal notranslate"><span class="pre">scheduler</span></code>.</p>
 <p>Example:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">optim</span><span class="p">:</span>
@@ -396,7 +392,7 @@
 </div>
 </section>
 <section id="data">
-<span id="id8"></span><h2>data<a class="headerlink" href="#data" title="Link to this heading">#</a></h2>
+<span id="id7"></span><h2>data<a class="headerlink" href="#data" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">data</span></code> keyword specifies the settings for data loading, preprocessing, and data augmentation.
 Multiple datasets can be defined, with the dataset named <code class="docutils literal notranslate"><span class="pre">train</span></code> used for training.
 Other datasets, which can have any name, are used for evaluation purposes.</p>
@@ -454,7 +450,7 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
 </div>
 </section>
 <section id="module">
-<span id="id9"></span><h2>module<a class="headerlink" href="#module" title="Link to this heading">#</a></h2>
+<span id="id8"></span><h2>module<a class="headerlink" href="#module" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">module</span></code> keyword is used to define the settings of all the neural networks used, including the architecture of the backbone, projectors etc.</p>
 <p>Example:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">module</span><span class="p">:</span>
@@ -489,7 +485,7 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
 <p>The various components defined above can be accessed through the dictionary <code class="docutils literal notranslate"><span class="pre">self.module</span></code> in your trainer class. This allows the user to define the forward pass, compute losses, and specify evaluation metrics efficiently.</p>
 </section>
 <section id="logger">
-<span id="id10"></span><h2>logger<a class="headerlink" href="#logger" title="Link to this heading">#</a></h2>
+<span id="id9"></span><h2>logger<a class="headerlink" href="#logger" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">logger</span></code> keyword is used to configure the logging settings for your run.</p>
 <p>One important section is <code class="docutils literal notranslate"><span class="pre">metrics</span></code>, which lets you define the evaluation metrics to track during training. Metrics can be specified for each dataset.</p>
 <p>Example:</p>
@@ -521,7 +517,7 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
 </div>
 </section>
 <section id="hardware">
-<span id="id11"></span><h2>hardware<a class="headerlink" href="#hardware" title="Link to this heading">#</a></h2>
+<span id="id10"></span><h2>hardware<a class="headerlink" href="#hardware" title="Link to this heading">#</a></h2>
 <p>Use the <code class="docutils literal notranslate"><span class="pre">hardware</span></code> keyword to configure hardware-related settings such as device, world_size (number of GPUs) or CPUs per task.</p>
 <p>Example:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">hardware</span><span class="p">:</span>

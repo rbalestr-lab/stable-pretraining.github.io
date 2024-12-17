@@ -150,7 +150,6 @@
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.JointEmbedding.html">JointEmbedding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.SelfDistillation.html">SelfDistillation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BYOLLoss.html">BYOLLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
 </ul>
@@ -300,6 +299,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-documentation">Minimal Documentation</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#library-design">Library Design</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-launch-runs">How to launch runs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples-of-methods">Examples of Methods</a></li>
 </ul>
 </li>
 </ul>
@@ -410,6 +410,49 @@ At its core, <code class="docutils literal notranslate"><span class="pre">stable
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>run.py<span class="w"> </span>--config-name<span class="w"> </span>default_config<span class="w"> </span>--config-path<span class="w"> </span>configs/
 </pre></div>
 </div>
+</section>
+<section id="examples-of-methods">
+<h3>Examples of Methods<a class="headerlink" href="#examples-of-methods" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<tbody>
+<tr class="row-odd"><td><p>Methods</p></td>
+<td><p>Predictor</p></td>
+<td><p>Self-distillation</p></td>
+<td><p>Loss</p></td>
+</tr>
+<tr class="row-even"><td><p>Barlow Twins</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>BarlowTwinsLoss</p></td>
+</tr>
+<tr class="row-odd"><td><p>BYOL</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>NegativeCosineSimilarity</p></td>
+</tr>
+<tr class="row-even"><td><p>MoCo</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+<td><p>NTXEntLoss</p></td>
+</tr>
+<tr class="row-odd"><td><p>SimCLR</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>NTXEntLoss</p></td>
+</tr>
+<tr class="row-even"><td><p>SimSiam</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>NegativeCosineSimilarity</p></td>
+</tr>
+<tr class="row-odd"><td><p>VICReg</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>VICRegLoss</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -458,6 +501,7 @@ At its core, <code class="docutils literal notranslate"><span class="pre">stable
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-documentation">Minimal Documentation</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#library-design">Library Design</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-launch-runs">How to launch runs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples-of-methods">Examples of Methods</a></li>
 </ul>
 </li>
 </ul>

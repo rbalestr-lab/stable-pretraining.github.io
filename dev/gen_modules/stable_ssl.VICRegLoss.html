@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="BarlowTwinsLoss" href="stable_ssl.BarlowTwinsLoss.html" />
-    <link rel="prev" title="BYOLLoss" href="stable_ssl.BYOLLoss.html" />
+    <link rel="prev" title="NTXEntLoss" href="stable_ssl.NTXEntLoss.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -149,7 +149,6 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.JointEmbedding.html">JointEmbedding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.SelfDistillation.html">SelfDistillation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.BYOLLoss.html">BYOLLoss</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">VICRegLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
 </ul>
@@ -313,20 +312,43 @@
 <h1>VICRegLoss<a class="headerlink" href="#vicregloss" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="stable_ssl.VICRegLoss">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.</span></span><span class="sig-name descname"><span class="pre">VICRegLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_coeff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std_coeff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_coeff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/losses.html#VICRegLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.VICRegLoss" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.</span></span><span class="sig-name descname"><span class="pre">VICRegLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_coeff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std_coeff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_coeff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/losses.html#VICRegLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.VICRegLoss" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://pytorch.org/docs/2.0/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
-<p>SSL objective used in VICReg <a class="reference internal" href="#bpl21" id="id1"><span>[BPL21]</span></a>.</p>
-<section id="reference">
-<h2>Reference<a class="headerlink" href="#reference" title="Link to this heading">#</a></h2>
-<div role="list" class="citation-list">
-<div class="citation" id="bpl21" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">BPL21</a><span class="fn-bracket">]</span></span>
-<p>Bardes, A., Ponce, J., &amp; LeCun, Y. (2021).
-VICReg: Variance-Invariance-Covariance Regularization
+<p>SSL objective used in VICReg <span id="id1">[BPL21]</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sim_coeff</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>, </em><em>optional</em>) – The weight of the similarity loss (attractive term).
+Default is 25.</p></li>
+<li><p><strong>std_coeff</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>, </em><em>optional</em>) – The weight of the standard deviation loss.
+Default is 25.</p></li>
+<li><p><strong>cov_coeff</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>, </em><em>optional</em>) – The weight of the covariance loss.
+Default is 1.</p></li>
+<li><p><strong>epsilon</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>, </em><em>optional</em>) – Small value to avoid division by zero.
+Default is 1e-4.</p></li>
+<li><p><strong>Reference</strong></p></li>
+<li><p><strong>---------</strong></p></li>
+<li><p><strong>Bardes</strong> (<em>..</em><em> [</em><em>BPL21</em><em>]</em>) – VICReg: Variance-Invariance-Covariance Regularization
 For Self-Supervised Learning.
-International Conference on Learning Representations (ICLR).</p>
-</div>
-</div>
+International Conference on Learning Representations (ICLR).</p></li>
+<li><p><strong>A.</strong> – VICReg: Variance-Invariance-Covariance Regularization
+For Self-Supervised Learning.
+International Conference on Learning Representations (ICLR).</p></li>
+<li><p><strong>Ponce</strong> – VICReg: Variance-Invariance-Covariance Regularization
+For Self-Supervised Learning.
+International Conference on Learning Representations (ICLR).</p></li>
+<li><p><strong>J.</strong> – VICReg: Variance-Invariance-Covariance Regularization
+For Self-Supervised Learning.
+International Conference on Learning Representations (ICLR).</p></li>
+<li><p><strong>LeCun</strong> (<em>&amp;</em>) – VICReg: Variance-Invariance-Covariance Regularization
+For Self-Supervised Learning.
+International Conference on Learning Representations (ICLR).</p></li>
+<li><p><strong>(</strong><strong>2021</strong><strong>)</strong><strong>.</strong> (<em>Y.</em>) – VICReg: Variance-Invariance-Covariance Regularization
+For Self-Supervised Learning.
+International Conference on Learning Representations (ICLR).</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.VICRegLoss.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/losses.html#VICRegLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.VICRegLoss.forward" title="Link to this definition">#</a></dt>
@@ -347,7 +369,6 @@ International Conference on Learning Representations (ICLR).</p>
 </dl>
 </dd></dl>
 
-</section>
 </dd></dl>
 
 <span class="target" id="sphx-glr-backref-stable-ssl-vicregloss"></span></section>
@@ -364,12 +385,12 @@ International Conference on Learning Representations (ICLR).</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="stable_ssl.BYOLLoss.html"
+       href="stable_ssl.NTXEntLoss.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">BYOLLoss</p>
+        <p class="prev-next-title">NTXEntLoss</p>
       </div>
     </a>
     <a class="right-next"
