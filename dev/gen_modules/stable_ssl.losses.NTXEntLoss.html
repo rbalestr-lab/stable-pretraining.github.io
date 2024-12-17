@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>JointEmbedding &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>NTXEntLoss &#8212; stable-SSL 0.1-dev documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.JointEmbedding';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.losses.NTXEntLoss';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="SelfDistillation" href="stable_ssl.SelfDistillation.html" />
-    <link rel="prev" title="BaseModel" href="stable_ssl.BaseModel.html" />
+    <link rel="next" title="NegativeCosineSimilarity" href="stable_ssl.losses.NegativeCosineSimilarity.html" />
+    <link rel="prev" title="stable_ssl.losses" href="../losses.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -142,11 +142,11 @@
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../user_guide.html">User Guide</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.BaseModel.html">BaseModel</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">JointEmbedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.JointEmbedding.html">JointEmbedding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.SelfDistillation.html">SelfDistillation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
@@ -155,9 +155,9 @@
 </details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../losses.html">stable_ssl.losses</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">NTXEntLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
@@ -217,7 +217,7 @@
       
       
       
-      <li><a href="../_sources/gen_modules/stable_ssl.JointEmbedding.rst" target="_blank"
+      <li><a href="../_sources/gen_modules/stable_ssl.losses.NTXEntLoss.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -293,7 +293,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>JointEmbedding</h1>
+    <h1>NTXEntLoss</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -303,7 +303,10 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.JointEmbedding"><code class="docutils literal notranslate"><span class="pre">JointEmbedding</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.losses.NTXEntLoss"><code class="docutils literal notranslate"><span class="pre">NTXEntLoss</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.losses.NTXEntLoss.forward"><code class="docutils literal notranslate"><span class="pre">NTXEntLoss.forward()</span></code></a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -315,16 +318,54 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="jointembedding">
-<h1>JointEmbedding<a class="headerlink" href="#jointembedding" title="Link to this heading">#</a></h1>
+  <section id="ntxentloss">
+<h1>NTXEntLoss<a class="headerlink" href="#ntxentloss" title="Link to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="stable_ssl.JointEmbedding">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.</span></span><span class="sig-name descname"><span class="pre">JointEmbedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardware</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/templates.html#JointEmbedding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.JointEmbedding" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="stable_ssl.BaseModel.html#stable_ssl.BaseModel" title="stable_ssl.base.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
-<p>Base class for training a joint-embedding SSL model.</p>
+<dt class="sig sig-object py" id="stable_ssl.losses.NTXEntLoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.losses.</span></span><span class="sig-name descname"><span class="pre">NTXEntLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/losses.html#NTXEntLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.losses.NTXEntLoss" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://pytorch.org/docs/2.0/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
+<p>Normalized temperature-scaled cross entropy loss.</p>
+<p>Introduced in the SimCLR paper <a class="reference internal" href="#cknh20" id="id1"><span>[CKNH20]</span></a>. Also used in MoCo <a class="reference internal" href="#hfw-20" id="id2"><span>[HFW+20]</span></a>.</p>
+<section id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Link to this heading">#</a></h2>
+<div role="list" class="citation-list">
+<div class="citation" id="cknh20" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">CKNH20</a><span class="fn-bracket">]</span></span>
+<p>Chen, T., Kornblith, S., Norouzi, M., &amp; Hinton, G. (2020).
+A Simple Framework for Contrastive Learning of Visual Representations.
+In International Conference on Machine Learning (pp. 1597-1607). PMLR.</p>
+</div>
+<div class="citation" id="hfw-20" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">HFW+20</a><span class="fn-bracket">]</span></span>
+<p>He, K., Fan, H., Wu, Y., Xie, S., &amp; Girshick, R. (2020).
+Momentum Contrast for Unsupervised Visual Representation Learning.
+IEEE/CVF Conference on Computer Vision and Pattern Recognition.</p>
+</div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.losses.NTXEntLoss.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/losses.html#NTXEntLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.losses.NTXEntLoss.forward" title="Link to this definition">#</a></dt>
+<dd><p>Compute the NT-Xent loss.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z_i</strong> (<a class="reference external" href="http://pytorch.org/docs/2.0/tensors.html#torch.Tensor" title="(in PyTorch v2.0)"><em>torch.Tensor</em></a>) – Latent representation of the first augmented view of the batch.</p></li>
+<li><p><strong>z_j</strong> (<a class="reference external" href="http://pytorch.org/docs/2.0/tensors.html#torch.Tensor" title="(in PyTorch v2.0)"><em>torch.Tensor</em></a>) – Latent representation of the second augmented view of the batch.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The computed contrastive loss.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)">float</a></p>
+</dd>
+</dl>
 </dd></dl>
 
-<span class="target" id="sphx-glr-backref-stable-ssl-jointembedding"></span></section>
+</section>
+</dd></dl>
+
+<span class="target" id="sphx-glr-backref-stable-ssl-losses-ntxentloss"></span></section>
 
 
                 </article>
@@ -338,20 +379,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="stable_ssl.BaseModel.html"
+       href="../losses.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">BaseModel</p>
+        <p class="prev-next-title">stable_ssl.losses</p>
       </div>
     </a>
     <a class="right-next"
-       href="stable_ssl.SelfDistillation.html"
+       href="stable_ssl.losses.NegativeCosineSimilarity.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">SelfDistillation</p>
+        <p class="prev-next-title">NegativeCosineSimilarity</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -372,7 +413,10 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.JointEmbedding"><code class="docutils literal notranslate"><span class="pre">JointEmbedding</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.losses.NTXEntLoss"><code class="docutils literal notranslate"><span class="pre">NTXEntLoss</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.losses.NTXEntLoss.forward"><code class="docutils literal notranslate"><span class="pre">NTXEntLoss.forward()</span></code></a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

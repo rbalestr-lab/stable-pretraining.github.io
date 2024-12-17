@@ -153,6 +153,16 @@
 </ul>
 </details></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+</ul>
+</details></li>
+</ul>
 
     </div>
 </nav></div>
@@ -263,7 +273,7 @@
 
 
 <div class="viewcode-block" id="NTXEntLoss">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.NTXEntLoss.html#stable_ssl.NTXEntLoss">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.NTXEntLoss.html#stable_ssl.NTXEntLoss">[docs]</a>
 <span class="k">class</span> <span class="nc">NTXEntLoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalized temperature-scaled cross entropy loss.</span>
 
@@ -279,12 +289,12 @@
 <span class="sd">            IEEE/CVF Conference on Computer Vision and Pattern Recognition.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span>
 
 <div class="viewcode-block" id="NTXEntLoss.forward">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.NTXEntLoss.html#stable_ssl.NTXEntLoss.forward">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.NTXEntLoss.html#stable_ssl.NTXEntLoss.forward">[docs]</a>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the NT-Xent loss.</span>
 
@@ -325,6 +335,8 @@
 
 
 
+<div class="viewcode-block" id="NegativeCosineSimilarity">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html#stable_ssl.NegativeCosineSimilarity">[docs]</a>
 <span class="k">class</span> <span class="nc">NegativeCosineSimilarity</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Negative cosine similarity objective.</span>
 
@@ -340,6 +352,8 @@
 <span class="sd">            IEEE/CVF conference on Computer Vision and Pattern Recognition.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="NegativeCosineSimilarity.forward">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html#stable_ssl.NegativeCosineSimilarity.forward">[docs]</a>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the loss of the BYOL model.</span>
 
@@ -356,11 +370,13 @@
 <span class="sd">            The computed loss.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sim</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CosineSimilarity</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="o">-</span><span class="n">sim</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">sim</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
+</div>
+
 
 
 <div class="viewcode-block" id="VICRegLoss">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.VICRegLoss.html#stable_ssl.VICRegLoss">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.VICRegLoss.html#stable_ssl.VICRegLoss">[docs]</a>
 <span class="k">class</span> <span class="nc">VICRegLoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;SSL objective used in VICReg [BPL21]_.</span>
 
@@ -401,7 +417,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
 
 <div class="viewcode-block" id="VICRegLoss.forward">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.VICRegLoss.html#stable_ssl.VICRegLoss.forward">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.VICRegLoss.html#stable_ssl.VICRegLoss.forward">[docs]</a>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the loss of the VICReg model.</span>
 
@@ -446,9 +462,9 @@
 
 
 <div class="viewcode-block" id="BarlowTwinsLoss">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BarlowTwinsLoss.html#stable_ssl.BarlowTwinsLoss">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.BarlowTwinsLoss.html#stable_ssl.BarlowTwinsLoss">[docs]</a>
 <span class="k">class</span> <span class="nc">BarlowTwinsLoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;SSL objective used in [ZJM+21]_.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;SSL objective used in Barlow Twins [ZJM+21]_.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -469,7 +485,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">LazyBatchNorm1d</span><span class="p">()</span>
 
 <div class="viewcode-block" id="BarlowTwinsLoss.forward">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BarlowTwinsLoss.html#stable_ssl.BarlowTwinsLoss.forward">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.BarlowTwinsLoss.html#stable_ssl.BarlowTwinsLoss.forward">[docs]</a>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the loss of the Barlow Twins model.</span>
 

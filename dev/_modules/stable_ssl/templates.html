@@ -1,0 +1,480 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stable_ssl.templates &#8212; stable-SSL 0.1-dev documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../_static/documentation_options.js?v=eeab245b"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/stable_ssl/templates';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">stable-SSL 0.1-dev documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BaseModel.html">BaseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.JointEmbedding.html">JointEmbedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.SelfDistillation.html">SelfDistillation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for stable_ssl.templates</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Template classes to easily instanciate SSL models.&quot;&quot;&quot;</span>
+<span class="c1">#</span>
+<span class="c1"># Author: Hugues Van Assel &lt;vanasselhugues@gmail.com&gt;</span>
+<span class="c1">#         Randall Balestriero &lt;randallbalestriero@gmail.com&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># This source code is licensed under the license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">update_momentum</span><span class="p">,</span> <span class="n">log_and_raise</span>
+
+
+<div class="viewcode-block" id="JointEmbedding">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.JointEmbedding.html#stable_ssl.JointEmbedding">[docs]</a>
+<span class="k">class</span> <span class="nc">JointEmbedding</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for training a joint-embedding SSL model.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">format_views_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+            <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="p">):</span>
+            <span class="c1"># we assume the second element are the labels</span>
+            <span class="n">views</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+            <span class="ow">and</span> <span class="nb">all</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">])</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">b</span><span class="o">.</span><span class="n">ndim</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="p">):</span>
+            <span class="c1"># we assume all elements are views</span>
+            <span class="n">views</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;You are using the JointEmbedding class with only 1 view!</span>
+<span class="s2">            Make sure to double check your config and datasets definition.</span>
+<span class="s2">            Most methods expect 2 views, some can use more.&quot;&quot;&quot;</span>
+            <span class="n">log_and_raise</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">views</span><span class="p">,</span> <span class="n">labels</span>
+
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone_classifier&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">views</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_views_labels</span><span class="p">()</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="n">view</span><span class="p">)</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="p">]</span>
+        <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector&quot;</span><span class="p">](</span><span class="n">embed</span><span class="p">)</span> <span class="k">for</span> <span class="n">embed</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s2">&quot;predictor&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">projections</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Only the first two views are used when there is a predictor.&quot;</span>
+                <span class="p">)</span>
+
+                <span class="n">predictions</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;predictor&quot;</span><span class="p">](</span><span class="n">proj</span><span class="p">)</span> <span class="k">for</span> <span class="n">proj</span> <span class="ow">in</span> <span class="n">projections</span><span class="p">]</span>
+                <span class="n">detached_projections</span> <span class="o">=</span> <span class="p">[</span><span class="n">proj</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="k">for</span> <span class="n">proj</span> <span class="ow">in</span> <span class="n">projections</span><span class="p">]</span>
+
+                <span class="n">loss_ssl</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">predictions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">detached_projections</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">predictions</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">detached_projections</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">loss_ssl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="o">*</span><span class="n">projections</span><span class="p">)</span>
+
+        <span class="n">classifier_losses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_loss_classifiers</span><span class="p">(</span>
+            <span class="n">embeddings</span><span class="p">,</span> <span class="n">projections</span><span class="p">,</span> <span class="n">labels</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;train/loss_ssl&quot;</span><span class="p">:</span> <span class="n">loss_ssl</span><span class="p">,</span> <span class="o">**</span><span class="n">classifier_losses</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">compute_loss_classifiers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">,</span> <span class="n">projections</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+        <span class="n">loss_backbone_classifier</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">loss_projector_classifier</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">embed</span><span class="p">,</span> <span class="n">proj</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">projections</span><span class="p">):</span>
+                <span class="n">loss_backbone_classifier</span> <span class="o">+=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone_classifier&quot;</span><span class="p">](</span><span class="n">embed</span><span class="o">.</span><span class="n">detach</span><span class="p">()),</span> <span class="n">labels</span>
+                <span class="p">)</span>
+                <span class="n">loss_projector_classifier</span> <span class="o">+=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector_classifier&quot;</span><span class="p">](</span><span class="n">proj</span><span class="o">.</span><span class="n">detach</span><span class="p">()),</span> <span class="n">labels</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;train/loss_backbone_classifier&quot;</span><span class="p">:</span> <span class="n">loss_backbone_classifier</span><span class="p">,</span>
+            <span class="s2">&quot;train/loss_projector_classifier&quot;</span><span class="p">:</span> <span class="n">loss_projector_classifier</span><span class="p">,</span>
+        <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="SelfDistillation">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.SelfDistillation.html#stable_ssl.SelfDistillation">[docs]</a>
+<span class="k">class</span> <span class="nc">SelfDistillation</span><span class="p">(</span><span class="n">JointEmbedding</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for training a self-distillation SSL model.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">])</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=&gt; SETUP OF </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> STARTED.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instanciate</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone_target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector_target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector&quot;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone_target&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector_target&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_checkpoint</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=&gt; SETUP OF </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> COMPLETED.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SelfDistillation.before_fit_step">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.SelfDistillation.html#stable_ssl.SelfDistillation.before_fit_step">[docs]</a>
+    <span class="k">def</span> <span class="nf">before_fit_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the target parameters as EMA of the online model parameters.&quot;&quot;&quot;</span>
+        <span class="n">update_momentum</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone_target</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">momentum</span>
+        <span class="p">)</span>
+        <span class="n">update_momentum</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector_target</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">momentum</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">views</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_views_labels</span><span class="p">()</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="n">view</span><span class="p">)</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="p">]</span>
+        <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector&quot;</span><span class="p">](</span><span class="n">embed</span><span class="p">)</span> <span class="k">for</span> <span class="n">embed</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+
+        <span class="c1"># If a predictor is used, it is generally applied to the online projections.</span>
+        <span class="k">if</span> <span class="s2">&quot;predictor&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">:</span>
+            <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;predictor&quot;</span><span class="p">](</span><span class="n">proj</span><span class="p">)</span> <span class="k">for</span> <span class="n">proj</span> <span class="ow">in</span> <span class="n">projections</span><span class="p">]</span>
+
+        <span class="n">projections_target</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector_target&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone_target&quot;</span><span class="p">](</span><span class="n">view</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span>
+        <span class="p">]</span>
+
+        <span class="n">loss_ssl</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">projections</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">projections_target</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">projections</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">projections_target</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="p">)</span>
+
+        <span class="n">classifier_losses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_loss_classifiers</span><span class="p">(</span>
+            <span class="n">embeddings</span><span class="p">,</span> <span class="n">projections</span><span class="p">,</span> <span class="n">labels</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;train/loss_ssl&quot;</span><span class="p">:</span> <span class="n">loss_ssl</span><span class="p">,</span> <span class="o">**</span><span class="n">classifier_losses</span><span class="p">}</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By stable-SSL team
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, stable-SSL team.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
