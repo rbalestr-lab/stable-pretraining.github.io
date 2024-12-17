@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stable_ssl.schedulers &#8212; stable-SSL 0.1-dev documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=eeab245b"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/stable_ssl/schedulers';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">stable-SSL 0.1-dev documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BaseModel.html">BaseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.JointEmbedding.html">JointEmbedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.SelfDistillation.html">SelfDistillation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.optimizers.LARS.html">LARS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../schedulers.html">stable_ssl.schedulers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.schedulers.LinearWarmup.html">LinearWarmup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.schedulers.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography.html">Bibliography</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for stable_ssl.schedulers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Learning rate schedulers.&quot;&quot;&quot;</span>
+<span class="c1">#</span>
+<span class="c1"># Author: Randall Balestriero &lt;randallbalestriero@gmail.com&gt;</span>
+<span class="c1">#         Hugues Van Assel &lt;vanasselhugues@gmail.com&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># This source code is licensed under the license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="kn">from</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LinearLR</span><span class="p">,</span>
+    <span class="n">MultiStepLR</span><span class="p">,</span>
+    <span class="n">CosineAnnealingLR</span><span class="p">,</span>
+    <span class="n">SequentialLR</span><span class="p">,</span>
+    <span class="n">LambdaLR</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="k">class</span> <span class="nc">CosineDecayer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply cosine decay with multiple cycles for learning rate scheduling.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">total_steps</span><span class="p">,</span> <span class="n">n_cycles</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_steps</span> <span class="o">=</span> <span class="n">total_steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_cycles</span> <span class="o">=</span> <span class="n">n_cycles</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">step</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_steps</span>
+        <span class="n">cycle</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_cycles</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">step</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_steps</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">cycle</span>
+
+
+<div class="viewcode-block" id="LinearWarmup">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.schedulers.LinearWarmup.html#stable_ssl.schedulers.LinearWarmup">[docs]</a>
+<span class="k">def</span> <span class="nf">LinearWarmup</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">total_steps</span><span class="p">,</span> <span class="n">start_factor</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">peak_step</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a linear warmup scheduler.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">peak_step</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">peak_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">peak_step</span> <span class="o">*</span> <span class="n">total_steps</span><span class="p">)</span>
+    <span class="n">warmup</span> <span class="o">=</span> <span class="n">LinearLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">start_factor</span><span class="p">,</span> <span class="n">total_iters</span><span class="o">=</span><span class="n">peak_step</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">warmup</span></div>
+
+
+
+<div class="viewcode-block" id="LinearWarmupCosineAnnealing">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.schedulers.LinearWarmupCosineAnnealing.html#stable_ssl.schedulers.LinearWarmupCosineAnnealing">[docs]</a>
+<span class="k">def</span> <span class="nf">LinearWarmupCosineAnnealing</span><span class="p">(</span>
+    <span class="n">optimizer</span><span class="p">,</span> <span class="n">total_steps</span><span class="p">,</span> <span class="n">start_factor</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">end_lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">peak_step</span><span class="o">=</span><span class="mf">0.01</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine linear warmup with cosine annealing decay.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">peak_step</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">peak_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">peak_step</span> <span class="o">*</span> <span class="n">total_steps</span><span class="p">)</span>
+    <span class="n">warmup</span> <span class="o">=</span> <span class="n">LinearLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">start_factor</span><span class="p">,</span> <span class="n">total_iters</span><span class="o">=</span><span class="n">peak_step</span><span class="p">)</span>
+    <span class="n">anneal</span> <span class="o">=</span> <span class="n">CosineAnnealingLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">T_max</span><span class="o">=</span><span class="n">total_steps</span> <span class="o">-</span> <span class="n">peak_step</span><span class="p">,</span> <span class="n">eta_min</span><span class="o">=</span><span class="n">end_lr</span><span class="p">)</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">SequentialLR</span><span class="p">(</span>
+        <span class="n">optimizer</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">warmup</span><span class="p">,</span> <span class="n">anneal</span><span class="p">],</span>
+        <span class="n">milestones</span><span class="o">=</span><span class="p">[</span><span class="n">peak_step</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">scheduler</span></div>
+
+
+
+<div class="viewcode-block" id="LinearWarmupCyclicAnnealing">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html#stable_ssl.schedulers.LinearWarmupCyclicAnnealing">[docs]</a>
+<span class="k">def</span> <span class="nf">LinearWarmupCyclicAnnealing</span><span class="p">(</span>
+    <span class="n">optimizer</span><span class="p">,</span> <span class="n">total_steps</span><span class="p">,</span> <span class="n">start_factor</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">peak_step</span><span class="o">=</span><span class="mf">0.1</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine linear warmup with cyclic cosine annealing.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">peak_step</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">peak_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">peak_step</span> <span class="o">*</span> <span class="n">total_steps</span><span class="p">)</span>
+
+    <span class="n">warmup</span> <span class="o">=</span> <span class="n">LinearLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">start_factor</span><span class="p">,</span> <span class="n">total_iters</span><span class="o">=</span><span class="n">peak_step</span><span class="p">)</span>
+    <span class="n">decay</span> <span class="o">=</span> <span class="n">LambdaLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">CosineDecayer</span><span class="p">(</span><span class="n">total_steps</span> <span class="o">-</span> <span class="n">peak_step</span><span class="p">))</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">SequentialLR</span><span class="p">(</span>
+        <span class="n">optimizer</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">warmup</span><span class="p">,</span> <span class="n">decay</span><span class="p">],</span>
+        <span class="n">milestones</span><span class="o">=</span><span class="p">[</span><span class="n">peak_step</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">scheduler</span></div>
+
+
+
+<div class="viewcode-block" id="LinearWarmupThreeStepsAnnealing">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html#stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing">[docs]</a>
+<span class="k">def</span> <span class="nf">LinearWarmupThreeStepsAnnealing</span><span class="p">(</span>
+    <span class="n">optimizer</span><span class="p">,</span> <span class="n">total_steps</span><span class="p">,</span> <span class="n">start_factor</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">peak_step</span><span class="o">=</span><span class="mf">0.05</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine linear warmup with a three-step learning rate annealing.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">peak_step</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">peak_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">peak_step</span> <span class="o">*</span> <span class="n">total_steps</span><span class="p">)</span>
+    <span class="n">warmup</span> <span class="o">=</span> <span class="n">LinearLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">start_factor</span><span class="p">,</span> <span class="n">total_iters</span><span class="o">=</span><span class="n">peak_step</span><span class="p">)</span>
+    <span class="n">anneal</span> <span class="o">=</span> <span class="n">MultiStepLR</span><span class="p">(</span>
+        <span class="n">optimizer</span><span class="p">,</span>
+        <span class="n">milestones</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">total_steps</span> <span class="o">-</span> <span class="n">peak_step</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.4</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">total_steps</span> <span class="o">-</span> <span class="n">peak_step</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.6</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">total_steps</span> <span class="o">-</span> <span class="n">peak_step</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">SequentialLR</span><span class="p">(</span>
+        <span class="n">optimizer</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">warmup</span><span class="p">,</span> <span class="n">anneal</span><span class="p">],</span>
+        <span class="n">milestones</span><span class="o">=</span><span class="p">[</span><span class="n">peak_step</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">scheduler</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+    <span class="kn">import</span> <span class="nn">torch</span>
+
+    <span class="n">warmup</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">cosine_annealing</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">threestep_annealing</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">cyclic</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">W</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]))</span>
+    <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">option</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">warmup</span><span class="p">,</span> <span class="n">cosine_annealing</span><span class="p">,</span> <span class="n">threestep_annealing</span><span class="p">,</span> <span class="n">cyclic</span><span class="p">],</span>
+        <span class="p">[</span>
+            <span class="n">LinearWarmup</span><span class="p">,</span>
+            <span class="n">LinearWarmupCosineAnnealing</span><span class="p">,</span>
+            <span class="n">LinearWarmupThreeStepsAnnealing</span><span class="p">,</span>
+            <span class="n">LinearWarmupCyclicAnnealing</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">):</span>
+        <span class="n">optim</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">([</span><span class="n">W</span><span class="p">],</span> <span class="n">lr</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">sched</span> <span class="o">=</span> <span class="n">option</span><span class="p">(</span><span class="n">optim</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sched</span><span class="o">.</span><span class="n">get_last_lr</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">optim</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="n">sched</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sched</span><span class="o">.</span><span class="n">get_last_lr</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-------------&quot;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">warmup</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cosine_annealing</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">threestep_annealing</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cyclic</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By stable-SSL team
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, stable-SSL team.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

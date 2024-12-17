@@ -16,8 +16,8 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
+  <!--
+    this give us a css class that will be invisible only if js is disabled
   -->
   <noscript>
     <style>
@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
@@ -38,10 +38,10 @@
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
   <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="_static/documentation_options.js?v=eeab245b"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
@@ -164,6 +164,17 @@
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.optimizers.LARS.html">LARS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="schedulers.html">stable_ssl.schedulers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmup.html">LinearWarmup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
+</ul>
+</details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
 <ul class="nav bd-sidenav">
@@ -176,9 +187,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -395,12 +411,12 @@ At its core, <code class="docutils literal notranslate"><span class="pre">stable
 <p id="launch">When using <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>, we recommend relying on configuration files to specify the parameters, typically using <code class="docutils literal notranslate"><span class="pre">Hydra</span></code> (see <a class="reference external" href="https://hydra.cc/">Hydra documentation</a>).</p>
 <p>The parameters are organized into the following groups (more details in the <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html">User Guide</a>):</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: Defines the dataset, loading, and augmentation pipelines. Only the dataset called <code class="docutils literal notranslate"><span class="pre">train</span></code> is used for training. If there is no dataset named <code class="docutils literal notranslate"><span class="pre">train</span></code>, the model runs in evaluation mode. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#data">Example</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">modules</span></code>: Specifies the neural network modules, with a required <code class="docutils literal notranslate"><span class="pre">backbone</span></code> as the model’s core. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#module">Example</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">objective</span></code>: Defines the model’s loss function. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#objective">Example</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">optim</span></code>: Contains optimization parameters, including <code class="docutils literal notranslate"><span class="pre">epochs</span></code>, <code class="docutils literal notranslate"><span class="pre">max_steps</span></code> (per epoch), and <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> / <code class="docutils literal notranslate"><span class="pre">scheduler</span></code> settings. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#optim">Example</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hardware</span></code>: Specifies the hardware used, including the number of GPUs, CPUs, etc. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#hardware">Example</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">logger</span></code>: Configures model performance monitoring. APIs like <a class="reference external" href="https://wandb.ai/home">WandB</a> are supported. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#logger">Example</a>.</p></li>
+<li><p><strong>data</strong>: Defines the dataset, loading, and augmentation pipelines. Only the dataset called <code class="docutils literal notranslate"><span class="pre">train</span></code> is used for training. If there is no dataset named <code class="docutils literal notranslate"><span class="pre">train</span></code>, the model runs in evaluation mode. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#data">Example</a>.</p></li>
+<li><p><strong>module</strong>: Specifies the neural network modules, with a required <code class="docutils literal notranslate"><span class="pre">backbone</span></code> as the model’s core. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#module">Example</a>.</p></li>
+<li><p><strong>objective</strong>: Defines the model’s loss function. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#objective">Example</a>.</p></li>
+<li><p><strong>optim</strong>: Contains optimization parameters, including <code class="docutils literal notranslate"><span class="pre">epochs</span></code>, <code class="docutils literal notranslate"><span class="pre">max_steps</span></code> (per epoch), and <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> / <code class="docutils literal notranslate"><span class="pre">scheduler</span></code> settings. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#optim">Example</a>.</p></li>
+<li><p><strong>hardware</strong>: Specifies the hardware used, including the number of GPUs, CPUs, etc. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#hardware">Example</a>.</p></li>
+<li><p><strong>logger</strong>: Configures model performance monitoring. APIs like <a class="reference external" href="https://wandb.ai/home">WandB</a> are supported. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#logger">Example</a>.</p></li>
 </ul>
 <p>Then, create a Python script that will load the configuration and launch the run. Here is an example with Hydra:</p>
 <div class="highlight-python notranslate" id="run-py"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hydra</span>
@@ -451,7 +467,7 @@ At its core, <code class="docutils literal notranslate"><span class="pre">stable
 <td><p>✅</p></td>
 <td><p>NTXEntLoss</p></td>
 </tr>
-<tr class="row-odd"><td><p>SimCLR</p></td>
+<tr class="row-odd"><td><p>SimCLR (<a class="reference external" href="https://github.com/rbalestr-lab/stable-SSL/blob/main/examples/simclr_cifar10_full.yaml">config example</a>)</p></td>
 <td><p>❌</p></td>
 <td><p>❌</p></td>
 <td><p>NTXEntLoss</p></td>
@@ -475,6 +491,8 @@ At its core, <code class="docutils literal notranslate"><span class="pre">stable
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="losses.html">stable_ssl.losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimizers.html">stable_ssl.optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schedulers.html">stable_ssl.schedulers</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -582,8 +600,8 @@ By stable-SSL team
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>
