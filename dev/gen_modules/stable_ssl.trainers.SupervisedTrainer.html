@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>LinearWarmup &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>SupervisedTrainer &#8212; stable-SSL 0.1-dev documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.schedulers.LinearWarmup';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.trainers.SupervisedTrainer';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="LinearWarmupCosineAnnealing" href="stable_ssl.schedulers.LinearWarmupCosineAnnealing.html" />
-    <link rel="prev" title="stable_ssl.schedulers" href="../schedulers.html" />
+    <link rel="next" title="JointEmbeddingTrainer" href="stable_ssl.trainers.JointEmbeddingTrainer.html" />
+    <link rel="prev" title="stable_ssl.trainers" href="../trainers.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -153,8 +153,8 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../trainers.html">stable_ssl.trainers</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">SupervisedTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SimSiamTrainer.html">SimSiamTrainer</a></li>
@@ -171,8 +171,8 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.optimizers.LARS.html">LARS</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../schedulers.html">stable_ssl.schedulers</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">LinearWarmup</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../schedulers.html">stable_ssl.schedulers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmup.html">LinearWarmup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
@@ -241,7 +241,7 @@
       
       
       
-      <li><a href="../_sources/gen_modules/stable_ssl.schedulers.LinearWarmup.rst" target="_blank"
+      <li><a href="../_sources/gen_modules/stable_ssl.trainers.SupervisedTrainer.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -317,7 +317,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>LinearWarmup</h1>
+    <h1>SupervisedTrainer</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -327,7 +327,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.schedulers.LinearWarmup"><code class="docutils literal notranslate"><span class="pre">LinearWarmup()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SupervisedTrainer"><code class="docutils literal notranslate"><span class="pre">SupervisedTrainer</span></code></a></li>
 </ul>
             </nav>
         </div>
@@ -339,15 +339,16 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="linearwarmup">
-<h1>LinearWarmup<a class="headerlink" href="#linearwarmup" title="Link to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="stable_ssl.schedulers.LinearWarmup">
-<span class="sig-prename descclassname"><span class="pre">stable_ssl.schedulers.</span></span><span class="sig-name descname"><span class="pre">LinearWarmup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/schedulers.html#LinearWarmup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.schedulers.LinearWarmup" title="Link to this definition">#</a></dt>
-<dd><p>Create a linear warmup scheduler.</p>
+  <section id="supervisedtrainer">
+<h1>SupervisedTrainer<a class="headerlink" href="#supervisedtrainer" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="stable_ssl.trainers.SupervisedTrainer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.trainers.</span></span><span class="sig-name descname"><span class="pre">SupervisedTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardware</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#SupervisedTrainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.SupervisedTrainer" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTrainer</span></code></p>
+<p>Base class for training a supervised model.</p>
 </dd></dl>
 
-</section>
+<span class="target" id="sphx-glr-backref-stable-ssl-trainers-supervisedtrainer"></span></section>
 
 
                 </article>
@@ -361,20 +362,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../schedulers.html"
+       href="../trainers.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">stable_ssl.schedulers</p>
+        <p class="prev-next-title">stable_ssl.trainers</p>
       </div>
     </a>
     <a class="right-next"
-       href="stable_ssl.schedulers.LinearWarmupCosineAnnealing.html"
+       href="stable_ssl.trainers.JointEmbeddingTrainer.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">LinearWarmupCosineAnnealing</p>
+        <p class="prev-next-title">JointEmbeddingTrainer</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -395,7 +396,7 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.schedulers.LinearWarmup"><code class="docutils literal notranslate"><span class="pre">LinearWarmup()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SupervisedTrainer"><code class="docutils literal notranslate"><span class="pre">SupervisedTrainer</span></code></a></li>
 </ul>
   </nav></div>
 

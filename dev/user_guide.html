@@ -50,7 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="BaseModel" href="gen_modules/stable_ssl.BaseModel.html" />
+    <link rel="next" title="NTXEntLoss" href="gen_modules/stable_ssl.NTXEntLoss.html" />
     <link rel="prev" title="The Self-Supervised Learning Library by Researchers for Researchers" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -145,9 +145,6 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">User Guide</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BaseModel.html">BaseModel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.JointEmbedding.html">JointEmbedding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.SelfDistillation.html">SelfDistillation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
@@ -156,6 +153,13 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SimSiamTrainer.html">SimSiamTrainer</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
@@ -323,9 +327,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trainer">trainer</a><ul class="nav section-nav flex-column">
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trainer">trainer</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loss">loss</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optim">optim</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data">data</a></li>
@@ -353,21 +355,12 @@
 <p>In <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>, the main <code class="docutils literal notranslate"><span class="pre">trainer</span></code> object must inherit from the <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> class. This class serves as the primary entry point for the training loop and provides all the essential methods required to train and evaluate your model effectively.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.BaseModel.html#stable_ssl.BaseModel" title="stable_ssl.BaseModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseModel</span></code></a>(data, module, loss, hardware, ...)</p></td>
-<td><p>Base class for training a model.</p></td>
-</tr>
 </tbody>
 </table>
 </div>
 <p>More specifically, if you want to train a self-supervised learning model, you can inherit from the following classes, depending on the type of model you are interested in:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.JointEmbedding.html#stable_ssl.JointEmbedding" title="stable_ssl.JointEmbedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JointEmbedding</span></code></a>(data, module, loss, hardware, ...)</p></td>
-<td><p>Base class for training a joint-embedding SSL model.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.SelfDistillation.html#stable_ssl.SelfDistillation" title="stable_ssl.SelfDistillation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelfDistillation</span></code></a>(data, module, loss, ...)</p></td>
-<td><p>Base class for training a self-distillation SSL model.</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -582,11 +575,11 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
       </div>
     </a>
     <a class="right-next"
-       href="gen_modules/stable_ssl.BaseModel.html"
+       href="gen_modules/stable_ssl.NTXEntLoss.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">BaseModel</p>
+        <p class="prev-next-title">NTXEntLoss</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -607,9 +600,7 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trainer">trainer</a><ul class="nav section-nav flex-column">
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trainer">trainer</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loss">loss</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optim">optim</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data">data</a></li>

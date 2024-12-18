@@ -144,9 +144,6 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BaseModel.html">BaseModel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.JointEmbedding.html">JointEmbedding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.SelfDistillation.html">SelfDistillation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
@@ -155,6 +152,13 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.SimSiamTrainer.html">SimSiamTrainer</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
@@ -384,42 +388,6 @@
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">scheduler</span></div>
 
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-    <span class="kn">import</span> <span class="nn">torch</span>
-
-    <span class="n">warmup</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">cosine_annealing</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">threestep_annealing</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">cyclic</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="n">W</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]))</span>
-    <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">option</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">warmup</span><span class="p">,</span> <span class="n">cosine_annealing</span><span class="p">,</span> <span class="n">threestep_annealing</span><span class="p">,</span> <span class="n">cyclic</span><span class="p">],</span>
-        <span class="p">[</span>
-            <span class="n">LinearWarmup</span><span class="p">,</span>
-            <span class="n">LinearWarmupCosineAnnealing</span><span class="p">,</span>
-            <span class="n">LinearWarmupThreeStepsAnnealing</span><span class="p">,</span>
-            <span class="n">LinearWarmupCyclicAnnealing</span><span class="p">,</span>
-        <span class="p">],</span>
-    <span class="p">):</span>
-        <span class="n">optim</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">([</span><span class="n">W</span><span class="p">],</span> <span class="n">lr</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">sched</span> <span class="o">=</span> <span class="n">option</span><span class="p">(</span><span class="n">optim</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sched</span><span class="o">.</span><span class="n">get_last_lr</span><span class="p">())</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-            <span class="n">loss</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-            <span class="n">optim</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-            <span class="n">sched</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sched</span><span class="o">.</span><span class="n">get_last_lr</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-------------&quot;</span><span class="p">)</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">warmup</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cosine_annealing</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">threestep_annealing</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cyclic</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
                 </article>

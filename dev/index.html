@@ -146,9 +146,6 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BaseModel.html">BaseModel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.JointEmbedding.html">JointEmbedding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.SelfDistillation.html">SelfDistillation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
@@ -157,6 +154,13 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SimSiamTrainer.html">SimSiamTrainer</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
@@ -352,9 +356,9 @@
 <section id="the-self-supervised-learning-library-by-researchers-for-researchers">
 <h1>The Self-Supervised Learning Library by Researchers for Researchers<a class="headerlink" href="#the-self-supervised-learning-library-by-researchers-for-researchers" title="Link to this heading">#</a></h1>
 <p><em>Have a research idea? With stable-SSL, you can go from concept to execution in under 10 minutes. Start from scratch and quickly set up your pipeline, all while being able to generate high-quality figures and tables from your results. That’s the goal of stable-SSL.</em></p>
-<p>We achieve that by taking the best–and only the best–from the most eponymous AI libraries: PytorchLightning, VISSL, WandB, Hydra, Submitit.</p>
+<p>We achieve that by taking the best–and only the best–from the most eponymous AI libraries: <code class="docutils literal notranslate"><span class="pre">PytorchLightning</span></code>, <code class="docutils literal notranslate"><span class="pre">VISSL</span></code>, <code class="docutils literal notranslate"><span class="pre">WandB</span></code>, <code class="docutils literal notranslate"><span class="pre">Hydra</span></code>, <code class="docutils literal notranslate"><span class="pre">Submitit</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> implements all the basic boilerplate code, including data loading, logging, checkpointing and optimization. It offers users full flexibility to customize each part of the pipeline through a configuration file, enabling easy selection of network architectures, loss functions, evaluation metrics, data augmentations and more.
-These components can be sourced from stable-SSL itself, popular libraries like PyTorch, or custom modules created by the user.</p>
+These components can be sourced from <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> itself, popular libraries like <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code>, or custom modules created by the user.</p>
 <section id="why-stable-ssl">
 <h2>Why stable-SSL?<a class="headerlink" href="#why-stable-ssl" title="Link to this heading">#</a></h2>
 <p id="why">A quick search of <code class="docutils literal notranslate"><span class="pre">AI</span> <span class="pre">libraries</span></code> or <code class="docutils literal notranslate"><span class="pre">Self</span> <span class="pre">Supervised</span> <span class="pre">Learning</span> <span class="pre">libraries</span></code> will return hundreds of results. 99% will be independent project-centric libraries that can’t be reused for general purpose AI research. The other 1% includes:</p>
@@ -381,7 +385,7 @@ These components can be sourced from stable-SSL itself, popular libraries like P
 <section id="library-design">
 <h3>Library Design<a class="headerlink" href="#library-design" title="Link to this heading">#</a></h3>
 <p id="design"><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides all the boilerplate to quickly get started with AI research, focusing on Self-Supervised Learning (SSL), albeit other applications can certainly build upon <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>.
-At its core, <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides a <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> class that sequentially calls the following methods:</p>
+At its core, <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides a <code class="docutils literal notranslate"><span class="pre">BaseTrainer</span></code> class that sequentially calls the following methods:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- self.before_fit (nothing by default)
 - self.fit (executes all the training/intermitent evaluation by default)
    - for `self.optim[&quot;epochs&quot;]` epochs:
@@ -478,8 +482,8 @@ At its core, <code class="docutils literal notranslate"><span class="pre">stable
 <td><p>NegativeCosineSimilarity</p></td>
 </tr>
 <tr class="row-odd"><td><p>VICReg</p></td>
-<td><p>✅</p></td>
-<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
 <td><p>VICRegLoss</p></td>
 </tr>
 </tbody>
@@ -490,6 +494,7 @@ At its core, <code class="docutils literal notranslate"><span class="pre">stable
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="trainers.html">stable_ssl.trainers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="losses.html">stable_ssl.losses</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimizers.html">stable_ssl.optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="schedulers.html">stable_ssl.schedulers</a></li>

@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>LinearWarmup &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>stable_ssl.trainers &#8212; stable-SSL 0.1-dev documentation</title>
   
   
   
@@ -27,31 +27,31 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=eeab245b"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.schedulers.LinearWarmup';</script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="LinearWarmupCosineAnnealing" href="stable_ssl.schedulers.LinearWarmupCosineAnnealing.html" />
-    <link rel="prev" title="stable_ssl.schedulers" href="../schedulers.html" />
+    <script src="_static/documentation_options.js?v=eeab245b"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'trainers';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="SupervisedTrainer" href="gen_modules/stable_ssl.trainers.SupervisedTrainer.html" />
+    <link rel="prev" title="BarlowTwinsLoss" href="gen_modules/stable_ssl.BarlowTwinsLoss.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -73,7 +73,7 @@
   <dialog id="pst-search-dialog">
     
 <form class="bd-search d-flex align-items-center"
-      action="../search.html"
+      action="search.html"
       method="get">
   <i class="fa-solid fa-magnifying-glass"></i>
   <input type="search"
@@ -122,7 +122,7 @@
     
   
 
-<a class="navbar-brand logo" href="../index.html">
+<a class="navbar-brand logo" href="index.html">
   
   
   
@@ -143,45 +143,45 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
 </ul>
 </details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SimSiamTrainer.html">SimSiamTrainer</a></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">stable_ssl.trainers</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SimSiamTrainer.html">SimSiamTrainer</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.optimizers.LARS.html">LARS</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.optimizers.LARS.html">LARS</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../schedulers.html">stable_ssl.schedulers</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">LinearWarmup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="schedulers.html">stable_ssl.schedulers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmup.html">LinearWarmup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
 </ul>
 </details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 </ul>
 
     </div>
@@ -241,7 +241,7 @@
       
       
       
-      <li><a href="../_sources/gen_modules/stable_ssl.schedulers.LinearWarmup.rst" target="_blank"
+      <li><a href="_sources/trainers.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -304,9 +304,7 @@
 <button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
 </button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</button>
+
 </div></div>
       
     </div>
@@ -317,19 +315,11 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>LinearWarmup</h1>
+    <h1>stable_ssl.trainers</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> Contents </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.schedulers.LinearWarmup"><code class="docutils literal notranslate"><span class="pre">LinearWarmup()</span></code></a></li>
-</ul>
-            </nav>
         </div>
     </div>
 </div>
@@ -339,14 +329,25 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="linearwarmup">
-<h1>LinearWarmup<a class="headerlink" href="#linearwarmup" title="Link to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="stable_ssl.schedulers.LinearWarmup">
-<span class="sig-prename descclassname"><span class="pre">stable_ssl.schedulers.</span></span><span class="sig-name descname"><span class="pre">LinearWarmup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/schedulers.html#LinearWarmup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.schedulers.LinearWarmup" title="Link to this definition">#</a></dt>
-<dd><p>Create a linear warmup scheduler.</p>
-</dd></dl>
-
+  <section id="module-stable_ssl.trainers">
+<span id="stable-ssl-trainers"></span><h1>stable_ssl.trainers<a class="headerlink" href="#module-stable_ssl.trainers" title="Link to this heading">#</a></h1>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.trainers.SupervisedTrainer.html#stable_ssl.trainers.SupervisedTrainer" title="stable_ssl.trainers.SupervisedTrainer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SupervisedTrainer</span></code></a>(data, module, loss, ...)</p></td>
+<td><p>Base class for training a supervised model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html#stable_ssl.trainers.JointEmbeddingTrainer" title="stable_ssl.trainers.JointEmbeddingTrainer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JointEmbeddingTrainer</span></code></a>(data, module, loss, ...)</p></td>
+<td><p>Base class for training a joint-embedding SSL model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer" title="stable_ssl.trainers.SelfDistillationTrainer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelfDistillationTrainer</span></code></a>(data, module, loss, ...)</p></td>
+<td><p>Base class for training a self-distillation SSL model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.trainers.SimSiamTrainer.html#stable_ssl.trainers.SimSiamTrainer" title="stable_ssl.trainers.SimSiamTrainer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SimSiamTrainer</span></code></a>(data, module, loss, hardware, ...)</p></td>
+<td><p>Base class for training a SimSiam SSL model.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 
 
@@ -361,20 +362,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../schedulers.html"
+       href="gen_modules/stable_ssl.BarlowTwinsLoss.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">stable_ssl.schedulers</p>
+        <p class="prev-next-title">BarlowTwinsLoss</p>
       </div>
     </a>
     <a class="right-next"
-       href="stable_ssl.schedulers.LinearWarmupCosineAnnealing.html"
+       href="gen_modules/stable_ssl.trainers.SupervisedTrainer.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">LinearWarmupCosineAnnealing</p>
+        <p class="prev-next-title">SupervisedTrainer</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -384,22 +385,6 @@
             </div>
             
             
-              
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.schedulers.LinearWarmup"><code class="docutils literal notranslate"><span class="pre">LinearWarmup()</span></code></a></li>
-</ul>
-  </nav></div>
-
-</div></div>
               
             
           </div>
@@ -444,8 +429,8 @@ By stable-SSL team
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>
