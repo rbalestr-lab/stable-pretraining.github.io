@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>NegativeCosineSimilarity &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>Resnet9 &#8212; stable-SSL 0.1-dev documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.losses.NegativeCosineSimilarity';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.modules.Resnet9';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="VICRegLoss" href="stable_ssl.losses.VICRegLoss.html" />
-    <link rel="prev" title="NTXEntLoss" href="stable_ssl.losses.NTXEntLoss.html" />
+    <link rel="next" title="ConvMixer" href="stable_ssl.modules.ConvMixer.html" />
+    <link rel="prev" title="MLP" href="stable_ssl.modules.MLP.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -160,18 +160,18 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SimSiamTrainer.html">SimSiamTrainer</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../losses.html">stable_ssl.losses</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">NegativeCosineSimilarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">stable_ssl.modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../modules.html">stable_ssl.modules</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.get_backbone_dim.html">get_backbone_dim</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.load_backbone.html">load_backbone</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.MLP.html">MLP</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.Resnet9.html">Resnet9</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Resnet9</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.ConvMixer.html">ConvMixer</a></li>
 </ul>
 </details></li>
@@ -249,7 +249,7 @@
       
       
       
-      <li><a href="../_sources/gen_modules/stable_ssl.losses.NegativeCosineSimilarity.rst" target="_blank"
+      <li><a href="../_sources/gen_modules/stable_ssl.modules.Resnet9.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -325,7 +325,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>NegativeCosineSimilarity</h1>
+    <h1>Resnet9</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -335,8 +335,8 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.losses.NegativeCosineSimilarity"><code class="docutils literal notranslate"><span class="pre">NegativeCosineSimilarity</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.losses.NegativeCosineSimilarity.forward"><code class="docutils literal notranslate"><span class="pre">NegativeCosineSimilarity.forward()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.modules.Resnet9"><code class="docutils literal notranslate"><span class="pre">Resnet9</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.modules.Resnet9.forward"><code class="docutils literal notranslate"><span class="pre">Resnet9.forward()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -350,38 +350,22 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="negativecosinesimilarity">
-<h1>NegativeCosineSimilarity<a class="headerlink" href="#negativecosinesimilarity" title="Link to this heading">#</a></h1>
+  <section id="resnet9">
+<h1>Resnet9<a class="headerlink" href="#resnet9" title="Link to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="stable_ssl.losses.NegativeCosineSimilarity">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.losses.</span></span><span class="sig-name descname"><span class="pre">NegativeCosineSimilarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/losses.html#NegativeCosineSimilarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.losses.NegativeCosineSimilarity" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="stable_ssl.modules.Resnet9">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.modules.</span></span><span class="sig-name descname"><span class="pre">Resnet9</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/modules.html#Resnet9"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.modules.Resnet9" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://pytorch.org/docs/2.0/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
-<p>Negative cosine similarity objective.</p>
-<p>This objective is used for instance in BYOL <span id="id1">[<a class="reference internal" href="../bibliography.html#id3" title="Jean-Bastien Grill, Florian Strub, Florent Altché, Corentin Tallec, Pierre Richemond, Elena Buchatskaya, Carl Doersch, Bernardo Avila Pires, Zhaohan Guo, Mohammad Gheshlaghi Azar, and others. Bootstrap your own latent-a new approach to self-supervised learning. Advances in neural information processing systems, 33:21271–21284, 2020.">Grill <em>et al.</em>, 2020</a>]</span>
-or SimSiam <span id="id2">[<a class="reference internal" href="../bibliography.html#id5" title="Xinlei Chen and Kaiming He. Exploring simple siamese representation learning. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, 15750–15758. 2021.">Chen and He, 2021</a>]</span>.</p>
+<p>ResNet-9 model.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="stable_ssl.losses.NegativeCosineSimilarity.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/losses.html#NegativeCosineSimilarity.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.losses.NegativeCosineSimilarity.forward" title="Link to this definition">#</a></dt>
-<dd><p>Compute the loss of the BYOL model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>z_i</strong> (<a class="reference external" href="http://pytorch.org/docs/2.0/tensors.html#torch.Tensor" title="(in PyTorch v2.0)"><em>torch.Tensor</em></a>) – Latent representation of the first augmented view of the batch.</p></li>
-<li><p><strong>z_j</strong> (<a class="reference external" href="http://pytorch.org/docs/2.0/tensors.html#torch.Tensor" title="(in PyTorch v2.0)"><em>torch.Tensor</em></a>) – Latent representation of the second augmented view of the batch.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The computed loss.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)">float</a></p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="stable_ssl.modules.Resnet9.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/modules.html#Resnet9.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.modules.Resnet9.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass.</p>
 </dd></dl>
 
 </dd></dl>
 
-<span class="target" id="sphx-glr-backref-stable-ssl-losses-negativecosinesimilarity"></span></section>
+<span class="target" id="sphx-glr-backref-stable-ssl-modules-resnet9"></span></section>
 
 
                 </article>
@@ -395,20 +379,20 @@ or SimSiam <span id="id2">[<a class="reference internal" href="../bibliography.h
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="stable_ssl.losses.NTXEntLoss.html"
+       href="stable_ssl.modules.MLP.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">NTXEntLoss</p>
+        <p class="prev-next-title">MLP</p>
       </div>
     </a>
     <a class="right-next"
-       href="stable_ssl.losses.VICRegLoss.html"
+       href="stable_ssl.modules.ConvMixer.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">VICRegLoss</p>
+        <p class="prev-next-title">ConvMixer</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -429,8 +413,8 @@ or SimSiam <span id="id2">[<a class="reference internal" href="../bibliography.h
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.losses.NegativeCosineSimilarity"><code class="docutils literal notranslate"><span class="pre">NegativeCosineSimilarity</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.losses.NegativeCosineSimilarity.forward"><code class="docutils literal notranslate"><span class="pre">NegativeCosineSimilarity.forward()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.modules.Resnet9"><code class="docutils literal notranslate"><span class="pre">Resnet9</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.modules.Resnet9.forward"><code class="docutils literal notranslate"><span class="pre">Resnet9.forward()</span></code></a></li>
 </ul>
 </li>
 </ul>
