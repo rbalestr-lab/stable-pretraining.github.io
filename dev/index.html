@@ -146,9 +146,10 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BaseTrainer.html">BaseTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 </ul>
 </details></li>
 </ul>
@@ -459,40 +460,33 @@ At its core, <code class="docutils literal notranslate"><span class="pre">stable
 <h3>Examples of Methods<a class="headerlink" href="#examples-of-methods" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="table">
 <tbody>
-<tr class="row-odd"><td><p>Methods</p></td>
-<td><p>Predictor</p></td>
-<td><p>Self-distillation</p></td>
-<td><p>Loss</p></td>
+<tr class="row-odd"><td><p><strong>Method</strong></p></td>
+<td colspan="2"><p><strong>Trainer</strong></p></td>
+<td><p><strong>Loss</strong></p></td>
 </tr>
 <tr class="row-even"><td><p>Barlow Twins</p></td>
-<td><p>❌</p></td>
-<td><p>❌</p></td>
-<td><p>BarlowTwinsLoss</p></td>
+<td colspan="2"><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.BarlowTwinsLoss.html#stable_ssl.losses.BarlowTwinsLoss">BarlowTwinsLoss</a></p></td>
 </tr>
 <tr class="row-odd"><td><p>BYOL</p></td>
-<td><p>✅</p></td>
-<td><p>✅</p></td>
-<td><p>NegativeCosineSimilarity</p></td>
+<td colspan="2"><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer">SelfDistillationTrainer</a></p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></p></td>
 </tr>
 <tr class="row-even"><td><p>MoCo</p></td>
-<td><p>❌</p></td>
-<td><p>✅</p></td>
-<td><p>NTXEntLoss</p></td>
+<td colspan="2"><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer">SelfDistillationTrainer</a></p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.NTXEntLoss.html#stable_ssl.losses.NTXEntLoss">NTXEntLoss</a></p></td>
 </tr>
-<tr class="row-odd"><td><p>SimCLR (<a class="reference external" href="https://github.com/rbalestr-lab/stable-SSL/blob/main/examples/simclr_cifar10_full.yaml">config example</a>)</p></td>
-<td><p>❌</p></td>
-<td><p>❌</p></td>
-<td><p>NTXEntLoss</p></td>
+<tr class="row-odd"><td><p>SimCLR (<a class="reference external" href="_github_url/blob/main/examples/simclr_cifar10_full.yaml">config example</a>)</p></td>
+<td colspan="2"><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.NTXEntLoss.html#stable_ssl.losses.NTXEntLoss">NTXEntLoss</a></p></td>
 </tr>
 <tr class="row-even"><td><p>SimSiam</p></td>
-<td><p>✅</p></td>
-<td><p>❌</p></td>
-<td><p>NegativeCosineSimilarity</p></td>
+<td colspan="2"><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SimSiamTrainer.html#stable_ssl.trainers.SimSiamTrainer">SimSiamTrainer</a></p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></p></td>
 </tr>
 <tr class="row-odd"><td><p>VICReg</p></td>
-<td><p>❌</p></td>
-<td><p>❌</p></td>
-<td><p>VICRegLoss</p></td>
+<td colspan="2"><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></p></td>
 </tr>
 </tbody>
 </table>

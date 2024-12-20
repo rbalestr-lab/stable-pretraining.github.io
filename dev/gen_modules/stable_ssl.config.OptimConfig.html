@@ -16,8 +16,8 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
+  <!--
+    this give us a css class that will be invisible only if js is disabled
   -->
   <noscript>
     <style>
@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
@@ -38,10 +38,10 @@
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../_static/documentation_options.js?v=eeab245b"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
@@ -50,8 +50,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.config.OptimConfig';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="HardwareConfig" href="stable_ssl.config.HardwareConfig.html" />
-    <link rel="prev" title="Configuration File Guide" href="../config_guide.html" />
+    <link rel="next" title="LoggerConfig" href="stable_ssl.config.LoggerConfig.html" />
+    <link rel="prev" title="BaseTrainer" href="stable_ssl.BaseTrainer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -143,30 +143,54 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Stable-SSL: the Self-Supervised Learning Library by Researchers for Researchers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../config_guide.html">Configuration File Guide</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../user_guide.html">User Guide</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.BaseTrainer.html">BaseTrainer</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.LogConfig.html">LogConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.DataConfig.html">DataConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.SimCLRConfig.html">SimCLRConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.BarlowTwinsConfig.html">BarlowTwinsConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.VICRegConfig.html">VICRegConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.joint_embedding.WMSEConfig.html">WMSEConfig</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../ssl_methods.html">SSL Methods</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.SimCLR.html">SimCLR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.BarlowTwins.html">BarlowTwins</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.VICReg.html">VICReg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.WMSE.html">WMSE</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SimSiamTrainer.html">SimSiamTrainer</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../whats_new.html">What’s New</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../whats_new/pre_release.html">Pre-Release</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">stable_ssl.modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.get_backbone_dim.html">get_backbone_dim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.load_backbone.html">load_backbone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.MLP.html">MLP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.Resnet9.html">Resnet9</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.ConvMixer.html">ConvMixer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.optimizers.LARS.html">LARS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../schedulers.html">stable_ssl.schedulers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmup.html">LinearWarmup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
 </ul>
 
     </div>
@@ -175,9 +199,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -323,23 +352,20 @@
 <h1>OptimConfig<a class="headerlink" href="#optimconfig" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="stable_ssl.config.OptimConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.config.</span></span><span class="sig-name descname"><span class="pre">OptimConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'LARS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_decay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nesterov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_max_norm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/config.html#OptimConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.config.OptimConfig" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.config.</span></span><span class="sig-name descname"><span class="pre">OptimConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accumulation_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_max_norm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/config.html#OptimConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.config.OptimConfig" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.4/library/functions.html#object" title="(in Python v3.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Configuration for the ‘optimizer’ parameters.</p>
+<p>Configuration for the optimization parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>optimizer</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – Type of optimizer to use (e.g., “AdamW”, “RMSprop”, “SGD”, “LARS”).
-Default is “LARS”.</p></li>
-<li><p><strong>lr</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – Learning rate for the optimizer. Default is 1e0.</p></li>
+<li><p><strong>optimizer</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Configuration for the optimizer.</p></li>
+<li><p><strong>scheduler</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Configuration for the learning rate scheduler.</p></li>
 <li><p><strong>epochs</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Number of epochs to train the model. Default is 1000.</p></li>
-<li><p><strong>max_steps</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of steps per epoch. If negative, no limit is set.
-Default is -1.</p></li>
-<li><p><strong>weight_decay</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – Weight decay for the optimizer. Default is 1e-6.</p></li>
-<li><p><strong>momentum</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – Momentum for the optimizer. Default is None.</p></li>
-<li><p><strong>nesterov</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – Whether to use Nesterov momentum. Default is False.</p></li>
-<li><p><strong>betas</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>]</em><em>, </em><em>optional</em>) – Betas for the AdamW optimizer. Default is (0.9, 0.999).</p></li>
-<li><p><strong>grad_max_norm</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>, </em><em>optional</em>) – Maximum norm for gradient clipping. Default is None.</p></li>
+<li><p><strong>max_steps</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of steps to train the model. Default is -1.</p></li>
+<li><p><strong>accumulation_steps</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Number of steps to accumulate gradients before updating the model.
+Default is 1.</p></li>
+<li><p><strong>grad_max_norm</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>, </em><em>optional</em>) – Maximum norm of the gradients. If None, no clipping is applied.
+Default is None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -359,20 +385,20 @@ Default is -1.</p></li>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../config_guide.html"
+       href="stable_ssl.BaseTrainer.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Configuration File Guide</p>
+        <p class="prev-next-title">BaseTrainer</p>
       </div>
     </a>
     <a class="right-next"
-       href="stable_ssl.config.HardwareConfig.html"
+       href="stable_ssl.config.LoggerConfig.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">HardwareConfig</p>
+        <p class="prev-next-title">LoggerConfig</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -442,8 +468,8 @@ By stable-SSL team
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>

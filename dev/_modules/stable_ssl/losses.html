@@ -144,9 +144,10 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BaseTrainer.html">BaseTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 </ul>
 </details></li>
 </ul>
@@ -305,7 +306,7 @@
 
 
 <div class="viewcode-block" id="NTXEntLoss">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.NTXEntLoss.html#stable_ssl.NTXEntLoss">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.NTXEntLoss.html#stable_ssl.losses.NTXEntLoss">[docs]</a>
 <span class="k">class</span> <span class="nc">NTXEntLoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalized temperature-scaled cross entropy loss.</span>
 
@@ -325,7 +326,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span>
 
 <div class="viewcode-block" id="NTXEntLoss.forward">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.NTXEntLoss.html#stable_ssl.NTXEntLoss.forward">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.NTXEntLoss.html#stable_ssl.losses.NTXEntLoss.forward">[docs]</a>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the NT-Xent loss.</span>
 
@@ -367,7 +368,7 @@
 
 
 <div class="viewcode-block" id="NegativeCosineSimilarity">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html#stable_ssl.NegativeCosineSimilarity">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html#stable_ssl.losses.NegativeCosineSimilarity">[docs]</a>
 <span class="k">class</span> <span class="nc">NegativeCosineSimilarity</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Negative cosine similarity objective.</span>
 
@@ -377,7 +378,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="NegativeCosineSimilarity.forward">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html#stable_ssl.NegativeCosineSimilarity.forward">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html#stable_ssl.losses.NegativeCosineSimilarity.forward">[docs]</a>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the loss of the BYOL model.</span>
 
@@ -400,7 +401,7 @@
 
 
 <div class="viewcode-block" id="VICRegLoss">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.VICRegLoss.html#stable_ssl.VICRegLoss">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.VICRegLoss.html#stable_ssl.losses.VICRegLoss">[docs]</a>
 <span class="k">class</span> <span class="nc">VICRegLoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;SSL objective used in VICReg :cite:`bardes2021vicreg`.</span>
 
@@ -435,7 +436,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
 
 <div class="viewcode-block" id="VICRegLoss.forward">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.VICRegLoss.html#stable_ssl.VICRegLoss.forward">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.VICRegLoss.html#stable_ssl.losses.VICRegLoss.forward">[docs]</a>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the loss of the VICReg model.</span>
 
@@ -480,7 +481,7 @@
 
 
 <div class="viewcode-block" id="BarlowTwinsLoss">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.BarlowTwinsLoss.html#stable_ssl.BarlowTwinsLoss">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.BarlowTwinsLoss.html#stable_ssl.losses.BarlowTwinsLoss">[docs]</a>
 <span class="k">class</span> <span class="nc">BarlowTwinsLoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;SSL objective used in Barlow Twins :cite:`zbontar2021barlow`.</span>
 
@@ -498,7 +499,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">LazyBatchNorm1d</span><span class="p">()</span>
 
 <div class="viewcode-block" id="BarlowTwinsLoss.forward">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.BarlowTwinsLoss.html#stable_ssl.BarlowTwinsLoss.forward">[docs]</a>
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.losses.BarlowTwinsLoss.html#stable_ssl.losses.BarlowTwinsLoss.forward">[docs]</a>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the loss of the Barlow Twins model.</span>
 

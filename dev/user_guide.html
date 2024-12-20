@@ -50,7 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="NTXEntLoss" href="gen_modules/stable_ssl.NTXEntLoss.html" />
+    <link rel="next" title="BaseTrainer" href="gen_modules/stable_ssl.BaseTrainer.html" />
     <link rel="prev" title="The Self-Supervised Learning Library by Researchers for Researchers" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -145,9 +145,10 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">User Guide</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BaseTrainer.html">BaseTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 </ul>
 </details></li>
 </ul>
@@ -357,53 +358,48 @@
 <span id="user-guide"></span><span id="id1"></span><h1>User Guide<a class="headerlink" href="#module-stable_ssl" title="Link to this heading">#</a></h1>
 <p>This guide provides instructions for launching runs with <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>.</p>
 <p>To make the process streamlined and efficient, we recommend using configuration files to define parameters and utilizing <a class="reference external" href="https://hydra.cc/">Hydra</a> to manage these configurations.</p>
-<p><strong>General Idea.</strong> <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is designed to minimize boilerplate code, providing a highly flexible framework with minimal hardcoded utilities. Modules in the pipeline can instantiate objects from various sources, including <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>, <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code>, <code class="docutils literal notranslate"><span class="pre">TorchMetrics</span></code>, or even custom objects provided by the user. This allows you to seamlessly integrate your own components into the pipeline while leveraging the capabilities of <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>.</p>
+<p><strong>General Idea.</strong> <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides a highly flexible framework with minimal hardcoded utilities. Modules in the pipeline can instantiate objects from various sources, including <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>, <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code>, <code class="docutils literal notranslate"><span class="pre">TorchMetrics</span></code>, or even custom objects provided by the user. This allows you to seamlessly integrate your own components into the pipeline while leveraging the capabilities of <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>.</p>
 <section id="trainer">
 <span id="id2"></span><h2>trainer<a class="headerlink" href="#trainer" title="Link to this heading">#</a></h2>
-<p>In <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>, the main <code class="docutils literal notranslate"><span class="pre">trainer</span></code> object must inherit from the <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> class. This class serves as the primary entry point for the training loop and provides all the essential methods required to train and evaluate your model effectively.</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>, the main <code class="docutils literal notranslate"><span class="pre">trainer</span></code> object must inherit from the <code class="docutils literal notranslate"><span class="pre">BaseTrainer</span></code> class. This class serves as the primary entry point for the training loop and provides all the essential methods required to train and evaluate your model effectively.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer" title="stable_ssl.BaseTrainer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseTrainer</span></code></a>(data, module, loss, hardware, ...)</p></td>
+<td><p>Base class for training a model.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
-<p>More specifically, if you want to train a self-supervised learning model, you can inherit from the following classes, depending on the type of model you are interested in:</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
-</tbody>
-</table>
-</div>
-<p>Here is what this instantiation looks like in the YAML configuration file:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.JointEmbedding</span>
+<p><a class="reference internal" href="trainers.html#module-stable_ssl.trainers" title="stable_ssl.trainers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.trainers</span></code></a> provides default trainer classes for various self-supervised learning approaches.</p>
+<p>Here is what instantiating an SSL trainer class from <code class="docutils literal notranslate"><span class="pre">stable_ssl.trainers</span></code> looks like in the YAML configuration file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.trainers.JointEmbedding</span>
 </pre></div>
 </div>
 </section>
 <section id="loss">
 <span id="id3"></span><h2>loss<a class="headerlink" href="#loss" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">loss</span></code> keyword is used to define the loss function for your model. <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> offers a variety of loss functions to suit different training needs. Below is a list of the available loss functions:</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.NTXEntLoss.html#stable_ssl.NTXEntLoss" title="stable_ssl.NTXEntLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NTXEntLoss</span></code></a>([temperature])</p></td>
-<td><p>Normalized temperature-scaled cross entropy loss.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.VICRegLoss.html#stable_ssl.VICRegLoss" title="stable_ssl.VICRegLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VICRegLoss</span></code></a>([sim_coeff, std_coeff, ...])</p></td>
-<td><p>SSL objective used in VICReg <span id="id4">[<a class="reference internal" href="bibliography.html#id7" title="Adrien Bardes, Jean Ponce, and Yann LeCun. Vicreg: variance-invariance-covariance regularization for self-supervised learning. arXiv preprint arXiv:2105.04906, 2021.">Bardes <em>et al.</em>, 2021</a>]</span>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.BarlowTwinsLoss.html#stable_ssl.BarlowTwinsLoss" title="stable_ssl.BarlowTwinsLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BarlowTwinsLoss</span></code></a>([lambd])</p></td>
-<td><p>SSL objective used in Barlow Twins <span id="id5">[<a class="reference internal" href="bibliography.html#id4" title="Jure Zbontar, Li Jing, Ishan Misra, Yann LeCun, and Stéphane Deny. Barlow twins: self-supervised learning via redundancy reduction. In International conference on machine learning, 12310–12320. PMLR, 2021.">Zbontar <em>et al.</em>, 2021</a>]</span>.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">loss</span></code> keyword is used to define the loss function for your model.</p>
+<p><a class="reference internal" href="losses.html#module-stable_ssl.losses" title="stable_ssl.losses"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.losses</span></code></a> offers a variety of loss functions for SSL.</p>
 <p>Here’s an example of how to define the <cite>loss</cite> section in your YAML file:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">loss</span><span class="p">:</span>
-<span class="w">   </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.NTXEntLoss</span>
+<span class="w">   </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.losses.NTXEntLoss</span>
 <span class="w">   </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
 </pre></div>
 </div>
 </section>
 <section id="optim">
-<span id="id6"></span><h2>optim<a class="headerlink" href="#optim" title="Link to this heading">#</a></h2>
+<span id="id4"></span><h2>optim<a class="headerlink" href="#optim" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">optim</span></code> keyword is used to define the optimization settings for your model. It allows users to specify both the <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> object and the <code class="docutils literal notranslate"><span class="pre">scheduler</span></code>.</p>
+<p>The default parameters associated with the <code class="docutils literal notranslate"><span class="pre">optim</span></code> keyword are defined in the following:</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig" title="stable_ssl.config.OptimConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.OptimConfig</span></code></a>(optimizer, scheduler[, ...])</p></td>
+<td><p>Configuration for the optimization parameters.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a class="reference internal" href="optimizers.html#module-stable_ssl.optimizers" title="stable_ssl.optimizers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.optimizers</span></code></a> and <a class="reference internal" href="schedulers.html#module-stable_ssl.schedulers" title="stable_ssl.schedulers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.schedulers</span></code></a> provide additional modules that are not available in <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code>.</p>
 <p>Example:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">optim</span><span class="p">:</span>
 <span class="w">   </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
@@ -423,7 +419,7 @@
 </div>
 </section>
 <section id="data">
-<span id="id7"></span><h2>data<a class="headerlink" href="#data" title="Link to this heading">#</a></h2>
+<span id="id5"></span><h2>data<a class="headerlink" href="#data" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">data</span></code> keyword specifies the settings for data loading, preprocessing, and data augmentation.
 Multiple datasets can be defined, with the dataset named <code class="docutils literal notranslate"><span class="pre">train</span></code> used for training.
 Other datasets, which can have any name, are used for evaluation purposes.</p>
@@ -481,8 +477,9 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
 </div>
 </section>
 <section id="module">
-<span id="id8"></span><h2>module<a class="headerlink" href="#module" title="Link to this heading">#</a></h2>
+<span id="id6"></span><h2>module<a class="headerlink" href="#module" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">module</span></code> keyword is used to define the settings of all the neural networks used, including the architecture of the backbone, projectors etc.</p>
+<p><a class="reference internal" href="modules.html#module-stable_ssl.modules" title="stable_ssl.modules"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.modules</span></code></a> provides a variety of utility functions that can be used to load specific architectures and pre-trained models.</p>
 <p>Example:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">module</span><span class="p">:</span>
 <span class="w">   </span><span class="nt">backbone</span><span class="p">:</span>
@@ -516,9 +513,18 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
 <p>The various components defined above can be accessed through the dictionary <code class="docutils literal notranslate"><span class="pre">self.module</span></code> in your trainer class. This allows the user to define the forward pass, compute losses, and specify evaluation metrics efficiently.</p>
 </section>
 <section id="logger">
-<span id="id9"></span><h2>logger<a class="headerlink" href="#logger" title="Link to this heading">#</a></h2>
+<span id="id7"></span><h2>logger<a class="headerlink" href="#logger" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">logger</span></code> keyword is used to configure the logging settings for your run.</p>
 <p>One important section is <code class="docutils literal notranslate"><span class="pre">metrics</span></code>, which lets you define the evaluation metrics to track during training. Metrics can be specified for each dataset.</p>
+<p>The default parameters associated with <code class="docutils literal notranslate"><span class="pre">logger</span></code> are defined in the following:</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.LoggerConfig.html#stable_ssl.config.LoggerConfig" title="stable_ssl.config.LoggerConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.LoggerConfig</span></code></a>(level, metrics, ...)</p></td>
+<td><p>Configuration for logging and checkpointing during training or evaluation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>Example:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">logger</span><span class="p">:</span>
 <span class="w">   </span><span class="nt">base_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./&quot;</span>
@@ -548,8 +554,17 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
 </div>
 </section>
 <section id="hardware">
-<span id="id10"></span><h2>hardware<a class="headerlink" href="#hardware" title="Link to this heading">#</a></h2>
+<span id="id8"></span><h2>hardware<a class="headerlink" href="#hardware" title="Link to this heading">#</a></h2>
 <p>Use the <code class="docutils literal notranslate"><span class="pre">hardware</span></code> keyword to configure hardware-related settings such as device, world_size (number of GPUs) or CPUs per task.</p>
+<p>The default parameters associated with <code class="docutils literal notranslate"><span class="pre">hardware</span></code> are defined in the following:</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.HardwareConfig.html#stable_ssl.config.HardwareConfig" title="stable_ssl.config.HardwareConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.HardwareConfig</span></code></a>([seed, float16, ...])</p></td>
+<td><p>Configuration for the hardware parameters.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>Example:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">hardware</span><span class="p">:</span>
 <span class="w">   </span><span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
@@ -583,11 +598,11 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
       </div>
     </a>
     <a class="right-next"
-       href="gen_modules/stable_ssl.NTXEntLoss.html"
+       href="gen_modules/stable_ssl.BaseTrainer.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">NTXEntLoss</p>
+        <p class="prev-next-title">BaseTrainer</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

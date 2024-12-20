@@ -144,22 +144,35 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BaseModel.html">BaseModel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.JointEmbedding.html">JointEmbedding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.SelfDistillation.html">SelfDistillation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BaseTrainer.html">BaseTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 </ul>
 </details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.SimSiamTrainer.html">SimSiamTrainer</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">stable_ssl.modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.get_backbone_dim.html">get_backbone_dim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.load_backbone.html">load_backbone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.MLP.html">MLP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.Resnet9.html">Resnet9</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.ConvMixer.html">ConvMixer</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -297,6 +310,7 @@
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">omegaconf</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">asdict</span>
 
@@ -324,56 +338,68 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="BaseModel">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseModel.html#stable_ssl.BaseModel">[docs]</a>
-<span class="k">class</span> <span class="nc">BaseModel</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseTrainer">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer">[docs]</a>
+<span class="k">class</span> <span class="nc">BaseTrainer</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for training a model.</span>
 
-<span class="sd">    That method provides a general boilerplate for all the internal operations</span>
-<span class="sd">    that always occur no matter the actual application and project. This includes</span>
-<span class="sd">    training, evaluation, checkpointing, restarting training, ...</span>
-<span class="sd">    The internals can be modified from the configs.</span>
+<span class="sd">    This class provides a general boilerplate for common operations that</span>
+<span class="sd">    occur during the training lifecycle, which can be customized via configuration.</span>
+<span class="sd">    These operations include training, evaluation, checkpointing, and training restart.</span>
 
-<span class="sd">    This class should be subclassed by your specific method (see examples).</span>
+<span class="sd">    The internals of these operations can be modified through configuration</span>
+<span class="sd">    settings, allowing flexibility for different projects and use cases.</span>
+
+<span class="sd">    This class is intended to be subclassed for specific training methods</span>
+<span class="sd">    (see examples for more details). For each subclass, the following methods must</span>
+<span class="sd">    be implemented: `forward`, `predict`, and `compute_loss`.</span>
 
 <span class="sd">    Execution flow when calling `launch`:</span>
 
-<span class="sd">    - self.before_fit (nothing by default)</span>
-<span class="sd">    - self.fit (executes all the training/intermitent evaluation by default)</span>
-<span class="sd">      - for `self.optim[&quot;epochs&quot;]` epochs:</span>
-<span class="sd">        - self.fit_epoch (one training epoch by default)</span>
-<span class="sd">          - self.before_fit_epoch (setup in train mode)</span>
-<span class="sd">          - loop over mini-batches</span>
-<span class="sd">            - self.before_fit_step (moves data to device)</span>
-<span class="sd">            - self.fit_step (computes loss and performs optimization step)</span>
-<span class="sd">            - self.after_fit_step (nothing by default)</span>
-<span class="sd">          - self.after_fit_epoch (nothing by default)</span>
-<span class="sd">        - self.evaluate (if asked by user config, looping over all non train datasets)</span>
-<span class="sd">          - self.before_eval (setup in eval mode)</span>
-<span class="sd">          - loop over mini-batches</span>
-<span class="sd">            - self.before_eval_step (moves data to device)</span>
-<span class="sd">            - self.eval_step (computes eval metrics)</span>
-<span class="sd">            - self.after_eval_step (nothing by default)</span>
-<span class="sd">          - self.after_eval (nothing by default)</span>
-<span class="sd">        - save intermitent checkpoint if asked by user config</span>
-<span class="sd">      - save final checkpoint if asked by user config</span>
-<span class="sd">    - self.after_fit (evaluates by default)</span>
+<span class="sd">            - `self.before_fit` (nothing by default)</span>
+<span class="sd">            - `self._fit` (executes all the training/intermittent evaluation by default)</span>
+<span class="sd">                - for `self.optim[&quot;epochs&quot;]` epochs:</span>
+<span class="sd">                    - `self.before_fit_epoch` (setup in train mode)</span>
+<span class="sd">                    - `self._fit_epoch` (one training epoch by default)</span>
+<span class="sd">                        - loop over mini-batches</span>
+<span class="sd">                            - `self.before_fit_step` (moves data to device)</span>
+<span class="sd">                            - `self._fit_step` (optimization step)</span>
+<span class="sd">                            - `self.after_fit_step` (nothing by default)</span>
+<span class="sd">                    - `self.after_fit_epoch` (nothing by default)</span>
+<span class="sd">                    - `self._evaluate` (if asked, looping over all non-train datasets)</span>
+<span class="sd">                        - `self.before_eval` (setup in eval mode)</span>
+<span class="sd">                        - loop over mini-batches</span>
+<span class="sd">                            - `self.before_eval_step` (moves data to device)</span>
+<span class="sd">                            - `self._eval_step` (computes eval metrics)</span>
+<span class="sd">                            - `self.after_eval_step` (nothing by default)</span>
+<span class="sd">                        - `self.after_eval` (nothing by default)</span>
+<span class="sd">                    - Save intermittent checkpoint if asked by user config</span>
+<span class="sd">                - Save final checkpoint if asked by user config</span>
+<span class="sd">            - `self.after_fit` (evaluates by default)</span>
+
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    data: dict</span>
-<span class="sd">        Data mapper of name-&gt;mini-batch. The dataset named `train` is used for training.</span>
+<span class="sd">        Names and construction of the dataloaders with their transform pipelines.</span>
+<span class="sd">        The dataset named `train` is used for training.</span>
 <span class="sd">        Any other dataset is used for validation.</span>
 <span class="sd">    module: dict</span>
-<span class="sd">        Module (NNs) configuration.</span>
+<span class="sd">        Names and definition of the modules (neural networks).</span>
+<span class="sd">        See :mod:`stable_ssl.modules` for examples of available modules.</span>
 <span class="sd">    loss: dict</span>
-<span class="sd">        loss configuration.</span>
+<span class="sd">        Loss function used in the final criterion to be minimized.</span>
+<span class="sd">        See :mod:`stable_ssl.losses` for examples.</span>
 <span class="sd">    hardware: dict</span>
-<span class="sd">        Hardware configuration.</span>
+<span class="sd">        Hardware parameters. See :mod:`stable_ssl.config.HardwareConfig`</span>
+<span class="sd">        for the full list of parameters and their defaults.</span>
 <span class="sd">    optim: dict</span>
-<span class="sd">        Optimizer configuration.</span>
+<span class="sd">        Optimization parameters. See :mod:`stable_ssl.config.OptimConfig`</span>
+<span class="sd">        for the full list of parameters and their defaults.</span>
 <span class="sd">    logger: dict</span>
-<span class="sd">        Logger configuration.</span>
+<span class="sd">        Logging and checkpointing parameters.</span>
+<span class="sd">        See :mod:`stable_ssl.config.LoggerConfig`</span>
+<span class="sd">        for the full list of parameters and their defaults.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">hardware</span><span class="p">,</span> <span class="n">optim</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -410,6 +436,222 @@
             <span class="n">omegaconf</span><span class="o">.</span><span class="n">OmegaConf</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=&gt; INIT OF </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> COMPLETED.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the setup and launch methods.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
+
+<div class="viewcode-block" id="BaseTrainer.setup">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.setup">[docs]</a>
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate components and load the checkpoint (if applicable).&quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">])</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=&gt; SETUP OF </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> STARTED.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instanciate</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_checkpoint</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=&gt; SETUP OF </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> COMPLETED.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.launch">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.launch">[docs]</a>
+    <span class="k">def</span> <span class="nf">launch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the core training and evaluation routine.</span>
+
+<span class="sd">        This method runs the training and evaluation process,</span>
+<span class="sd">        with a customizable boilerplate structure.</span>
+
+<span class="sd">        The default flow includes:</span>
+<span class="sd">        - Running evaluation and cleanup if no &quot;train&quot; dataset is found in `self.data`.</span>
+<span class="sd">        - Otherwise:</span>
+<span class="sd">        1. Executes `before_fit()` for pre-training setup.</span>
+<span class="sd">        2. Calls `_fit()` to perform training.</span>
+<span class="sd">        3. Executes `after_fit()` for post-training tasks.</span>
+
+<span class="sd">        Exceptions</span>
+<span class="sd">        ----------</span>
+<span class="sd">        BreakAllEpochs</span>
+<span class="sd">            Raised if the training is interrupted by the user.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;train&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">before_fit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">after_fit</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">BreakAllEpochs</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Training stopped by user.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]:</span>
+            <span class="n">wandb</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.forward">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.forward">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass of the model.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.predict">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.predict">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prediction of the model used for evaluation.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.compute_loss">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.compute_loss">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the global loss to be minimized.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.get_logs">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.get_logs">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the logs from the logger.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">reader</span><span class="o">.</span><span class="n">jsonl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;dump_path&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">reader</span><span class="o">.</span><span class="n">wandb</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;entity&quot;</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;project&quot;</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;ID&quot;</span><span class="p">],</span>
+                <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.get_config">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.get_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the configuration file of the trainer.&quot;&quot;&quot;</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">omegaconf</span><span class="o">.</span><span class="n">OmegaConf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;dump_path&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="s2">&quot;.hydra&quot;</span> <span class="o">/</span> <span class="s2">&quot;config.yaml&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.before_fit">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_fit">[docs]</a>
+    <span class="k">def</span> <span class="nf">before_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize training by setting the starting epoch.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.after_fit">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_fit">[docs]</a>
+    <span class="k">def</span> <span class="nf">after_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate the model after completing the training process.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.before_fit_epoch">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_fit_epoch">[docs]</a>
+    <span class="k">def</span> <span class="nf">before_fit_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare the training state and set the epoch for distributed training.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epoch</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.after_fit_epoch">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_fit_epoch">[docs]</a>
+    <span class="k">def</span> <span class="nf">after_fit_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle post-epoch tasks after training (currently does nothing).&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.before_fit_step">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_fit_step">[docs]</a>
+    <span class="k">def</span> <span class="nf">before_fit_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare batch for training step by moving it to the appropriate device.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.after_fit_step">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_fit_step">[docs]</a>
+    <span class="k">def</span> <span class="nf">after_fit_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle post-step tasks after a training step (currently does nothing).&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.before_eval">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_eval">[docs]</a>
+    <span class="k">def</span> <span class="nf">before_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the model to evaluation mode before validation/testing.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.after_eval">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_eval">[docs]</a>
+    <span class="k">def</span> <span class="nf">after_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle tasks after completing evaluation (currently does nothing).&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.before_eval_step">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_eval_step">[docs]</a>
+    <span class="k">def</span> <span class="nf">before_eval_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare batch for evaluation step by moving it to the appropriate device.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseTrainer.after_eval_step">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_eval_step">[docs]</a>
+    <span class="k">def</span> <span class="nf">after_eval_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle post-step tasks after an evaluation step (currently does nothing).&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rank</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">get_rank</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">world_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">is_initialized</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">get_world_size</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_epoch&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_step&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">batch_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_batch_idx&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_idx</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device</span>
+
+    <span class="nd">@epoch</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@step</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">_instanciate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">seed_everything</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
@@ -542,54 +784,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_buffer</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">])</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=&gt; SETUP OF </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> STARTED.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_instanciate</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_load_checkpoint</span><span class="p">()</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=&gt; SETUP OF </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> COMPLETED.&quot;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="BaseModel.forward">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseModel.html#stable_ssl.BaseModel.forward">[docs]</a>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
-
-
-    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
-
-<div class="viewcode-block" id="BaseModel.launch">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseModel.html#stable_ssl.BaseModel.launch">[docs]</a>
-    <span class="k">def</span> <span class="nf">launch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Routine that is launched after the class is initialized.</span>
-
-<span class="sd">        This will commonly consist of training + evaluation.</span>
-<span class="sd">        Can be customized by the user to fit the use-cases.</span>
-<span class="sd">        This is just a boilerplate version that provides minimal things.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;train&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup</span><span class="p">()</span>
-            <span class="k">return</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">before_fit</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">after_fit</span><span class="p">()</span>
-        <span class="k">except</span> <span class="n">BreakAllEpochs</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Training stopped by user.&quot;</span><span class="p">)</span>
-            <span class="k">raise</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]:</span>
-            <span class="n">wandb</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup</span><span class="p">()</span></div>
-
-
     <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">[</span><span class="s2">&quot;epochs&quot;</span><span class="p">]:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -719,7 +913,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">after_eval</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_fit_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">autocast</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hardware</span><span class="p">[</span><span class="s2">&quot;float16&quot;</span><span class="p">]):</span>
             <span class="n">returned_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_loss</span><span class="p">()</span>
 
@@ -826,25 +1019,6 @@
 
         <span class="c1"># Set the CUDA device.</span>
         <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_device</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">submitit</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">DelayedSubmission</span><span class="p">:</span>
-        <span class="c1"># the checkpoint method is called asynchroneously when the slurm manager</span>
-        <span class="c1"># sends a preemption signal, with the same arguments as the __call__ method</span>
-        <span class="c1"># &quot;self&quot; is your callable, at its current state.</span>
-        <span class="c1"># &quot;self&quot; therefore holds the current version of the model:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Requeuing the task...&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_save_checkpoint</span><span class="p">(</span><span class="s2">&quot;tmp_checkpoint.ckpt&quot;</span><span class="p">,</span> <span class="n">model_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_hardware</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_optim</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cleaning up the current task before submitting a new one.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">submitit</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">DelayedSubmission</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="c1"># Update the log buffer with the new packet.</span>
@@ -976,98 +1150,24 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Device status after cleaning.&quot;</span><span class="p">)</span>
         <span class="n">get_gpu_info</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">get_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">reader</span><span class="o">.</span><span class="n">jsonl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;dump_path&quot;</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">reader</span><span class="o">.</span><span class="n">wandb</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;entity&quot;</span><span class="p">],</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;project&quot;</span><span class="p">],</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;ID&quot;</span><span class="p">],</span>
-                <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span>
-            <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Load the config file.</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="n">omegaconf</span><span class="o">.</span><span class="n">OmegaConf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;dump_path&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="s2">&quot;.hydra&quot;</span> <span class="o">/</span> <span class="s2">&quot;config.yaml&quot;</span>
+    <span class="k">def</span> <span class="nf">checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">submitit</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">DelayedSubmission</span><span class="p">:</span>
+        <span class="c1"># the checkpoint method is called asynchroneously when the slurm manager</span>
+        <span class="c1"># sends a preemption signal, with the same arguments as the __call__ method</span>
+        <span class="c1"># &quot;self&quot; is your callable, at its current state.</span>
+        <span class="c1"># &quot;self&quot; therefore holds the current version of the model:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Requeuing the task...&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_checkpoint</span><span class="p">(</span><span class="s2">&quot;tmp_checkpoint.ckpt&quot;</span><span class="p">,</span> <span class="n">model_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hardware</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optim</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">config</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">rank</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">get_rank</span><span class="p">()</span>
-        <span class="k">return</span> <span class="mi">0</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">world_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">is_initialized</span><span class="p">():</span>
-            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">get_world_size</span><span class="p">()</span>
-        <span class="k">return</span> <span class="mi">1</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_epoch&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_step&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">batch_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_batch_idx&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_idx</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device</span>
-
-    <span class="nd">@epoch</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@step</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="k">def</span> <span class="nf">before_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">def</span> <span class="nf">after_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">before_fit_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epoch</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">after_fit_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span>
-
-    <span class="k">def</span> <span class="nf">before_fit_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># set up the data to have easy access throughout the methods</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">after_fit_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span>
-
-    <span class="k">def</span> <span class="nf">before_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">after_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span>
-
-    <span class="k">def</span> <span class="nf">before_eval_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">after_eval_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cleaning up the current task before submitting a new one.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">submitit</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">DelayedSubmission</span><span class="p">(</span><span class="n">model</span><span class="p">)</span></div>
 
 </pre></div>
 

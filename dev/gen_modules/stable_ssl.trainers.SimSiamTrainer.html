@@ -145,9 +145,10 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.BaseTrainer.html">BaseTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 </ul>
 </details></li>
 </ul>
@@ -335,7 +336,10 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SimSiamTrainer"><code class="docutils literal notranslate"><span class="pre">SimSiamTrainer</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SimSiamTrainer"><code class="docutils literal notranslate"><span class="pre">SimSiamTrainer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SimSiamTrainer.compute_loss"><code class="docutils literal notranslate"><span class="pre">SimSiamTrainer.compute_loss()</span></code></a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -354,6 +358,12 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.trainers.</span></span><span class="sig-name descname"><span class="pre">SimSiamTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardware</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#SimSiamTrainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.SimSiamTrainer" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="stable_ssl.trainers.JointEmbeddingTrainer.html#stable_ssl.trainers.JointEmbeddingTrainer" title="stable_ssl.trainers.JointEmbeddingTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">JointEmbeddingTrainer</span></code></a></p>
 <p>Base class for training a SimSiam SSL model.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.trainers.SimSiamTrainer.compute_loss">
+<span class="sig-name descname"><span class="pre">compute_loss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#SimSiamTrainer.compute_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.SimSiamTrainer.compute_loss" title="Link to this definition">#</a></dt>
+<dd><p>Compute the global loss to be minimized.</p>
+</dd></dl>
+
 </dd></dl>
 
 <span class="target" id="sphx-glr-backref-stable-ssl-trainers-simsiamtrainer"></span></section>
@@ -404,7 +414,10 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SimSiamTrainer"><code class="docutils literal notranslate"><span class="pre">SimSiamTrainer</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SimSiamTrainer"><code class="docutils literal notranslate"><span class="pre">SimSiamTrainer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SimSiamTrainer.compute_loss"><code class="docutils literal notranslate"><span class="pre">SimSiamTrainer.compute_loss()</span></code></a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

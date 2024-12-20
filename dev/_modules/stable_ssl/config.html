@@ -15,8 +15,8 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
+  <!--
+    this give us a css class that will be invisible only if js is disabled
   -->
   <noscript>
     <style>
@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
@@ -37,10 +37,10 @@
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
   <!-- So that users can add custom icons -->
-  <script src="../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=eeab245b"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
@@ -144,16 +144,52 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BaseModel.html">BaseModel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.JointEmbedding.html">JointEmbedding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.SelfDistillation.html">SelfDistillation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BYOLLoss.html">BYOLLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.LogConfig.html">LogConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BaseTrainer.html">BaseTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 </ul>
 </details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.SimSiamTrainer.html">SimSiamTrainer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">stable_ssl.modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.get_backbone_dim.html">get_backbone_dim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.load_backbone.html">load_backbone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.MLP.html">MLP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.Resnet9.html">Resnet9</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.ConvMixer.html">ConvMixer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.optimizers.LARS.html">LARS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../schedulers.html">stable_ssl.schedulers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.schedulers.LinearWarmup.html">LinearWarmup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.schedulers.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography.html">Bibliography</a></li>
 </ul>
 
     </div>
@@ -162,9 +198,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -250,7 +291,7 @@
                   
   <h1>Source code for stable_ssl.config</h1><div class="highlight"><pre>
 <span></span><span class="c1"># # -*- coding: utf-8 -*-</span>
-<span class="c1"># &quot;&quot;&quot;Configuration for stable-ssl runs.&quot;&quot;&quot;</span>
+<span class="c1"># &quot;&quot;&quot;Configuration classes specifying default parameters for stable-SSL.&quot;&quot;&quot;</span>
 <span class="c1"># #</span>
 <span class="c1"># # Author: Hugues Van Assel &lt;vanasselhugues@gmail.com&gt;</span>
 <span class="c1"># #         Randall Balestriero &lt;randallbalestriero@gmail.com&gt;</span>
@@ -258,300 +299,155 @@
 <span class="c1"># # This source code is licensed under the license found in the</span>
 <span class="c1"># # LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-
-<span class="c1"># from omegaconf import OmegaConf</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-
-<span class="c1"># import torch</span>
-
-<span class="c1"># from .utils import LARS, get_open_port</span>
-<span class="c1"># from .supervised import Supervised</span>
-
-
-<span class="c1"># # @dataclass</span>
-<span class="c1"># # class OptimConfig:</span>
-<span class="c1"># #     &quot;&quot;&quot;Configuration for the &#39;optimizer&#39; parameters.</span>
-
-<span class="c1"># #     Parameters</span>
-<span class="c1"># #     ----------</span>
-<span class="c1"># #     optimizer : str</span>
-<span class="c1"># #         Type of optimizer to use (e.g., &quot;AdamW&quot;, &quot;RMSprop&quot;, &quot;SGD&quot;, &quot;LARS&quot;).</span>
-<span class="c1"># #         Default is &quot;LARS&quot;.</span>
-<span class="c1"># #     lr : float</span>
-<span class="c1"># #         Learning rate for the optimizer. Default is 1e0.</span>
-<span class="c1"># #     epochs : int, optional</span>
-<span class="c1"># #         Number of epochs to train the model. Default is 1000.</span>
-<span class="c1"># #     max_steps : int, optional</span>
-<span class="c1"># #         Maximum number of steps per epoch. If negative, no limit is set.</span>
-<span class="c1"># #         Default is -1.</span>
-<span class="c1"># #     weight_decay : float</span>
-<span class="c1"># #         Weight decay for the optimizer. Default is 1e-6.</span>
-<span class="c1"># #     momentum : float</span>
-<span class="c1"># #         Momentum for the optimizer. Default is None.</span>
-<span class="c1"># #     nesterov : bool</span>
-<span class="c1"># #         Whether to use Nesterov momentum. Default is False.</span>
-<span class="c1"># #     betas : Tuple[float, float], optional</span>
-<span class="c1"># #         Betas for the AdamW optimizer. Default is (0.9, 0.999).</span>
-<span class="c1"># #     grad_max_norm : float, optional</span>
-<span class="c1"># #         Maximum norm for gradient clipping. Default is None.</span>
-<span class="c1"># #     &quot;&quot;&quot;</span>
-
-<span class="c1"># #     optimizer: str = &quot;LARS&quot;</span>
-<span class="c1"># #     lr: float = 1e0</span>
-<span class="c1"># #     epochs: int = 1000</span>
-<span class="c1"># #     max_steps: int = -1</span>
-<span class="c1"># #     weight_decay: float = 0</span>
-<span class="c1"># #     momentum: Optional[float] = None</span>
-<span class="c1"># #     nesterov: Optional[bool] = None</span>
-<span class="c1"># #     betas: Optional[Tuple[float, float]] = None</span>
-<span class="c1"># #     grad_max_norm: Optional[float] = None</span>
-
-<span class="c1"># #     def __post_init__(self):</span>
-<span class="c1"># #         &quot;&quot;&quot;Validate and set default values for optimizer parameters.</span>
-
-<span class="c1"># #         Ensures that a valid optimizer is provided and assigns default values</span>
-<span class="c1"># #         for parameters like learning rate, weight decay, and others, if they</span>
-<span class="c1"># #         are not explicitly set.</span>
-<span class="c1"># #         &quot;&quot;&quot;</span>
-<span class="c1"># #         if not (hasattr(torch.optim, self.optimizer) or self.optimizer == &quot;LARS&quot;):</span>
-<span class="c1"># #             raise ValueError(</span>
-<span class="c1"># #                 f&quot;Invalid optimizer: {self.optimizer}. Must be a &quot;</span>
-<span class="c1"># #                 &quot;torch optimizer or &#39;LARS&#39;.&quot;</span>
-<span class="c1"># #             )</span>
-
-<span class="c1"># #         # Instantiate the optimizer to get the default parameters.</span>
-<span class="c1"># #         optimizer = (</span>
-<span class="c1"># #         LARS if self.optimizer == &quot;LARS&quot; else getattr(torch.optim, self.optimizer)</span>
-<span class="c1"># #         )</span>
-<span class="c1"># #         default_params = optimizer([torch.tensor(0)]).defaults</span>
-
-<span class="c1"># #         # Ensure parameters are provided appropriately based on the optimizer.</span>
-<span class="c1"># #         for param in [&quot;lr&quot;, &quot;weight_decay&quot;, &quot;momentum&quot;, &quot;betas&quot;, &quot;nesterov&quot;]:</span>
-<span class="c1"># #             if param in default_params.keys():</span>
-<span class="c1"># #                 if getattr(self, param) is None:</span>
-<span class="c1"># #             # If a useful parameter is not provided, its default value is used.</span>
-<span class="c1"># #                     default_value = default_params[param]</span>
-<span class="c1"># #                     setattr(self, param, default_value)</span>
-<span class="c1"># #                     logging.warning(</span>
-<span class="c1"># #                         f&quot;&#39;{param}&#39; not provided for {self.optimizer} &quot;</span>
-<span class="c1"># #                         f&quot;optimizer. Default value of {default_value} is used.&quot;</span>
-<span class="c1"># #                     )</span>
-<span class="c1"># #             else:</span>
-<span class="c1"># #                 # If the parameter is useless for the optimizer, it is set to None.</span>
-<span class="c1"># #                 setattr(self, param, None)</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">lzma</span>
+<span class="kn">import</span> <span class="nn">hydra</span>
+<span class="kn">from</span> <span class="nn">hydra.core.hydra_config</span> <span class="kn">import</span> <span class="n">HydraConfig</span>
 
 
-<span class="c1"># @dataclass</span>
-<span class="c1"># class HardwareConfig:</span>
-<span class="c1">#     &quot;&quot;&quot;Configuration for the &#39;hardware&#39; parameters.</span>
-
-<span class="c1">#     Parameters</span>
-<span class="c1">#     ----------</span>
-<span class="c1">#     seed : int, optional</span>
-<span class="c1">#         Random seed for reproducibility. Default is None.</span>
-<span class="c1">#     float16 : bool, optional</span>
-<span class="c1">#         Whether to use mixed precision (float16) for training. Default is False.</span>
-<span class="c1">#     gpu_id : int, optional</span>
-<span class="c1">#         GPU device ID to use for training. Default is 0.</span>
-<span class="c1">#     world_size : int, optional</span>
-<span class="c1">#         Number of processes participating in distributed training. Default is 1.</span>
-<span class="c1">#     port : int, optional</span>
-<span class="c1">#         Local proc&#39;s port number for distributed training. Default is None.</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-
-<span class="c1">#     seed: Optional[int] = None</span>
-<span class="c1">#     float16: bool = False</span>
-<span class="c1">#     gpu_id: int = 0</span>
-<span class="c1">#     world_size: int = 1</span>
-<span class="c1">#     port: Optional[int] = None</span>
-
-<span class="c1">#     def __post_init__(self):</span>
-<span class="c1">#         &quot;&quot;&quot;Set a random port for distributed training if not provided.&quot;&quot;&quot;</span>
-<span class="c1">#         self.port = self.port or get_open_port()</span>
+<span class="k">def</span> <span class="nf">instanciate_config</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">debug_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Instanciate the config and debug hash.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">debug_hash</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">cfg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Your debugging hash:&quot;</span><span class="p">,</span> <span class="n">lzma</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cfg</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using debugging hash&quot;</span><span class="p">)</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">lzma</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">debug_hash</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">,</span> <span class="n">_recursive_</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="LogConfig">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.config.LogConfig.html#stable_ssl.config.LogConfig">[docs]</a>
+<div class="viewcode-block" id="HardwareConfig">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.config.HardwareConfig.html#stable_ssl.config.HardwareConfig">[docs]</a>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">LogConfig</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the &#39;log&#39; parameters.</span>
+<span class="k">class</span> <span class="nc">HardwareConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the hardware parameters.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    api: str, optional</span>
-<span class="sd">        Which logging API to use.</span>
-<span class="sd">        - Set to &quot;wandb&quot; to use Weights &amp; Biases.</span>
-<span class="sd">        - Set to &quot;None&quot; to use jsonlines.</span>
-<span class="sd">        Default is None.</span>
-<span class="sd">    folder : str, optional</span>
-<span class="sd">        Path to the folder where logs and checkpoints will be saved.</span>
-<span class="sd">        If None is provided, a default path is created under `./logs`.</span>
-<span class="sd">        Default is None.</span>
-<span class="sd">    load_from : str, optional</span>
-<span class="sd">        Path to a checkpoint from which to load the model, optimizer, and scheduler.</span>
-<span class="sd">        Default is &quot;ckpt&quot;.</span>
-<span class="sd">    level : int, optional</span>
-<span class="sd">        Logging level (e.g., logging.INFO). Default is logging.INFO.</span>
-<span class="sd">    checkpoint_frequency : int, optional</span>
-<span class="sd">        Frequency of saving checkpoints (in terms of epochs). Default is 10.</span>
-<span class="sd">    save_final_model : bool, optional</span>
-<span class="sd">        Whether to save the final trained model. Default is True.</span>
-<span class="sd">    final_model_name : str, optional</span>
-<span class="sd">        Name for the final saved model. Default is &quot;final_model&quot;.</span>
-<span class="sd">    eval_only : bool, optional</span>
-<span class="sd">        Whether to only evaluate the model without training. Default is False.</span>
-<span class="sd">    eval_every_epoch : int, optional</span>
-<span class="sd">        Frequency of evaluation (in terms of epochs). Default is 1.</span>
-<span class="sd">    log_every_step : int, optional</span>
-<span class="sd">        Frequency of logging (in terms of steps). Default is 1.</span>
+<span class="sd">    seed : int, optional</span>
+<span class="sd">        Random seed for reproducibility. Default is None.</span>
+<span class="sd">    float16 : bool, optional</span>
+<span class="sd">        Whether to use mixed precision (float16) for training. Default is False.</span>
+<span class="sd">    world_size : int, optional</span>
+<span class="sd">        Number of processes participating in distributed training. Default is 1.</span>
+<span class="sd">    device : str, optional</span>
+<span class="sd">        The device to use for training. Default is &quot;cuda&quot; if available, else &quot;cpu&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
-    <span class="n">save_final_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">metrics</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">float16</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">world_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="LoggerConfig">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.config.LoggerConfig.html#stable_ssl.config.LoggerConfig">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">LoggerConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for logging and checkpointing during training or evaluation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    level : int, optional</span>
+<span class="sd">        The logging level. Determines the threshold for what gets logged. Default is 20.</span>
+<span class="sd">    metrics : dict, optional</span>
+<span class="sd">        A dictionary to store and log various metrics. Default is an empty dict.</span>
+<span class="sd">    save_final_model : str or bool, optional</span>
+<span class="sd">        Specifies whether to save the final trained model.</span>
+<span class="sd">        If a name is provided, the final model will be saved with that name.</span>
+<span class="sd">        Default is False.</span>
+<span class="sd">    eval_every_epoch : int, optional</span>
+<span class="sd">        The frequency (in epochs) at which the model will be evaluated.</span>
+<span class="sd">        For example, if set to 1, evaluation occurs every epoch. Default is 1.</span>
+<span class="sd">    every_step : int, optional</span>
+<span class="sd">        The frequency (in training steps) at which to log intermediate metrics.</span>
+<span class="sd">        For example, if set to 1, logs occur every step. Default is 1.</span>
+<span class="sd">    checkpoint_frequency : int, optional</span>
+<span class="sd">        The frequency (in epochs) at which model checkpoints are saved.</span>
+<span class="sd">        For example, if set to 10, a checkpoint is saved every 10 epochs.</span>
+<span class="sd">        Default is None.</span>
+<span class="sd">    checkpoint_model_only : bool, optional</span>
+<span class="sd">        Whether to save only the model weights (True) or save additional training state</span>
+<span class="sd">        (False) during checkpointing. Default is True.</span>
+<span class="sd">    dump_path : pathlib.Path, optional</span>
+<span class="sd">        The path where output is dumped. Defaults to Hydra&#39;s runtime output directory.</span>
+<span class="sd">    wandb : bool or dict or None, optional</span>
+<span class="sd">        Configuration for Weights &amp; Biases logging.</span>
+<span class="sd">        If `True`, it will be converted to an empty dictionary and default keys will be</span>
+<span class="sd">        filled in if `rank == 0`. Default is None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">metrics</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">save_final_model</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">eval_every_epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">log_every_step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">wandb</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize logging folder and run settings.</span>
-
-<span class="sd">        If the folder path is not specified, creates a default path under `./logs`.</span>
-<span class="sd">        The run identifier is set using the current timestamp if not provided.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./logs&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">)</span>
-        <span class="c1"># TODO: decide if we add another level of folder at this point.</span>
-        <span class="c1"># if self.run is None:</span>
-        <span class="c1">#     self.run = datetime.now().strftime(&quot;%Y%m%d_%H%M%S.%f&quot;)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+    <span class="n">every_step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">checkpoint_frequency</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">checkpoint_model_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">dump_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">HydraConfig</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">wandb</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 
-<span class="c1"># @dataclass</span>
-<span class="c1"># class WandbConfig(LogConfig):</span>
-<span class="c1">#     &quot;&quot;&quot;Configuration for the Weights &amp; Biases logging.</span>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">WandbConfig</span><span class="p">(</span><span class="n">LoggerConfig</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the Weights &amp; Biases logging.</span>
 
-<span class="c1">#     Parameters</span>
-<span class="c1">#     ----------</span>
-<span class="c1">#     entity : str, optional</span>
-<span class="c1">#         Name of the (Weights &amp; Biases) entity. Default is None.</span>
-<span class="c1">#     project : str, optional</span>
-<span class="c1">#         Name of the (Weights &amp; Biases) project. Default is None.</span>
-<span class="c1">#     run : str, optional</span>
-<span class="c1">#         Name of the Weights &amp; Biases run. Default is None.</span>
-<span class="c1">#     rank_to_log: int, optional</span>
-<span class="c1">#         Specifies the rank of the GPU/process to log for WandB tracking.</span>
-<span class="c1">#         - Set to an integer value (e.g., 0, 1, 2) to log a specific GPU/process.</span>
-<span class="c1">#         - Set to a negative value (e.g., -1) to log all processes.</span>
-<span class="c1">#         Default is 0, which logs only the primary process.</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    entity : str, optional</span>
+<span class="sd">        Name of the (Weights &amp; Biases) entity. Default is None.</span>
+<span class="sd">    project : str, optional</span>
+<span class="sd">        Name of the (Weights &amp; Biases) project. Default is None.</span>
+<span class="sd">    name : str, optional</span>
+<span class="sd">        Name of the Weights &amp; Biases run. Default is None.</span>
+<span class="sd">    ID : str, optional</span>
+<span class="sd">        ID of the Weights &amp; Biases run. Default is None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-<span class="c1">#     entity: Optional[str] = None</span>
-<span class="c1">#     project: Optional[str] = None</span>
-<span class="c1">#     run: Optional[str] = None</span>
-<span class="c1">#     rank_to_log: int = 0</span>
-
-<span class="c1">#     def __post_init__(self):</span>
-<span class="c1">#         &quot;&quot;&quot;Check the rank to log for Weights &amp; Biases.&quot;&quot;&quot;</span>
-<span class="c1">#         super().__post_init__()</span>
-
-<span class="c1">#         if self.rank_to_log &lt; 0:</span>
-<span class="c1">#             raise ValueError(&quot;Cannot (yet) log all processes to Weights &amp; Biases.&quot;)</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">project</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">ID</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="c1"># @dataclass</span>
-<span class="c1"># class GlobalConfig:</span>
-<span class="c1">#     &quot;&quot;&quot;Global configuration for training a model.</span>
+<div class="viewcode-block" id="OptimConfig">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">OptimConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the optimization parameters.</span>
 
-<span class="c1">#     Parameters</span>
-<span class="c1">#     ----------</span>
-<span class="c1">#     model : ModelConfig</span>
-<span class="c1">#         Model configuration.</span>
-<span class="c1">#     data : DataConfig</span>
-<span class="c1">#         Data configuration.</span>
-<span class="c1">#     optim : OptimConfig</span>
-<span class="c1">#         Optimizer configuration.</span>
-<span class="c1">#     hardware : HardwareConfig</span>
-<span class="c1">#         Hardware configuration.</span>
-<span class="c1">#     log : LogConfig</span>
-<span class="c1">#         Logging and checkpointing configuration.</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    optimizer : dict</span>
+<span class="sd">        Configuration for the optimizer.</span>
+<span class="sd">    scheduler : dict</span>
+<span class="sd">        Configuration for the learning rate scheduler.</span>
+<span class="sd">    epochs : int, optional</span>
+<span class="sd">        Number of epochs to train the model. Default is 1000.</span>
+<span class="sd">    max_steps : int, optional</span>
+<span class="sd">        Maximum number of steps to train the model. Default is -1.</span>
+<span class="sd">    accumulation_steps : int, optional</span>
+<span class="sd">        Number of steps to accumulate gradients before updating the model.</span>
+<span class="sd">        Default is 1.</span>
+<span class="sd">    grad_max_norm : float, optional</span>
+<span class="sd">        Maximum norm of the gradients. If None, no clipping is applied.</span>
+<span class="sd">        Default is None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-<span class="c1">#     model: ModelConfig = field(default_factory=ModelConfig)</span>
-<span class="c1">#     # data: DataConfig = field(default_factory=DataConfig)</span>
-<span class="c1">#     # optim: OptimConfig = field(default_factory=OptimConfig)</span>
-<span class="c1">#     hardware: HardwareConfig = field(default_factory=HardwareConfig)</span>
-<span class="c1">#     log: LogConfig = field(default_factory=LogConfig)</span>
+    <span class="n">optimizer</span><span class="p">:</span> <span class="nb">dict</span>
+    <span class="n">scheduler</span><span class="p">:</span> <span class="nb">dict</span>
+    <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">accumulation_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">grad_max_norm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-<span class="c1">#     def __repr__(self) -&gt; str:</span>
-<span class="c1">#         &quot;&quot;&quot;Return a YAML representation of the configuration.&quot;&quot;&quot;</span>
-<span class="c1">#         return OmegaConf.to_yaml(self)</span>
-
-<span class="c1">#     def __str__(self) -&gt; str:</span>
-<span class="c1">#         &quot;&quot;&quot;Return a YAML string of the configuration.&quot;&quot;&quot;</span>
-<span class="c1">#         return OmegaConf.to_yaml(self)</span>
-
-
-<span class="c1"># # _MODEL_CONFIGS = {</span>
-<span class="c1"># #     &quot;Supervised&quot;: ModelConfig,</span>
-<span class="c1"># #     &quot;SimCLR&quot;: SimCLRConfig,</span>
-<span class="c1"># #     &quot;Barlowtwins&quot;: BarlowTwinsConfig,</span>
-<span class="c1"># #     &quot;VICReg&quot;: VICRegConfig,</span>
-<span class="c1"># #     &quot;WMSE&quot;: WMSEConfig,</span>
-<span class="c1"># #     &quot;BYOL&quot;: BYOLConfig,</span>
-<span class="c1"># # }</span>
-<span class="c1"># _LOG_CONFIGS = {</span>
-<span class="c1">#     &quot;wandb&quot;: WandbConfig,</span>
-<span class="c1">#     None: LogConfig,</span>
-<span class="c1">#     &quot;None&quot;: LogConfig,</span>
-<span class="c1">#     &quot;json&quot;: LogConfig,</span>
-<span class="c1">#     &quot;jsonlines&quot;: LogConfig,</span>
-<span class="c1"># }</span>
-
-
-<span class="c1"># def get_args(cfg_dict, model_class=None):</span>
-<span class="c1">#     &quot;&quot;&quot;Create and return a GlobalConfig from a configuration dictionary.&quot;&quot;&quot;</span>
-<span class="c1">#     # Retrieves the named arguments that are not from known categories.</span>
-<span class="c1">#     kwargs = {</span>
-<span class="c1">#         name: value</span>
-<span class="c1">#         for name, value in cfg_dict.items()</span>
-<span class="c1">#         if name not in [&quot;data&quot;, &quot;optim&quot;, &quot;model&quot;, &quot;hardware&quot;, &quot;log&quot;]</span>
-<span class="c1">#     }</span>
-
-<span class="c1">#     # TODO: clean this part.</span>
-<span class="c1">#     # model = cfg_dict.get(&quot;model&quot;, {})</span>
-<span class="c1">#     # if model_class is None:</span>
-<span class="c1">#     #     name = model.get(&quot;name&quot;, None)</span>
-<span class="c1">#     # else:</span>
-<span class="c1">#     #     if issubclass(model_class, Supervised):</span>
-<span class="c1">#     #         name = &quot;Supervised&quot;</span>
-<span class="c1">#     # model = _MODEL_CONFIGS[name](**model)</span>
-
-<span class="c1">#     # Get the logging API type and configuration.</span>
-<span class="c1">#     log_config = cfg_dict.get(&quot;log&quot;, {})</span>
-<span class="c1">#     log_api = log_config.get(&quot;api&quot;, None)</span>
-<span class="c1">#     log = _LOG_CONFIGS[log_api.lower() if log_api else None](**log_config)</span>
-
-<span class="c1">#     args = GlobalConfig(</span>
-<span class="c1">#         model=None,</span>
-<span class="c1">#         log=log,</span>
-<span class="c1">#         data=DataConfig(**cfg_dict.get(&quot;data&quot;, {})),</span>
-<span class="c1">#         optim=OptimConfig(**cfg_dict.get(&quot;optim&quot;, {})),</span>
-<span class="c1">#         hardware=HardwareConfig(**cfg_dict.get(&quot;hardware&quot;, {})),</span>
-<span class="c1">#     )</span>
-
-<span class="c1">#     args.__class__ = make_dataclass(</span>
-<span class="c1">#         &quot;GlobalConfig&quot;,</span>
-<span class="c1">#         fields=[(name, type(v), v) for name, v in kwargs.items()],</span>
-<span class="c1">#         bases=(type(args),),</span>
-<span class="c1">#     )</span>
-
-<span class="c1">#     return args</span>
 </pre></div>
 
                 </article>
@@ -614,8 +510,8 @@ By stable-SSL team
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>

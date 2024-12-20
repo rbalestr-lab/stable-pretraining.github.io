@@ -145,9 +145,10 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.NTXEntLoss.html">NTXEntLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.VICRegLoss.html">VICRegLoss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.BaseTrainer.html">BaseTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 </ul>
 </details></li>
 </ul>
@@ -337,6 +338,8 @@
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer.before_fit_step"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer.before_fit_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer.compute_loss"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer.compute_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer.setup"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer.setup()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -361,6 +364,18 @@
 <dt class="sig sig-object py" id="stable_ssl.trainers.SelfDistillationTrainer.before_fit_step">
 <span class="sig-name descname"><span class="pre">before_fit_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#SelfDistillationTrainer.before_fit_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.SelfDistillationTrainer.before_fit_step" title="Link to this definition">#</a></dt>
 <dd><p>Update the target parameters as EMA of the online model parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.trainers.SelfDistillationTrainer.compute_loss">
+<span class="sig-name descname"><span class="pre">compute_loss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#SelfDistillationTrainer.compute_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.SelfDistillationTrainer.compute_loss" title="Link to this definition">#</a></dt>
+<dd><p>Compute the global loss to be minimized.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.trainers.SelfDistillationTrainer.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#SelfDistillationTrainer.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.SelfDistillationTrainer.setup" title="Link to this definition">#</a></dt>
+<dd><p>Instantiate components and load the checkpoint (if applicable).</p>
 </dd></dl>
 
 </dd></dl>
@@ -415,6 +430,8 @@
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer.before_fit_step"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer.before_fit_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer.compute_loss"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer.compute_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer.setup"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer.setup()</span></code></a></li>
 </ul>
 </li>
 </ul>

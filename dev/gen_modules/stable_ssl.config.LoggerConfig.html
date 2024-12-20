@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>HardwareConfig &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>LoggerConfig &#8212; stable-SSL 0.1-dev documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.config.HardwareConfig';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.config.LoggerConfig';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="stable_ssl.trainers" href="../trainers.html" />
-    <link rel="prev" title="LoggerConfig" href="stable_ssl.config.LoggerConfig.html" />
+    <link rel="next" title="HardwareConfig" href="stable_ssl.config.HardwareConfig.html" />
+    <link rel="prev" title="OptimConfig" href="stable_ssl.config.OptimConfig.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -147,8 +147,8 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../user_guide.html">User Guide</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.BaseTrainer.html">BaseTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">HardwareConfig</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">LoggerConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 </ul>
 </details></li>
 </ul>
@@ -250,7 +250,7 @@
       
       
       
-      <li><a href="../_sources/gen_modules/stable_ssl.config.HardwareConfig.rst" target="_blank"
+      <li><a href="../_sources/gen_modules/stable_ssl.config.LoggerConfig.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -326,7 +326,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>HardwareConfig</h1>
+    <h1>LoggerConfig</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -336,7 +336,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.HardwareConfig"><code class="docutils literal notranslate"><span class="pre">HardwareConfig</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.LoggerConfig"><code class="docutils literal notranslate"><span class="pre">LoggerConfig</span></code></a></li>
 </ul>
             </nav>
         </div>
@@ -348,26 +348,40 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="hardwareconfig">
-<h1>HardwareConfig<a class="headerlink" href="#hardwareconfig" title="Link to this heading">#</a></h1>
+  <section id="loggerconfig">
+<h1>LoggerConfig<a class="headerlink" href="#loggerconfig" title="Link to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="stable_ssl.config.HardwareConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.config.</span></span><span class="sig-name descname"><span class="pre">HardwareConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float16</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/config.html#HardwareConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.config.HardwareConfig" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="stable_ssl.config.LoggerConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.config.</span></span><span class="sig-name descname"><span class="pre">LoggerConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_final_model:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eval_every_epoch:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">every_step:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_frequency:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_model_only:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_path:</span> <span class="pre">~pathlib.Path</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wandb:</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/config.html#LoggerConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.config.LoggerConfig" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.4/library/functions.html#object" title="(in Python v3.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Configuration for the hardware parameters.</p>
+<p>Configuration for logging and checkpointing during training or evaluation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Random seed for reproducibility. Default is None.</p></li>
-<li><p><strong>float16</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to use mixed precision (float16) for training. Default is False.</p></li>
-<li><p><strong>world_size</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – Number of processes participating in distributed training. Default is 1.</p></li>
-<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a><em>, </em><em>optional</em>) – The device to use for training. Default is “cuda” if available, else “cpu”.</p></li>
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – The logging level. Determines the threshold for what gets logged. Default is 20.</p></li>
+<li><p><strong>metrics</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a><em>, </em><em>optional</em>) – A dictionary to store and log various metrics. Default is an empty dict.</p></li>
+<li><p><strong>save_final_model</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a><em>, </em><em>optional</em>) – Specifies whether to save the final trained model.
+If a name is provided, the final model will be saved with that name.
+Default is False.</p></li>
+<li><p><strong>eval_every_epoch</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – The frequency (in epochs) at which the model will be evaluated.
+For example, if set to 1, evaluation occurs every epoch. Default is 1.</p></li>
+<li><p><strong>every_step</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – The frequency (in training steps) at which to log intermediate metrics.
+For example, if set to 1, logs occur every step. Default is 1.</p></li>
+<li><p><strong>checkpoint_frequency</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a><em>, </em><em>optional</em>) – The frequency (in epochs) at which model checkpoints are saved.
+For example, if set to 10, a checkpoint is saved every 10 epochs.
+Default is None.</p></li>
+<li><p><strong>checkpoint_model_only</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to save only the model weights (True) or save additional training state
+(False) during checkpointing. Default is True.</p></li>
+<li><p><strong>dump_path</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/pathlib.html#pathlib.Path" title="(in Python v3.4)"><em>pathlib.Path</em></a><em>, </em><em>optional</em>) – The path where output is dumped. Defaults to Hydra’s runtime output directory.</p></li>
+<li><p><strong>wandb</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – Configuration for Weights &amp; Biases logging.
+If <cite>True</cite>, it will be converted to an empty dictionary and default keys will be
+filled in if <cite>rank == 0</cite>. Default is None.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
-<span class="target" id="sphx-glr-backref-stable-ssl-config-hardwareconfig"></span></section>
+<span class="target" id="sphx-glr-backref-stable-ssl-config-loggerconfig"></span></section>
 
 
                 </article>
@@ -381,20 +395,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="stable_ssl.config.LoggerConfig.html"
+       href="stable_ssl.config.OptimConfig.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">LoggerConfig</p>
+        <p class="prev-next-title">OptimConfig</p>
       </div>
     </a>
     <a class="right-next"
-       href="../trainers.html"
+       href="stable_ssl.config.HardwareConfig.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">stable_ssl.trainers</p>
+        <p class="prev-next-title">HardwareConfig</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -415,7 +429,7 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.HardwareConfig"><code class="docutils literal notranslate"><span class="pre">HardwareConfig</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.config.LoggerConfig"><code class="docutils literal notranslate"><span class="pre">LoggerConfig</span></code></a></li>
 </ul>
   </nav></div>
 
