@@ -338,9 +338,9 @@
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trainer">trainer</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loss">loss</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optim">optim</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data">data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module">module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optim">optim</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logger">logger</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware">hardware</a></li>
 </ul>
@@ -372,7 +372,7 @@
 </div>
 <p><a class="reference internal" href="trainers.html#module-stable_ssl.trainers" title="stable_ssl.trainers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.trainers</span></code></a> provides default trainer classes for various self-supervised learning approaches.</p>
 <p>Here is what instantiating an SSL trainer class from <code class="docutils literal notranslate"><span class="pre">stable_ssl.trainers</span></code> looks like in the YAML configuration file:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.trainers.JointEmbedding</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.trainers.JointEmbeddingTrainer</span>
 </pre></div>
 </div>
 </section>
@@ -387,39 +387,8 @@
 </pre></div>
 </div>
 </section>
-<section id="optim">
-<span id="id4"></span><h2>optim<a class="headerlink" href="#optim" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">optim</span></code> keyword is used to define the optimization settings for your model. It allows users to specify both the <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> object and the <code class="docutils literal notranslate"><span class="pre">scheduler</span></code>.</p>
-<p>The default parameters associated with the <code class="docutils literal notranslate"><span class="pre">optim</span></code> keyword are defined in the following:</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig" title="stable_ssl.config.OptimConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.OptimConfig</span></code></a>(optimizer, scheduler[, ...])</p></td>
-<td><p>Configuration for the optimization parameters.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p><a class="reference internal" href="optimizers.html#module-stable_ssl.optimizers" title="stable_ssl.optimizers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.optimizers</span></code></a> and <a class="reference internal" href="schedulers.html#module-stable_ssl.schedulers" title="stable_ssl.schedulers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.schedulers</span></code></a> provide additional modules that are not available in <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code>.</p>
-<p>Example:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">optim</span><span class="p">:</span>
-<span class="w">   </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
-<span class="w">   </span><span class="nt">max_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
-<span class="w">   </span><span class="nt">optimizer</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.optim.AdamW</span>
-<span class="w">      </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
-<span class="w">      </span><span class="nt">lr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
-<span class="w">      </span><span class="nt">weight_decay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1e-6</span>
-<span class="w">   </span><span class="nt">scheduler</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.optim.lr_scheduler.OneCycleLR</span>
-<span class="w">      </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
-<span class="w">      </span><span class="nt">max_lr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span>
-<span class="w">      </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.optim.epochs}</span>
-<span class="w">      </span><span class="nt">steps_per_epoch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${eval:&#39;${trainer.data._num_samples} // ${trainer.data.${trainer.train_on}.batch_size}&#39;}</span>
-</pre></div>
-</div>
-</section>
 <section id="data">
-<span id="id5"></span><h2>data<a class="headerlink" href="#data" title="Link to this heading">#</a></h2>
+<span id="id4"></span><h2>data<a class="headerlink" href="#data" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">data</span></code> keyword specifies the settings for data loading, preprocessing, and data augmentation.
 Multiple datasets can be defined, with the dataset named <code class="docutils literal notranslate"><span class="pre">train</span></code> used for training.
 Other datasets, which can have any name, are used for evaluation purposes.</p>
@@ -456,7 +425,7 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
 <span class="w">                     </span><span class="nt">_args_</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">float32</span><span class="p p-Indicator">]</span>
 <span class="w">                  </span><span class="nt">scale</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
 <span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.data.base.dataset.transform.transforms.0}</span>
-<span class="w">   </span><span class="nt">test_out</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">test</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.utils.data.DataLoader</span>
 <span class="w">      </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
 <span class="w">      </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.hardware.cpus_per_task}</span>
@@ -477,29 +446,32 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
 </div>
 </section>
 <section id="module">
-<span id="id6"></span><h2>module<a class="headerlink" href="#module" title="Link to this heading">#</a></h2>
+<span id="id5"></span><h2>module<a class="headerlink" href="#module" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">module</span></code> keyword is used to define the settings of all the neural networks used, including the architecture of the backbone, projectors etc.</p>
 <p><a class="reference internal" href="modules.html#module-stable_ssl.modules" title="stable_ssl.modules"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.modules</span></code></a> provides a variety of utility functions that can be used to load specific architectures and pre-trained models.</p>
 <p>Example:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">module</span><span class="p">:</span>
 <span class="w">   </span><span class="nt">backbone</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.utils.load_backbone</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.modules.load_backbone</span>
 <span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resnet18</span>
-<span class="w">      </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;CIFAR10&quot;</span>
+<span class="w">      </span><span class="nt">low_resolution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">      </span><span class="nt">num_classes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 <span class="w">   </span><span class="nt">projector</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Sequential</span>
 <span class="w">      </span><span class="nt">_args_</span><span class="p">:</span>
 <span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Linear</span>
-<span class="w">         </span><span class="nt">in_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512</span>
-<span class="w">         </span><span class="nt">out_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2048</span>
-<span class="w">         </span><span class="nt">bias</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">in_features</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512</span>
+<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">out_features</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2048</span>
+<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">bias</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
 <span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.BatchNorm1d</span>
-<span class="w">         </span><span class="nt">num_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.network.projector._args_.0.out_features}</span>
+<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">num_features</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.module.projector._args_.0.out_features}</span>
 <span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.ReLU</span>
 <span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Linear</span>
-<span class="w">         </span><span class="nt">in_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.network.projector._args_.0.out_features}</span>
-<span class="w">         </span><span class="nt">out_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">128</span>
-<span class="w">         </span><span class="nt">bias</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">in_features</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.module.projector._args_.0.out_features}</span>
+<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">out_features</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">128</span>
+<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">bias</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">         </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.BatchNorm1d</span>
+<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">num_features</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.module.projector._args_.3.out_features}</span>
 <span class="w">   </span><span class="nt">projector_classifier</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Linear</span>
 <span class="w">      </span><span class="nt">in_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">128</span>
@@ -511,6 +483,34 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
 </pre></div>
 </div>
 <p>The various components defined above can be accessed through the dictionary <code class="docutils literal notranslate"><span class="pre">self.module</span></code> in your trainer class. This allows the user to define the forward pass, compute losses, and specify evaluation metrics efficiently.</p>
+</section>
+<section id="optim">
+<span id="id6"></span><h2>optim<a class="headerlink" href="#optim" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">optim</span></code> keyword is used to define the optimization settings for your model. It allows users to specify both the <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> object and the <code class="docutils literal notranslate"><span class="pre">scheduler</span></code>.</p>
+<p>The default parameters associated with the <code class="docutils literal notranslate"><span class="pre">optim</span></code> keyword are defined in the following:</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig" title="stable_ssl.config.OptimConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.OptimConfig</span></code></a>(optimizer, scheduler[, ...])</p></td>
+<td><p>Configuration for the optimization parameters.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a class="reference internal" href="optimizers.html#module-stable_ssl.optimizers" title="stable_ssl.optimizers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.optimizers</span></code></a> and <a class="reference internal" href="schedulers.html#module-stable_ssl.schedulers" title="stable_ssl.schedulers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.schedulers</span></code></a> provide additional modules that are not available in <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code>.</p>
+<p>Example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">optim</span><span class="p">:</span>
+<span class="w"> </span><span class="nt">epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<span class="w"> </span><span class="nt">optimizer</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.optimizers.LARS</span>
+<span class="w">   </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">   </span><span class="nt">lr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">   </span><span class="nt">weight_decay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1e-6</span>
+<span class="w"> </span><span class="nt">scheduler</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_ssl.scheduler.LinearWarmupCosineAnnealing</span>
+<span class="w">   </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">   </span><span class="nt">total_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${eval:&#39;${trainer.optim.epochs} * ${trainer.data._num_samples} // ${trainer.data.train.batch_size}&#39;}</span>
+</pre></div>
+</div>
 </section>
 <section id="logger">
 <span id="id7"></span><h2>logger<a class="headerlink" href="#logger" title="Link to this heading">#</a></h2>
@@ -532,16 +532,7 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
 <span class="w">   </span><span class="nt">checkpoint_frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">   </span><span class="nt">every_step</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">   </span><span class="nt">metrics</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">train</span><span class="p">:</span>
-<span class="w">         </span><span class="nt">acc1</span><span class="p">:</span>
-<span class="w">         </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchmetrics.classification.MulticlassAccuracy</span>
-<span class="w">         </span><span class="nt">num_classes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.data._num_classes}</span>
-<span class="w">         </span><span class="nt">top_k</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="w">         </span><span class="nt">acc5</span><span class="p">:</span>
-<span class="w">         </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchmetrics.classification.MulticlassAccuracy</span>
-<span class="w">         </span><span class="nt">num_classes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.data._num_classes}</span>
-<span class="w">         </span><span class="nt">top_k</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
-<span class="w">      </span><span class="nt">test_out</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">test</span><span class="p">:</span>
 <span class="w">         </span><span class="nt">acc1</span><span class="p">:</span>
 <span class="w">         </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchmetrics.classification.MulticlassAccuracy</span>
 <span class="w">         </span><span class="nt">num_classes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${trainer.data._num_classes}</span>
@@ -571,7 +562,6 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
 <span class="w">   </span><span class="nt">float16</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">   </span><span class="nt">device</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cuda:0&quot;</span>
 <span class="w">   </span><span class="nt">world_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="w">   </span><span class="nt">cpus_per_task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
 </pre></div>
 </div>
 </section>
@@ -625,9 +615,9 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trainer">trainer</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loss">loss</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optim">optim</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data">data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module">module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optim">optim</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logger">logger</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware">hardware</a></li>
 </ul>
