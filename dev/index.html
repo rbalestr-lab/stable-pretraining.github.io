@@ -394,29 +394,7 @@ These components can be sourced from <code class="docutils literal notranslate">
 <section id="library-design">
 <h3>Library Design<a class="headerlink" href="#library-design" title="Link to this heading">#</a></h3>
 <p id="design"><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides all the boilerplate to quickly get started with AI research, focusing on Self-Supervised Learning (SSL), albeit other applications can certainly build upon <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>.
-At its core, <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides a <code class="docutils literal notranslate"><span class="pre">BaseTrainer</span></code> class that sequentially calls the following methods:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>- self.before_fit (nothing by default)
-- self.fit (executes all the training/intermitent evaluation by default)
-   - for `self.optim[&quot;epochs&quot;]` epochs:
-      - self.fit_epoch (one training epoch by default)
-         - self.before_fit_epoch (setup in train mode)
-         - loop over mini-batches
-            - self.before_fit_step (moves data to device)
-            - self.fit_step (computes loss and performs optimization step)
-            - self.after_fit_step (nothing by default)
-         - self.after_fit_epoch (nothing by default)
-      - self.evaluate (if asked by user config, looping over all non train datasets)
-         - self.before_eval (setup in eval mode)
-         - loop over mini-batches
-            - self.before_eval_step (moves data to device)
-            - self.eval_step (computes eval metrics)
-            - self.after_eval_step (nothing by default)
-         - self.after_eval (nothing by default)
-      - save intermitent checkpoint if asked by user config
-   - save final checkpoint if asked by user config
-- self.after_fit (evaluates by default)
-</pre></div>
-</div>
+At its core, <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides a <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer">BaseTrainer</a> class that provides all the essential methods required to train and evaluate your model effectively. This class is intended to be subclassed for specific training needs (see these <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/trainers.html">trainers</a> as examples). For detailed instructions on configuring the trainers’ input parameters, refer to the <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html">User Guide</a>.</p>
 <p>While the organization is similar to that of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code>, the goal of <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is to significantly reduce codebase complexity without sacrificing performance. Think of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code> as industry-driven (abstracting everything away), whereas <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is academia-driven (providing users with complete visibility into every aspect).</p>
 </section>
 <section id="how-to-launch-runs">
@@ -452,7 +430,7 @@ At its core, <code class="docutils literal notranslate"><span class="pre">stable
 </pre></div>
 </div>
 <p>In this example, to launch the run using the configuration file <code class="docutils literal notranslate"><span class="pre">default_config.yaml</span></code> located in the <code class="docutils literal notranslate"><span class="pre">./configs/</span></code> folder, use the following command, where <code class="docutils literal notranslate"><span class="pre">run.py</span></code> is the above script:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>run.py<span class="w"> </span>--config-name<span class="w"> </span>default_config<span class="w"> </span>--config-path<span class="w"> </span>configs/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>run.py<span class="w"> </span>-m<span class="w"> </span>--config-name<span class="w"> </span>default_config<span class="w"> </span>--config-path<span class="w"> </span>configs/
 </pre></div>
 </div>
 </section>

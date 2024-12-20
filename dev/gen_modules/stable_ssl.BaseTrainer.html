@@ -375,10 +375,10 @@
 <dd><p>Bases: <a class="reference external" href="http://pytorch.org/docs/2.0/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
 <p>Base class for training a model.</p>
 <p>This class provides a general boilerplate for common operations that
-occur during the training lifecycle, which can be customized via configuration.
+occur during the training lifecycle.
 These operations include training, evaluation, checkpointing, and training restart.</p>
-<p>The internals of these operations can be modified through configuration
-settings, allowing flexibility for different projects and use cases.</p>
+<p>The class is highly configurable, enabling customization of its internal workflows
+to suit diverse project requirements and use cases.</p>
 <p>This class is intended to be subclassed for specific training methods
 (see examples for more details). For each subclass, the following methods must
 be implemented: <cite>forward</cite>, <cite>predict</cite>, and <cite>compute_loss</cite>.</p>
