@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>LARS &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>RankMe &#8212; stable-SSL 0.1-dev documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.optimizers.LARS';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.monitors.RankMe';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="stable_ssl.schedulers" href="../schedulers.html" />
-    <link rel="prev" title="stable_ssl.optimizers" href="../optimizers.html" />
+    <link rel="next" title="Bibliography" href="../bibliography.html" />
+    <link rel="prev" title="Monitor" href="stable_ssl.monitors.Monitor.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -176,8 +176,8 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.ConvMixer.html">ConvMixer</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../optimizers.html">stable_ssl.optimizers</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">LARS</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.optimizers.LARS.html">LARS</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../schedulers.html">stable_ssl.schedulers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -187,9 +187,9 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../monitors.html">stable_ssl.monitors</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.monitors.Monitor.html">Monitor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.monitors.RankMe.html">RankMe</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">RankMe</a></li>
 </ul>
 </details></li>
 </ul>
@@ -255,7 +255,7 @@
       
       
       
-      <li><a href="../_sources/gen_modules/stable_ssl.optimizers.LARS.rst" target="_blank"
+      <li><a href="../_sources/gen_modules/stable_ssl.monitors.RankMe.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -331,7 +331,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>LARS</h1>
+    <h1>RankMe</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -341,8 +341,8 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.optimizers.LARS"><code class="docutils literal notranslate"><span class="pre">LARS</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.optimizers.LARS.step"><code class="docutils literal notranslate"><span class="pre">LARS.step()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.monitors.RankMe"><code class="docutils literal notranslate"><span class="pre">RankMe</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.monitors.RankMe.compute"><code class="docutils literal notranslate"><span class="pre">RankMe.compute()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -356,41 +356,22 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="lars">
-<h1>LARS<a class="headerlink" href="#lars" title="Link to this heading">#</a></h1>
+  <section id="rankme">
+<h1>RankMe<a class="headerlink" href="#rankme" title="Link to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="stable_ssl.optimizers.LARS">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.optimizers.</span></span><span class="sig-name descname"><span class="pre">LARS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dampening</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_decay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nesterov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/optimizers.html#LARS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.optimizers.LARS" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://pytorch.org/docs/2.0/optim.html#torch.optim.Optimizer" title="(in PyTorch v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Optimizer</span></code></a></p>
-<p>Implement LARS (Layer-wise Adaptive Rate Scaling) optimizer.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>params</strong> (<em>iterable</em>) – Iterable of parameters to optimize or dicts defining parameter groups.</p></li>
-<li><p><strong>lr</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – Learning rate.</p></li>
-<li><p><strong>momentum</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>, </em><em>optional</em>) – Momentum factor. Default is 0.</p></li>
-<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>, </em><em>optional</em>) – LARS coefficient as used in the paper. Default is 1e-3.</p></li>
-<li><p><strong>weight_decay</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>, </em><em>optional</em>) – Weight decay (L2 penalty). Default is 0.</p></li>
-<li><p><strong>dampening</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>, </em><em>optional</em>) – Dampening for momentum. Default is 0.</p></li>
-<li><p><strong>nesterov</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a><em>, </em><em>optional</em>) – Enables Nesterov momentum. Default is False.</p></li>
-<li><p><strong>epsilon</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a><em>, </em><em>optional</em>) – Epsilon to prevent division by zero. Default is 0.</p></li>
-</ul>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="stable_ssl.monitors.RankMe">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.monitors.</span></span><span class="sig-name descname"><span class="pre">RankMe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-07</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/monitors.html#RankMe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.monitors.RankMe" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="stable_ssl.monitors.Monitor.html#stable_ssl.monitors.Monitor" title="stable_ssl.monitors.Monitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Monitor</span></code></a></p>
+<p>RankMe (effective rank) monitor from <span id="id1">[<a class="reference internal" href="../bibliography.html#id9" title="Quentin Garrido, Randall Balestriero, Laurent Najman, and Yann Lecun. Rankme: assessing the downstream performance of pretrained self-supervised representations by their rank. In International conference on machine learning, 10929–10974. PMLR, 2023.">Garrido <em>et al.</em>, 2023</a>]</span>.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="stable_ssl.optimizers.LARS.step">
-<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">closure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/optimizers.html#LARS.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.optimizers.LARS.step" title="Link to this definition">#</a></dt>
-<dd><p>Perform a single optimization step.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>closure</strong> (<em>callable</em><em>, </em><em>optional</em>) – A closure that reevaluates the model and returns the loss.</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="stable_ssl.monitors.RankMe.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="http://pytorch.org/docs/2.0/tensors.html#torch.Tensor" title="(in PyTorch v2.0)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/stable_ssl/monitors.html#RankMe.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.monitors.RankMe.compute" title="Link to this definition">#</a></dt>
+<dd><p>Abstract method that calculates a score given a model.</p>
 </dd></dl>
 
 </dd></dl>
 
-<span class="target" id="sphx-glr-backref-stable-ssl-optimizers-lars"></span></section>
+<span class="target" id="sphx-glr-backref-stable-ssl-monitors-rankme"></span></section>
 
 
                 </article>
@@ -404,20 +385,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../optimizers.html"
+       href="stable_ssl.monitors.Monitor.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">stable_ssl.optimizers</p>
+        <p class="prev-next-title">Monitor</p>
       </div>
     </a>
     <a class="right-next"
-       href="../schedulers.html"
+       href="../bibliography.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">stable_ssl.schedulers</p>
+        <p class="prev-next-title">Bibliography</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -438,8 +419,8 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.optimizers.LARS"><code class="docutils literal notranslate"><span class="pre">LARS</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.optimizers.LARS.step"><code class="docutils literal notranslate"><span class="pre">LARS.step()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.monitors.RankMe"><code class="docutils literal notranslate"><span class="pre">RankMe</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.monitors.RankMe.compute"><code class="docutils literal notranslate"><span class="pre">RankMe.compute()</span></code></a></li>
 </ul>
 </li>
 </ul>

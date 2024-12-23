@@ -186,6 +186,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.monitors.Monitor.html">Monitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.monitors.RankMe.html">RankMe</a></li>
+</ul>
+</details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
 <ul class="nav bd-sidenav">
@@ -319,6 +324,7 @@
 <span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">DistributedSamplerWrapper</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">reader</span>
 <span class="kn">from</span> <span class="nn">.config</span> <span class="kn">import</span> <span class="n">LoggerConfig</span><span class="p">,</span> <span class="n">WandbConfig</span><span class="p">,</span> <span class="n">HardwareConfig</span><span class="p">,</span> <span class="n">OptimConfig</span>
+<span class="kn">from</span> <span class="nn">.monitors</span> <span class="kn">import</span> <span class="n">Monitor</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">wandb</span>
@@ -355,7 +361,6 @@
 <span class="sd">    be implemented: `forward`, `predict`, and `compute_loss`.</span>
 
 <span class="sd">    Execution flow when calling `launch`:</span>
-
 <span class="sd">            - `self.before_fit` (nothing by default)</span>
 <span class="sd">            - `self._fit` (executes all the training/intermittent evaluation by default)</span>
 <span class="sd">                - for `self.optim[&quot;epochs&quot;]` epochs:</span>
@@ -364,7 +369,7 @@
 <span class="sd">                        - loop over mini-batches</span>
 <span class="sd">                            - `self.before_fit_step` (moves data to device)</span>
 <span class="sd">                            - `self._fit_step` (optimization step)</span>
-<span class="sd">                            - `self.after_fit_step` (nothing by default)</span>
+<span class="sd">                            - `self.after_fit_step` (computes per-step monitoring)</span>
 <span class="sd">                    - `self.after_fit_epoch` (nothing by default)</span>
 <span class="sd">                    - `self._evaluate` (if asked, looping over all non-train datasets)</span>
 <span class="sd">                        - `self.before_eval` (setup in eval mode)</span>
@@ -376,7 +381,6 @@
 <span class="sd">                    - Save intermittent checkpoint if asked by user config</span>
 <span class="sd">                - Save final checkpoint if asked by user config</span>
 <span class="sd">            - `self.after_fit` (evaluates by default)</span>
-
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -576,8 +580,13 @@
 <div class="viewcode-block" id="BaseTrainer.after_fit_step">
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_fit_step">[docs]</a>
     <span class="k">def</span> <span class="nf">after_fit_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle post-step tasks after a training step (currently does nothing).&quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle per-step monitoring. See eg :mod:`stable_ssl.monitors`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;train&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;monitors&quot;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;monitors&quot;</span><span class="p">][</span><span class="s2">&quot;train&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">metric</span><span class="p">:</span> <span class="n">Monitor</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_latest_forward</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;every_step&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">({</span><span class="sa">f</span><span class="s2">&quot;train/</span><span class="si">{</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">score</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="BaseTrainer.before_eval">
@@ -650,6 +659,16 @@
         <span class="k">return</span> <span class="mi">1</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">batch_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_batch_idx&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_idx</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_epoch&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -662,14 +681,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">batch_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_batch_idx&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">latest_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_latest_forward&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_idx</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_latest_forward</span>
 
     <span class="nd">@epoch</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -678,6 +693,10 @@
     <span class="nd">@step</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@latest_forward</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">latest_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_latest_forward</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">_instanciate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">seed_everything</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
@@ -995,6 +1014,16 @@
         <span class="k">if</span> <span class="n">name_loader</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">]:</span>
             <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">][</span><span class="n">name_loader</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">metric</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">name_loader</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;monitors&quot;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;monitors&quot;</span><span class="p">][</span><span class="n">name_loader</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">metric</span><span class="p">:</span> <span class="n">Monitor</span>
+                <span class="c1"># NOTE To make this more general (e.g. for GradNorm, etc.)</span>
+                <span class="c1"># we should pass in the BaseModel in its entirety and let the</span>
+                <span class="c1"># compute method use what it needs.</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;every_step&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">({</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name_loader</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">score</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">_set_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hardware</span><span class="p">):</span>
         <span class="c1"># Check if CUDA is available, otherwise set to CPU.</span>

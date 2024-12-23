@@ -187,6 +187,11 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.monitors.Monitor.html">Monitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.monitors.RankMe.html">RankMe</a></li>
+</ul>
+</details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
 <ul class="nav bd-sidenav">
@@ -383,9 +388,8 @@ to suit diverse project requirements and use cases.</p>
 <p>This class is intended to be subclassed for specific training methods
 (see examples for more details). For each subclass, the following methods must
 be implemented: <cite>forward</cite>, <cite>predict</cite>, and <cite>compute_loss</cite>.</p>
-<p>Execution flow when calling <cite>launch</cite>:</p>
-<blockquote>
-<div><ul class="simple">
+<dl class="simple">
+<dt>Execution flow when calling <cite>launch</cite>:</dt><dd><ul class="simple">
 <li><p><cite>self.before_fit</cite> (nothing by default)</p></li>
 <li><dl class="simple">
 <dt><cite>self._fit</cite> (executes all the training/intermittent evaluation by default)</dt><dd><ul>
@@ -398,7 +402,7 @@ be implemented: <cite>forward</cite>, <cite>predict</cite>, and <cite>compute_lo
 <dt>loop over mini-batches</dt><dd><ul>
 <li><p><cite>self.before_fit_step</cite> (moves data to device)</p></li>
 <li><p><cite>self._fit_step</cite> (optimization step)</p></li>
-<li><p><cite>self.after_fit_step</cite> (nothing by default)</p></li>
+<li><p><cite>self.after_fit_step</cite> (computes per-step monitoring)</p></li>
 </ul>
 </dd>
 </dl>
@@ -437,7 +441,8 @@ be implemented: <cite>forward</cite>, <cite>predict</cite>, and <cite>compute_lo
 </li>
 <li><p><cite>self.after_fit</cite> (evaluates by default)</p></li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -485,7 +490,7 @@ for the full list of parameters and their defaults.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.BaseTrainer.after_fit_step">
 <span class="sig-name descname"><span class="pre">after_fit_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/base.html#BaseTrainer.after_fit_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.BaseTrainer.after_fit_step" title="Link to this definition">#</a></dt>
-<dd><p>Handle post-step tasks after a training step (currently does nothing).</p>
+<dd><p>Handle per-step monitoring. See eg <a class="reference internal" href="../monitors.html#module-stable_ssl.monitors" title="stable_ssl.monitors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.monitors</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">

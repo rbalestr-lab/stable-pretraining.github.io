@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>stable_ssl.trainers &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>stable_ssl.monitors &#8212; stable-SSL 0.1-dev documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'trainers';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'monitors';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="SupervisedTrainer" href="gen_modules/stable_ssl.trainers.SupervisedTrainer.html" />
-    <link rel="prev" title="HardwareConfig" href="gen_modules/stable_ssl.config.HardwareConfig.html" />
+    <link rel="next" title="Monitor" href="gen_modules/stable_ssl.monitors.Monitor.html" />
+    <link rel="prev" title="LinearWarmupThreeStepsAnnealing" href="gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -154,7 +154,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">stable_ssl.trainers</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
@@ -187,7 +187,7 @@
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">stable_ssl.monitors</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.monitors.Monitor.html">Monitor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.monitors.RankMe.html">RankMe</a></li>
 </ul>
@@ -255,7 +255,7 @@
       
       
       
-      <li><a href="_sources/trainers.rst" target="_blank"
+      <li><a href="_sources/monitors.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -329,7 +329,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>stable_ssl.trainers</h1>
+    <h1>stable_ssl.monitors</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -343,21 +343,15 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-stable_ssl.trainers">
-<span id="stable-ssl-trainers"></span><h1>stable_ssl.trainers<a class="headerlink" href="#module-stable_ssl.trainers" title="Link to this heading">#</a></h1>
+  <section id="module-stable_ssl.monitors">
+<span id="stable-ssl-monitors"></span><h1>stable_ssl.monitors<a class="headerlink" href="#module-stable_ssl.monitors" title="Link to this heading">#</a></h1>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.trainers.SupervisedTrainer.html#stable_ssl.trainers.SupervisedTrainer" title="stable_ssl.trainers.SupervisedTrainer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SupervisedTrainer</span></code></a>(data, module, loss, ...)</p></td>
-<td><p>Base class for training a supervised model.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.monitors.Monitor.html#stable_ssl.monitors.Monitor" title="stable_ssl.monitors.Monitor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Monitor</span></code></a>()</p></td>
+<td><p>Base class for metrics that are monitored at the end of each step.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html#stable_ssl.trainers.JointEmbeddingTrainer" title="stable_ssl.trainers.JointEmbeddingTrainer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JointEmbeddingTrainer</span></code></a>(data, module, loss, ...)</p></td>
-<td><p>Base class for training a joint-embedding SSL model.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer" title="stable_ssl.trainers.SelfDistillationTrainer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelfDistillationTrainer</span></code></a>(data, module, loss, ...)</p></td>
-<td><p>Base class for training a self-distillation SSL model.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.trainers.SimSiamTrainer.html#stable_ssl.trainers.SimSiamTrainer" title="stable_ssl.trainers.SimSiamTrainer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SimSiamTrainer</span></code></a>(data, module, loss, hardware, ...)</p></td>
-<td><p>Base class for training a SimSiam SSL model.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.monitors.RankMe.html#stable_ssl.monitors.RankMe" title="stable_ssl.monitors.RankMe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RankMe</span></code></a>([limit, epsilon])</p></td>
+<td><p>RankMe (effective rank) monitor from <span id="id1">[<a class="reference internal" href="bibliography.html#id9" title="Quentin Garrido, Randall Balestriero, Laurent Najman, and Yann Lecun. Rankme: assessing the downstream performance of pretrained self-supervised representations by their rank. In International conference on machine learning, 10929–10974. PMLR, 2023.">Garrido <em>et al.</em>, 2023</a>]</span>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -376,20 +370,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="gen_modules/stable_ssl.config.HardwareConfig.html"
+       href="gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">HardwareConfig</p>
+        <p class="prev-next-title">LinearWarmupThreeStepsAnnealing</p>
       </div>
     </a>
     <a class="right-next"
-       href="gen_modules/stable_ssl.trainers.SupervisedTrainer.html"
+       href="gen_modules/stable_ssl.monitors.Monitor.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">SupervisedTrainer</p>
+        <p class="prev-next-title">Monitor</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
