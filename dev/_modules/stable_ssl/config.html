@@ -416,7 +416,7 @@
 
 
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">WandbConfig</span><span class="p">(</span><span class="n">LoggerConfig</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">WandbConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the Weights &amp; Biases logging.</span>
 
 <span class="sd">    Parameters</span>
@@ -431,10 +431,15 @@
 <span class="sd">        ID of the Weights &amp; Biases run. Default is None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="nb">dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">HydraConfig</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+    <span class="p">)</span>
     <span class="n">entity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">project</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">ID</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="OptimConfig">
