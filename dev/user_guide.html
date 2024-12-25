@@ -524,7 +524,7 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
 <p>The default parameters associated with <code class="docutils literal notranslate"><span class="pre">logger</span></code> are defined in the following:</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.LoggerConfig.html#stable_ssl.config.LoggerConfig" title="stable_ssl.config.LoggerConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.LoggerConfig</span></code></a>(level, metrics, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.config.LoggerConfig.html#stable_ssl.config.LoggerConfig" title="stable_ssl.config.LoggerConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config.LoggerConfig</span></code></a>(level, metric, monitor, ...)</p></td>
 <td><p>Configuration for logging and checkpointing during training or evaluation.</p></td>
 </tr>
 </tbody>
@@ -535,8 +535,8 @@ Other datasets, which can have any name, are used for evaluation purposes.</p>
 <span class="w">   </span><span class="nt">base_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./&quot;</span>
 <span class="w">   </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
 <span class="w">   </span><span class="nt">checkpoint_frequency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="w">   </span><span class="nt">every_step</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="w">   </span><span class="nt">metrics</span><span class="p">:</span>
+<span class="w">   </span><span class="nt">log_every_step</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">   </span><span class="nt">metric</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">test</span><span class="p">:</span>
 <span class="w">         </span><span class="nt">acc1</span><span class="p">:</span>
 <span class="w">         </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchmetrics.classification.MulticlassAccuracy</span>

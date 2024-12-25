@@ -296,8 +296,8 @@
                   
   <h1>Source code for stable_ssl.config</h1><div class="highlight"><pre>
 <span></span><span class="c1"># # -*- coding: utf-8 -*-</span>
-<span class="c1"># &quot;&quot;&quot;Configuration classes specifying default parameters for stable-SSL.&quot;&quot;&quot;</span>
-<span class="c1"># #</span>
+<span class="sd">&quot;&quot;&quot;Configuration classes specifying default parameters for stable-SSL.&quot;&quot;&quot;</span>
+
 <span class="c1"># # Author: Hugues Van Assel &lt;vanasselhugues@gmail.com&gt;</span>
 <span class="c1"># #         Randall Balestriero &lt;randallbalestriero@gmail.com&gt;</span>
 <span class="c1"># #</span>
@@ -370,9 +370,9 @@
 <span class="sd">    ----------</span>
 <span class="sd">    level : int, optional</span>
 <span class="sd">        The logging level. Determines the threshold for what gets logged. Default is 20.</span>
-<span class="sd">    metrics : dict, optional</span>
+<span class="sd">    metric : dict, optional</span>
 <span class="sd">        A dictionary to store and log various metrics. Default is an empty dict.</span>
-<span class="sd">    monitors : dict, optional</span>
+<span class="sd">    monitor : dict, optional</span>
 <span class="sd">        A dictionary to store and log various monitoring statistics.</span>
 <span class="sd">        Default is an empty dict</span>
 <span class="sd">    save_final_model : str or bool, optional</span>
@@ -382,7 +382,7 @@
 <span class="sd">    eval_every_epoch : int, optional</span>
 <span class="sd">        The frequency (in epochs) at which the model will be evaluated.</span>
 <span class="sd">        For example, if set to 1, evaluation occurs every epoch. Default is 1.</span>
-<span class="sd">    every_step : int, optional</span>
+<span class="sd">    log_every_step : int, optional</span>
 <span class="sd">        The frequency (in training steps) at which to log intermediate metrics.</span>
 <span class="sd">        For example, if set to 1, logs occur every step. Default is 1.</span>
 <span class="sd">    checkpoint_frequency : int, optional</span>
@@ -401,11 +401,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span>
-    <span class="n">metrics</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">monitors</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">metric</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">monitor</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">save_final_model</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">eval_every_epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">every_step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">log_every_step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">checkpoint_frequency</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">checkpoint_model_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">dump_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
@@ -421,18 +421,24 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    dir : pathlib.Path, optional</span>
+<span class="sd">        The path where output is dumped. Defaults to Hydra&#39;s runtime output directory.</span>
 <span class="sd">    entity : str, optional</span>
 <span class="sd">        Name of the (Weights &amp; Biases) entity. Default is None.</span>
 <span class="sd">    project : str, optional</span>
 <span class="sd">        Name of the (Weights &amp; Biases) project. Default is None.</span>
 <span class="sd">    name : str, optional</span>
 <span class="sd">        Name of the Weights &amp; Biases run. Default is None.</span>
-<span class="sd">    ID : str, optional</span>
+<span class="sd">    id : str, optional</span>
 <span class="sd">        ID of the Weights &amp; Biases run. Default is None.</span>
+<span class="sd">    tags : list, optional</span>
+<span class="sd">        List of tags for the Weights &amp; Biases run. Default is None.</span>
+<span class="sd">    group : str, optional</span>
+<span class="sd">        Group for the Weights &amp; Biases run. Default is None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nb">dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">HydraConfig</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+    <span class="nb">dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">HydraConfig</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">output_dir</span><span class="p">))</span>
     <span class="p">)</span>
     <span class="n">entity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">project</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
