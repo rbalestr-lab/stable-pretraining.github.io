@@ -157,7 +157,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.trainers.SimSiamTrainer.html">SimSiamTrainer</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -168,7 +167,6 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">stable_ssl.modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.get_backbone_dim.html">get_backbone_dim</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.load_backbone.html">load_backbone</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.MLP.html">MLP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.modules.Resnet9.html">Resnet9</a></li>
@@ -304,14 +302,12 @@
 <span class="c1"># This source code is licensed under the license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseTrainer</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">update_momentum</span><span class="p">,</span> <span class="n">log_and_raise</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">log_and_raise</span>
+<span class="kn">from</span> <span class="nn">.modules</span> <span class="kn">import</span> <span class="n">TeacherStudentModule</span>
 
 
 <div class="viewcode-block" id="SupervisedTrainer">
@@ -319,21 +315,36 @@
 <span class="k">class</span> <span class="nc">SupervisedTrainer</span><span class="p">(</span><span class="n">BaseTrainer</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for training a supervised model.&quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="SupervisedTrainer.check_module">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.SupervisedTrainer.html#stable_ssl.trainers.SupervisedTrainer.check_module">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a &#39;backbone&#39; module is defined.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;backbone&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">:</span>
+            <span class="n">log_and_raise</span><span class="p">(</span>
+                <span class="ne">ValueError</span><span class="p">,</span>
+                <span class="s2">&quot;A `backbone` module needs to be defined when &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;using the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> trainer.&quot;</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="SupervisedTrainer.forward">
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.SupervisedTrainer.html#stable_ssl.trainers.SupervisedTrainer.forward">[docs]</a>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass. By default, it simply calls the &#39;backbone&#39; module.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SupervisedTrainer.predict">
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.SupervisedTrainer.html#stable_ssl.trainers.SupervisedTrainer.predict">[docs]</a>
     <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the forward pass of current batch.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="SupervisedTrainer.compute_loss">
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.SupervisedTrainer.html#stable_ssl.trainers.SupervisedTrainer.compute_loss">[docs]</a>
     <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the loss of the model using the `loss` provided in the config.&quot;&quot;&quot;</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">}</span></div>
 </div>
@@ -368,21 +379,44 @@
             <span class="n">log_and_raise</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">views</span><span class="p">,</span> <span class="n">labels</span>
 
+<div class="viewcode-block" id="JointEmbeddingTrainer.check_module">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html#stable_ssl.trainers.JointEmbeddingTrainer.check_module">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if &#39;backbone&#39;, &#39;projector&#39; and their classifiers are defined.&quot;&quot;&quot;</span>
+        <span class="n">required_modules</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;backbone&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;projector&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;backbone_classifier&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;projector_classifier&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">module_name</span> <span class="ow">in</span> <span class="n">required_modules</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">module_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">:</span>
+                <span class="n">log_and_raise</span><span class="p">(</span>
+                    <span class="ne">ValueError</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;A `</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s2">` module needs to be defined when &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;using the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> trainer.&quot;</span><span class="p">,</span>
+                <span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="JointEmbeddingTrainer.forward">
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html#stable_ssl.trainers.JointEmbeddingTrainer.forward">[docs]</a>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass. By default, it simply calls the &#39;backbone&#39; module.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="JointEmbeddingTrainer.predict">
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html#stable_ssl.trainers.JointEmbeddingTrainer.predict">[docs]</a>
     <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the backbone classifier on the forward pass of current batch.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone_classifier&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span></div>
 
 
 <div class="viewcode-block" id="JointEmbeddingTrainer.compute_loss">
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html#stable_ssl.trainers.JointEmbeddingTrainer.compute_loss">[docs]</a>
     <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute final loss as sum of SSL loss and classifier losses.&quot;&quot;&quot;</span>
         <span class="n">views</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_views_labels</span><span class="p">()</span>
         <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="n">view</span><span class="p">)</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">latest_forward</span> <span class="o">=</span> <span class="n">embeddings</span>
@@ -397,7 +431,10 @@
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;loss_ssl&quot;</span><span class="p">:</span> <span class="n">loss_ssl</span><span class="p">,</span> <span class="o">**</span><span class="n">classifier_losses</span><span class="p">}</span></div>
 
 
+<div class="viewcode-block" id="JointEmbeddingTrainer.compute_loss_classifiers">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html#stable_ssl.trainers.JointEmbeddingTrainer.compute_loss_classifiers">[docs]</a>
     <span class="k">def</span> <span class="nf">compute_loss_classifiers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">,</span> <span class="n">projections</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the classifier loss for both backbone and projector.&quot;&quot;&quot;</span>
         <span class="n">loss_backbone_classifier</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">loss_projector_classifier</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -414,6 +451,7 @@
             <span class="s2">&quot;loss_backbone_classifier&quot;</span><span class="p">:</span> <span class="n">loss_backbone_classifier</span><span class="p">,</span>
             <span class="s2">&quot;loss_projector_classifier&quot;</span><span class="p">:</span> <span class="n">loss_projector_classifier</span><span class="p">,</span>
         <span class="p">}</span></div>
+</div>
 
 
 
@@ -422,96 +460,64 @@
 <span class="k">class</span> <span class="nc">SelfDistillationTrainer</span><span class="p">(</span><span class="n">JointEmbeddingTrainer</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for training a self-distillation SSL model.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="SelfDistillationTrainer.setup">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer.setup">[docs]</a>
-    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">])</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=&gt; SETUP OF </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> STARTED.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_instanciate</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone_target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector_target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector&quot;</span><span class="p">])</span>
+<div class="viewcode-block" id="SelfDistillationTrainer.check_module">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer.check_module">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if &#39;backbone&#39;, &#39;projector&#39;, classifiers and teachers are defined.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">check_module</span><span class="p">()</span>  <span class="c1"># check &#39;backbone&#39;, &#39;projector&#39; and classifiers</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone_target&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector_target&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_load_checkpoint</span><span class="p">()</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=&gt; SETUP OF </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> COMPLETED.&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="SelfDistillationTrainer.before_fit_step">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer.before_fit_step">[docs]</a>
-    <span class="k">def</span> <span class="nf">before_fit_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the target parameters as EMA of the online model parameters.&quot;&quot;&quot;</span>
-        <span class="n">update_momentum</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone_target</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">momentum</span>
-        <span class="p">)</span>
-        <span class="n">update_momentum</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector_target</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">momentum</span>
-        <span class="p">)</span></div>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;backbone&quot;</span><span class="p">,</span> <span class="s2">&quot;projector&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">TeacherStudentModule</span><span class="p">):</span>
+                <span class="n">log_and_raise</span><span class="p">(</span>
+                    <span class="ne">ValueError</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;The &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; module needs to be a `TeacherStudentModule`&quot;</span><span class="p">,</span>
+                <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SelfDistillationTrainer.compute_loss">
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer.compute_loss">[docs]</a>
     <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute final loss as sum of SSL loss and classifier losses.&quot;&quot;&quot;</span>
         <span class="n">views</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_views_labels</span><span class="p">()</span>
-        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="n">view</span><span class="p">)</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="p">]</span>
-        <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector&quot;</span><span class="p">](</span><span class="n">embed</span><span class="p">)</span> <span class="k">for</span> <span class="n">embed</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">view</span><span class="p">)</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">latest_forward</span> <span class="o">=</span> <span class="n">embeddings</span>
+        <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">embed</span><span class="p">)</span> <span class="k">for</span> <span class="n">embed</span> <span class="ow">in</span> <span class="n">embeddings</span>
+        <span class="p">]</span>
 
-        <span class="c1"># If a predictor is used, it is generally applied to the online projections.</span>
+        <span class="c1"># If a predictor is used, it is applied to the student projections.</span>
         <span class="k">if</span> <span class="s2">&quot;predictor&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">:</span>
             <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;predictor&quot;</span><span class="p">](</span><span class="n">proj</span><span class="p">)</span> <span class="k">for</span> <span class="n">proj</span> <span class="ow">in</span> <span class="n">projections</span><span class="p">]</span>
 
-        <span class="n">projections_target</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector_target&quot;</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone_target&quot;</span><span class="p">](</span><span class="n">view</span><span class="p">))</span>
+        <span class="n">projections_teacher</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+            <span class="p">)</span>
             <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span>
         <span class="p">]</span>
 
         <span class="n">loss_ssl</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">projections</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">projections_target</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">projections</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">projections_target</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">projections</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">projections_teacher</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">projections</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">projections_teacher</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="p">)</span>
 
         <span class="n">classifier_losses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_loss_classifiers</span><span class="p">(</span>
             <span class="n">embeddings</span><span class="p">,</span> <span class="n">projections</span><span class="p">,</span> <span class="n">labels</span>
         <span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;train/loss_ssl&quot;</span><span class="p">:</span> <span class="n">loss_ssl</span><span class="p">,</span> <span class="o">**</span><span class="n">classifier_losses</span><span class="p">}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;loss_ssl&quot;</span><span class="p">:</span> <span class="n">loss_ssl</span><span class="p">,</span> <span class="o">**</span><span class="n">classifier_losses</span><span class="p">}</span></div>
 </div>
 
 
 
-<div class="viewcode-block" id="SimSiamTrainer">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.SimSiamTrainer.html#stable_ssl.trainers.SimSiamTrainer">[docs]</a>
-<span class="k">class</span> <span class="nc">SimSiamTrainer</span><span class="p">(</span><span class="n">JointEmbeddingTrainer</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for training a SimSiam SSL model.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="SimSiamTrainer.compute_loss">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.SimSiamTrainer.html#stable_ssl.trainers.SimSiamTrainer.compute_loss">[docs]</a>
-    <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">views</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_views_labels</span><span class="p">()</span>
-        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="n">view</span><span class="p">)</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="p">]</span>
-        <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector&quot;</span><span class="p">](</span><span class="n">embed</span><span class="p">)</span> <span class="k">for</span> <span class="n">embed</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">projections</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Only the first two views are used when using SimSiam.&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;predictor&quot;</span><span class="p">):</span>
-            <span class="n">log_and_raise</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="s2">&quot;SimSiam requires a predictor module.&quot;</span><span class="p">)</span>
-
-        <span class="n">predictions</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;predictor&quot;</span><span class="p">](</span><span class="n">proj</span><span class="p">)</span> <span class="k">for</span> <span class="n">proj</span> <span class="ow">in</span> <span class="n">projections</span><span class="p">]</span>
-        <span class="n">detached_projections</span> <span class="o">=</span> <span class="p">[</span><span class="n">proj</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="k">for</span> <span class="n">proj</span> <span class="ow">in</span> <span class="n">projections</span><span class="p">]</span>
-
-        <span class="n">loss_ssl</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">predictions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">detached_projections</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">predictions</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">detached_projections</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="p">)</span>
-
-        <span class="n">classifier_losses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_loss_classifiers</span><span class="p">(</span>
-            <span class="n">embeddings</span><span class="p">,</span> <span class="n">projections</span><span class="p">,</span> <span class="n">labels</span>
-        <span class="p">)</span>
-
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;train/loss_ssl&quot;</span><span class="p">:</span> <span class="n">loss_ssl</span><span class="p">,</span> <span class="o">**</span><span class="n">classifier_losses</span><span class="p">}</span></div>
-</div>
-
+<span class="c1"># @torch.no_grad()</span>
+<span class="c1"># def center_mean(x: Tensor, dim: Tuple[int, ...]) -&gt; Tensor:</span>
+<span class="c1">#     &quot;&quot;&quot;Returns the center of the input tensor by calculating the mean.&quot;&quot;&quot;</span>
+<span class="c1">#     batch_center = torch.mean(x, dim=dim, keepdim=True)</span>
+<span class="c1">#     if dist.is_available() and dist.is_initialized():</span>
+<span class="c1">#         dist.all_reduce(batch_center)</span>
+<span class="c1">#         batch_center = batch_center / dist.get_world_size()</span>
+<span class="c1">#     return batch_center</span>
 </pre></div>
 
                 </article>

@@ -159,7 +159,6 @@
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SimSiamTrainer.html">SimSiamTrainer</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -170,7 +169,6 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">stable_ssl.modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.modules.get_backbone_dim.html">get_backbone_dim</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.modules.load_backbone.html">load_backbone</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.modules.MLP.html">MLP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.modules.Resnet9.html">Resnet9</a></li>
@@ -444,32 +442,39 @@ At its core, <code class="docutils literal notranslate"><span class="pre">stable
 <div class="pst-scrollable-table-container"><table class="table">
 <tbody>
 <tr class="row-odd"><td><p><strong>Method</strong></p></td>
-<td colspan="2"><p><strong>Trainer</strong></p></td>
+<td><p><strong>Trainer</strong></p></td>
 <td><p><strong>Loss</strong></p></td>
+<td><p><strong>Example Config</strong></p></td>
 </tr>
 <tr class="row-even"><td><p>Barlow Twins</p></td>
-<td colspan="2"><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
 <td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.BarlowTwinsLoss.html#stable_ssl.losses.BarlowTwinsLoss">BarlowTwinsLoss</a></p></td>
+<td></td>
 </tr>
 <tr class="row-odd"><td><p>BYOL</p></td>
-<td colspan="2"><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer">SelfDistillationTrainer</a></p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer">SelfDistillationTrainer</a></p></td>
 <td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></p></td>
+<td></td>
 </tr>
 <tr class="row-even"><td><p>MoCo</p></td>
-<td colspan="2"><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer">SelfDistillationTrainer</a></p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer">SelfDistillationTrainer</a></p></td>
 <td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.NTXEntLoss.html#stable_ssl.losses.NTXEntLoss">NTXEntLoss</a></p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><p>SimCLR (<a class="reference external" href="_github_url/blob/main/examples/simclr_cifar10_full.yaml">config example</a>)</p></td>
-<td colspan="2"><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
+<tr class="row-odd"><td><p>SimCLR</p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
 <td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.NTXEntLoss.html#stable_ssl.losses.NTXEntLoss">NTXEntLoss</a></p></td>
+<td><p><a class="reference external" href="_github_url/blob/main/examples/simclr_cifar10_full.yaml">link</a></p></td>
 </tr>
 <tr class="row-even"><td><p>SimSiam</p></td>
-<td colspan="2"><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SimSiamTrainer.html#stable_ssl.trainers.SimSiamTrainer">SimSiamTrainer</a></p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer">SelfDistillationTrainer</a></p></td>
 <td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></p></td>
+<td></td>
 </tr>
 <tr class="row-odd"><td><p>VICReg</p></td>
-<td colspan="2"><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
 <td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></p></td>
+<td></td>
 </tr>
 </tbody>
 </table>

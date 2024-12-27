@@ -158,7 +158,6 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SimSiamTrainer.html">SimSiamTrainer</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -169,7 +168,6 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">stable_ssl.modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.get_backbone_dim.html">get_backbone_dim</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.load_backbone.html">load_backbone</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.MLP.html">MLP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.Resnet9.html">Resnet9</a></li>
@@ -382,7 +380,9 @@ Default is None.</p></li>
 <li><p><strong>dump_path</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/pathlib.html#pathlib.Path" title="(in Python v3.4)"><em>pathlib.Path</em></a><em>, </em><em>optional</em>) – The path where output is dumped. Defaults to Hydra’s runtime output directory.</p></li>
 <li><p><strong>wandb</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – Configuration for Weights &amp; Biases logging.
 If <cite>True</cite>, it will be converted to an empty dictionary and default keys will be
-filled in if <cite>rank == 0</cite>. Default is None.</p></li>
+filled in if <cite>rank == 0</cite>. Default is None.
+See <code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.config.WandbConfig</span></code>
+for the full list of parameters and their defaults.</p></li>
 </ul>
 </dd>
 </dl>
