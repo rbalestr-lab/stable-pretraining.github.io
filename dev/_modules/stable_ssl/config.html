@@ -310,6 +310,60 @@
 <span class="kn">import</span> <span class="nn">hydra</span>
 <span class="kn">from</span> <span class="nn">hydra.core.hydra_config</span> <span class="kn">import</span> <span class="n">HydraConfig</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">omegaconf</span>
+
+
+<span class="k">def</span> <span class="nf">collapse_nested_dict</span><span class="p">(</span>
+    <span class="n">cfg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">object</span><span class="p">],</span>
+    <span class="n">level_separator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span>
+    <span class="n">_base_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">_flat_cfg</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse a Hydra config and make it readable for wandb (flatten).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cfg: Union[dict, object]</span>
+<span class="sd">        The original (Hydra) nested dict.</span>
+<span class="sd">    level_separator: str, optional</span>
+<span class="sd">        The string to separate level names. Defaults to &quot;.&quot;.</span>
+<span class="sd">    _base_name: str, optional</span>
+<span class="sd">        The parent string, used for recursion only, users should ignore.</span>
+<span class="sd">        Defaults to None.</span>
+<span class="sd">    _flat_cfg: dict, optional</span>
+<span class="sd">        The flattened config, used for recursion only, users should ignore.</span>
+<span class="sd">        Defaults to None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        dict: Flat config.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># INIT</span>
+    <span class="k">if</span> <span class="n">_flat_cfg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_flat_cfg</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">_base_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_base_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cfg</span><span class="p">)):</span>
+            <span class="n">collapse_nested_dict</span><span class="p">(</span>
+                <span class="n">cfg</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">level_separator</span><span class="o">=</span><span class="n">level_separator</span><span class="p">,</span>
+                <span class="n">_base_name</span><span class="o">=</span><span class="n">_base_name</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">level_separator</span><span class="si">}{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">_flat_cfg</span><span class="o">=</span><span class="n">_flat_cfg</span><span class="p">,</span>
+            <span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">omegaconf</span><span class="o">.</span><span class="n">dictconfig</span><span class="o">.</span><span class="n">DictConfig</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">cfg</span><span class="p">:</span>
+            <span class="n">collapse_nested_dict</span><span class="p">(</span>
+                <span class="n">cfg</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
+                <span class="n">level_separator</span><span class="o">=</span><span class="n">level_separator</span><span class="p">,</span>
+                <span class="n">_base_name</span><span class="o">=</span><span class="n">_base_name</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">level_separator</span><span class="si">}{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">_flat_cfg</span><span class="o">=</span><span class="n">_flat_cfg</span><span class="p">,</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_base_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">level_separator</span><span class="p">):</span>
+            <span class="n">_base_name</span> <span class="o">=</span> <span class="n">_base_name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">level_separator</span><span class="p">)</span> <span class="p">:]</span>
+        <span class="n">_flat_cfg</span><span class="p">[</span><span class="n">_base_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cfg</span>
+    <span class="k">return</span> <span class="n">_flat_cfg</span>
 
 
 <span class="k">def</span> <span class="nf">instanciate_config</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">debug_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
@@ -344,9 +398,11 @@
 <span class="sd">    seed : int, optional</span>
 <span class="sd">        Random seed for reproducibility. Default is None.</span>
 <span class="sd">    float16 : bool, optional</span>
-<span class="sd">        Whether to use mixed precision (float16) for training. Default is False.</span>
+<span class="sd">        Whether to use mixed precision (float16) for training.</span>
+<span class="sd">        Default is False.</span>
 <span class="sd">    world_size : int, optional</span>
-<span class="sd">        Number of processes participating in distributed training. Default is 1.</span>
+<span class="sd">        Number of processes participating in distributed training.</span>
+<span class="sd">        Default is 1.</span>
 <span class="sd">    device : str, optional</span>
 <span class="sd">        The device to use for training. Default is &quot;cuda&quot; if available, else &quot;cpu&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -446,7 +502,6 @@
     <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">group</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="OptimConfig">
