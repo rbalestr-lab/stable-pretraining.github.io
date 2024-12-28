@@ -50,7 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.trainers.SelfDistillationTrainer';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="stable_ssl.losses" href="../losses.html" />
+    <link rel="next" title="DINOTrainer" href="stable_ssl.trainers.DINOTrainer.html" />
     <link rel="prev" title="JointEmbeddingTrainer" href="stable_ssl.trainers.JointEmbeddingTrainer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -158,6 +158,7 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">SelfDistillationTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -340,7 +341,6 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer.check_module"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer.check_module()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer.compute_loss"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer.compute_loss()</span></code></a></li>
 </ul>
 </li>
@@ -362,12 +362,6 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.trainers.</span></span><span class="sig-name descname"><span class="pre">SelfDistillationTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardware</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#SelfDistillationTrainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.SelfDistillationTrainer" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="stable_ssl.trainers.JointEmbeddingTrainer.html#stable_ssl.trainers.JointEmbeddingTrainer" title="stable_ssl.trainers.JointEmbeddingTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">JointEmbeddingTrainer</span></code></a></p>
 <p>Base class for training a self-distillation SSL model.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="stable_ssl.trainers.SelfDistillationTrainer.check_module">
-<span class="sig-name descname"><span class="pre">check_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#SelfDistillationTrainer.check_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.SelfDistillationTrainer.check_module" title="Link to this definition">#</a></dt>
-<dd><p>Check if ‘backbone’, ‘projector’, classifiers and teachers are defined.</p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.trainers.SelfDistillationTrainer.compute_loss">
 <span class="sig-name descname"><span class="pre">compute_loss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#SelfDistillationTrainer.compute_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.SelfDistillationTrainer.compute_loss" title="Link to this definition">#</a></dt>
@@ -399,11 +393,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="../losses.html"
+       href="stable_ssl.trainers.DINOTrainer.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">stable_ssl.losses</p>
+        <p class="prev-next-title">DINOTrainer</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -425,7 +419,6 @@
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer.check_module"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer.check_module()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer.compute_loss"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer.compute_loss()</span></code></a></li>
 </ul>
 </li>

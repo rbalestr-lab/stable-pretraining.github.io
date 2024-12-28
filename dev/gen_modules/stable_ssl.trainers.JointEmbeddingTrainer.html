@@ -158,6 +158,7 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">JointEmbeddingTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -340,7 +341,6 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.JointEmbeddingTrainer"><code class="docutils literal notranslate"><span class="pre">JointEmbeddingTrainer</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.JointEmbeddingTrainer.check_module"><code class="docutils literal notranslate"><span class="pre">JointEmbeddingTrainer.check_module()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.JointEmbeddingTrainer.compute_loss"><code class="docutils literal notranslate"><span class="pre">JointEmbeddingTrainer.compute_loss()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.JointEmbeddingTrainer.compute_loss_classifiers"><code class="docutils literal notranslate"><span class="pre">JointEmbeddingTrainer.compute_loss_classifiers()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.JointEmbeddingTrainer.forward"><code class="docutils literal notranslate"><span class="pre">JointEmbeddingTrainer.forward()</span></code></a></li>
@@ -365,12 +365,6 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.trainers.</span></span><span class="sig-name descname"><span class="pre">JointEmbeddingTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardware</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#JointEmbeddingTrainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.JointEmbeddingTrainer" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer" title="stable_ssl.base.BaseTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTrainer</span></code></a></p>
 <p>Base class for training a joint-embedding SSL model.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="stable_ssl.trainers.JointEmbeddingTrainer.check_module">
-<span class="sig-name descname"><span class="pre">check_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#JointEmbeddingTrainer.check_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.JointEmbeddingTrainer.check_module" title="Link to this definition">#</a></dt>
-<dd><p>Check if ‘backbone’, ‘projector’ and their classifiers are defined.</p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.trainers.JointEmbeddingTrainer.compute_loss">
 <span class="sig-name descname"><span class="pre">compute_loss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#JointEmbeddingTrainer.compute_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.JointEmbeddingTrainer.compute_loss" title="Link to this definition">#</a></dt>
@@ -446,7 +440,6 @@
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.JointEmbeddingTrainer"><code class="docutils literal notranslate"><span class="pre">JointEmbeddingTrainer</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.JointEmbeddingTrainer.check_module"><code class="docutils literal notranslate"><span class="pre">JointEmbeddingTrainer.check_module()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.JointEmbeddingTrainer.compute_loss"><code class="docutils literal notranslate"><span class="pre">JointEmbeddingTrainer.compute_loss()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.JointEmbeddingTrainer.compute_loss_classifiers"><code class="docutils literal notranslate"><span class="pre">JointEmbeddingTrainer.compute_loss_classifiers()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.JointEmbeddingTrainer.forward"><code class="docutils literal notranslate"><span class="pre">JointEmbeddingTrainer.forward()</span></code></a></li>
