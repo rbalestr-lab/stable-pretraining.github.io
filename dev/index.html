@@ -344,9 +344,6 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-stable-ssl">Why stable-SSL?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-documentation">Minimal Documentation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples-of-methods">Examples of Methods</a><ul class="nav section-nav flex-column">
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -396,8 +393,8 @@ These components can be sourced from <code class="docutils literal notranslate">
 <h2>Minimal Documentation<a class="headerlink" href="#minimal-documentation" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides all the boilerplate to quickly get started with AI research, focusing on Self-Supervised Learning (SSL), albeit other applications can certainly build upon <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>.
 At its core, <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides a <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer">BaseTrainer</a> class that provides all the essential methods required to train and evaluate your model effectively. This class is intended to be subclassed for specific training needs (see these <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/trainers.html">trainers</a> as examples).</p>
-<p><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> relies on <code class="docutils literal notranslate"><span class="pre">Hydra</span></code> (see <a class="reference external" href="https://hydra.cc/">Hydra documentation</a>) to manage the configuration parameters.
-The parameters are organized into the following groups (more details in the <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html">User Guide</a>):</p>
+<p><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> uses <code class="docutils literal notranslate"><span class="pre">Hydra</span></code> (see the <a class="reference external" href="https://hydra.cc/">Hydra documentation</a>) to manage input parameters via configuration files.
+These parameters are grouped into the following categories (detailed in the <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html">User Guide</a>):</p>
 <ul class="simple">
 <li><p><strong>data</strong>: Defines the dataset, loading, and augmentation pipelines. Only the dataset called <code class="docutils literal notranslate"><span class="pre">train</span></code> is used for training. If there is no dataset named <code class="docutils literal notranslate"><span class="pre">train</span></code>, the model runs in evaluation mode. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#data">Example</a>.</p></li>
 <li><p><strong>module</strong>: Specifies the neural network modules, with a required <code class="docutils literal notranslate"><span class="pre">backbone</span></code> as the model’s core. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#module">Example</a>.</p></li>
@@ -406,69 +403,12 @@ The parameters are organized into the following groups (more details in the <a c
 <li><p><strong>logger</strong>: Configures model performance monitoring. APIs like <a class="reference external" href="https://wandb.ai/home">WandB</a> are supported. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#logger">Example</a>.</p></li>
 <li><p><strong>loss</strong> (optional): Defines a loss function that can then be used in the <code class="docutils literal notranslate"><span class="pre">compute_loss</span></code> method of the trainer. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#loss">Example</a>.</p></li>
 </ul>
-<p>Then, create a Python script that will load the configuration and launch the run.</p>
-<div class="highlight-python notranslate" id="run-py"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hydra</span>
-<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">OmegaConf</span>
-
-<span class="n">OmegaConf</span><span class="o">.</span><span class="n">register_new_resolver</span><span class="p">(</span><span class="s2">&quot;eval&quot;</span><span class="p">,</span> <span class="nb">eval</span><span class="p">)</span> <span class="c1"># to evaluate expressions in the config file</span>
-
-<span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">version_base</span><span class="o">=</span><span class="s2">&quot;1.2&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load the configuration and launch the run.&quot;&quot;&quot;</span>
-    <span class="n">trainer</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span>
-        <span class="n">cfg</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">,</span> <span class="n">_recursive_</span><span class="o">=</span><span class="kc">False</span>
-    <span class="p">)</span>
-    <span class="n">trainer</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
-    <span class="n">trainer</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
-
-
- <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">main</span><span class="p">()</span>
+<p>To start a run using the <code class="docutils literal notranslate"><span class="pre">default_config.yaml</span></code> configuration file located in the <code class="docutils literal notranslate"><span class="pre">./configs/</span></code> folder, use the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stable-ssl<span class="w"> </span>--config-path<span class="w"> </span>configs/<span class="w"> </span>--config-name<span class="w"> </span>default_config
 </pre></div>
 </div>
-<p>In this example, to launch the run using the configuration file <code class="docutils literal notranslate"><span class="pre">default_config.yaml</span></code> located in the <code class="docutils literal notranslate"><span class="pre">./configs/</span></code> folder, use the following command, where <code class="docutils literal notranslate"><span class="pre">run.py</span></code> is the above script:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>run.py<span class="w"> </span>-m<span class="w"> </span>--config-name<span class="w"> </span>default_config<span class="w"> </span>--config-path<span class="w"> </span>configs/
-</pre></div>
-</div>
-<section id="examples-of-methods">
-<h3>Examples of Methods<a class="headerlink" href="#examples-of-methods" title="Link to this heading">#</a></h3>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>Method</strong></p></td>
-<td><p><strong>Trainer</strong></p></td>
-<td><p><strong>Example Config</strong></p></td>
-</tr>
-<tr class="row-even"><td><p>Barlow Twins</p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>BYOL</p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>DINO</p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>MoCo</p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>SimCLR</p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
-<td><p><a class="reference external" href="https://github.com/huguesva/stable-SSL/tree/main/examples/config_examples/simclr_cifar10_full.yaml">link</a></p></td>
-</tr>
-<tr class="row-odd"><td><p>SimSiam</p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>VICReg</p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
+<p>This command utilizes <a class="reference external" href="https://hydra.cc/">Hydra</a>, making it compatible with multirun functionality and CLI overrides.
+It is important to note that the multirun flag (<code class="docutils literal notranslate"><span class="pre">-m</span></code> or <code class="docutils literal notranslate"><span class="pre">--multirun</span></code>) is <strong>mandatory</strong> when using the Slurm launcher.</p>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
@@ -488,7 +428,6 @@ The parameters are organized into the following groups (more details in the <a c
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 </ul>
 </div>
-</section>
 </section>
 </section>
 
@@ -532,9 +471,6 @@ The parameters are organized into the following groups (more details in the <a c
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-stable-ssl">Why stable-SSL?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-documentation">Minimal Documentation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples-of-methods">Examples of Methods</a><ul class="nav section-nav flex-column">
-</ul>
-</li>
 </ul>
 </li>
 </ul>
