@@ -341,6 +341,13 @@
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.SupervisedTrainer.html#stable_ssl.trainers.SupervisedTrainer.compute_loss">[docs]</a>
     <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the loss of the model using the `loss` provided in the config.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">log_and_raise</span><span class="p">(</span>
+                <span class="ne">ValueError</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;When using the trainer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="s2">&quot;one needs to either provide a loss function in the config &quot;</span>
+                <span class="s2">&quot;or implement a custom `compute_loss` method.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">}</span></div>
 </div>
@@ -400,6 +407,14 @@
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html#stable_ssl.trainers.JointEmbeddingTrainer.compute_loss">[docs]</a>
     <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute final loss as sum of SSL loss and classifier losses.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">log_and_raise</span><span class="p">(</span>
+                <span class="ne">ValueError</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;When using the trainer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="s2">&quot;one needs to either provide a loss function in the config &quot;</span>
+                <span class="s2">&quot;or implement a custom `compute_loss` method.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
         <span class="n">views</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_views_labels</span><span class="p">()</span>
         <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="n">view</span><span class="p">)</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">latest_forward</span> <span class="o">=</span> <span class="n">embeddings</span>
@@ -421,6 +436,7 @@
         <span class="n">loss_backbone_classifier</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">loss_projector_classifier</span> <span class="o">=</span> <span class="mi">0</span>
 
+        <span class="c1"># Inputs are detached to avoid backprop through backbone and projector.</span>
         <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">embed</span><span class="p">,</span> <span class="n">proj</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">projections</span><span class="p">):</span>
                 <span class="n">loss_backbone_classifier</span> <span class="o">+=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span>
@@ -454,6 +470,14 @@
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer.compute_loss">[docs]</a>
     <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute final loss as sum of SSL loss and classifier losses.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">log_and_raise</span><span class="p">(</span>
+                <span class="ne">ValueError</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;When using the trainer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="s2">&quot;one needs to either provide a loss function in the config &quot;</span>
+                <span class="s2">&quot;or implement a custom `compute_loss` method.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
         <span class="n">views</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_views_labels</span><span class="p">()</span>
 
         <span class="n">embeddings_student</span> <span class="o">=</span> <span class="p">[</span>
@@ -598,12 +622,11 @@
         <span class="c1"># Compute the cross entropy loss between the student and teacher probabilities.</span>
         <span class="n">probs_teacher_flat</span> <span class="o">=</span> <span class="n">probs_teacher</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">start_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">log_probs_student_flat</span> <span class="o">=</span> <span class="n">log_probs_student</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">start_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">loss_ssl</span> <span class="o">=</span> <span class="n">probs_teacher_flat</span> <span class="o">@</span> <span class="n">log_probs_student_flat</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">loss_ssl</span> <span class="o">=</span> <span class="o">-</span><span class="n">probs_teacher_flat</span> <span class="o">@</span> <span class="n">log_probs_student_flat</span><span class="o">.</span><span class="n">T</span>
         <span class="n">loss_ssl</span><span class="o">.</span><span class="n">fill_diagonal_</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="c1"># Normalize the loss.</span>
-        <span class="n">N</span> <span class="o">=</span> <span class="n">loss_ssl</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">n_terms</span> <span class="o">=</span> <span class="n">N</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">n_terms</span> <span class="o">=</span> <span class="n">loss_ssl</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">-</span> <span class="n">loss_ssl</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="n">stacked_projections_teacher</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">loss_ssl</span> <span class="o">=</span> <span class="n">loss_ssl</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_terms</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">)</span>
 

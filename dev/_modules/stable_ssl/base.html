@@ -364,7 +364,8 @@
 
 <span class="sd">    This class is intended to be subclassed for specific training methods</span>
 <span class="sd">    (see examples for more details). For each subclass, the following methods must</span>
-<span class="sd">    be implemented: ``forward``, ``predict``, and ``compute_loss``.</span>
+<span class="sd">    be implemented: ``forward``, ``predict`` (used for supervised evaluation) and</span>
+<span class="sd">    ``compute_loss`` (used for training).</span>
 
 <span class="sd">    Execution flow when calling `launch`:</span>
 <span class="sd">            - `self.before_fit` (nothing by default)</span>
@@ -397,9 +398,6 @@
 <span class="sd">    module: dict</span>
 <span class="sd">        Names and definition of the modules (neural networks).</span>
 <span class="sd">        See :mod:`stable_ssl.modules` for examples of available modules.</span>
-<span class="sd">    loss: dict</span>
-<span class="sd">        Loss function used in the final criterion to be minimized.</span>
-<span class="sd">        See :mod:`stable_ssl.losses` for examples.</span>
 <span class="sd">    hardware: dict</span>
 <span class="sd">        Hardware parameters. See :mod:`stable_ssl.config.HardwareConfig`</span>
 <span class="sd">        for the full list of parameters and their defaults.</span>
@@ -410,21 +408,26 @@
 <span class="sd">        Logging and checkpointing parameters.</span>
 <span class="sd">        See :mod:`stable_ssl.config.LoggerConfig`</span>
 <span class="sd">        for the full list of parameters and their defaults.</span>
+<span class="sd">    loss: dict, optional</span>
+<span class="sd">        Loss function used in the final criterion to be minimized.</span>
+<span class="sd">        See :mod:`stable_ssl.losses` for examples.</span>
+<span class="sd">        Defaults to None.</span>
 <span class="sd">    **kwargs</span>
 <span class="sd">        Additional arguments to be set as attributes of the class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">hardware</span><span class="p">,</span> <span class="n">optim</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">hardware</span><span class="p">,</span> <span class="n">optim</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=&gt; INIT OF </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> STARTED.&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_module</span> <span class="o">=</span> <span class="n">module</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span> <span class="o">=</span> <span class="n">loss</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hardware</span> <span class="o">=</span> <span class="n">hardware</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_optim</span> <span class="o">=</span> <span class="n">optim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span> <span class="o">=</span> <span class="n">loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>  <span class="c1"># Save kwargs for checkpointing.</span>
 
         <span class="c1"># Set the logger defaults.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">asdict</span><span class="p">(</span><span class="n">LoggerConfig</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">))</span>
@@ -481,7 +484,6 @@
 <span class="sd">        ----------</span>
 <span class="sd">        BreakAllEpochs</span>
 <span class="sd">            Raised if the training is interrupted by the user.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;train&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate</span><span class="p">()</span>
@@ -511,7 +513,18 @@
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.predict">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prediction of the model used for evaluation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate model predictions for evaluation purposes.</span>
+
+<span class="sd">        Supervised and Self-Supervised models are typically evaluated using</span>
+<span class="sd">        predictions over discrete labels. This method should return the output</span>
+<span class="sd">        of this classification used for evaluation.</span>
+
+<span class="sd">        In SSL, this typically involves using a classifier head on top of the backbone,</span>
+<span class="sd">        thus turning the SSL model into a supervised model for evaluation.</span>
+
+<span class="sd">        **See Also**:</span>
+<span class="sd">            :mod:`stable_ssl.trainers` for concrete examples of implementations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -519,7 +532,18 @@
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.compute_loss">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the global loss to be minimized.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the global loss to be minimized during training.</span>
+
+<span class="sd">        Compute the total loss that the model aims to minimize.</span>
+<span class="sd">        Implementations can utilize the ``loss`` function provided during the</span>
+<span class="sd">        trainer&#39;s initialization to calculate loss based on the current batch.</span>
+
+<span class="sd">        Note that it can return a list or dictionary of losses. The various losses</span>
+<span class="sd">        are logged independently and summed to compute the final loss.</span>
+
+<span class="sd">        **See Also**:</span>
+<span class="sd">            :mod:`stable_ssl.trainers` for concrete examples of implementations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -650,10 +674,11 @@
         <span class="n">model</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_hardware</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_optim</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">,</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cleaning up the current task before submitting a new one.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup</span><span class="p">()</span>
@@ -719,13 +744,16 @@
         <span class="c1"># We skip optim as we may not need it (see below).</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hardware</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hardware</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;partial&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hardware</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_device</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_device</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Logger:&quot;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">- Dump path: `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s1">&#39;dump_path&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">`&quot;</span><span class="p">)</span>

@@ -344,8 +344,6 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-stable-ssl">Why stable-SSL?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-documentation">Minimal Documentation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#library-design">Library Design</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-launch-runs">How to launch runs</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples-of-methods">Examples of Methods</a><ul class="nav section-nav flex-column">
 </ul>
 </li>
@@ -368,17 +366,18 @@
 <p>⚠️ This library is currently in a phase of active development. All features are subject to change without prior notice.</p>
 <section id="the-self-supervised-learning-library-by-researchers-for-researchers">
 <h1>The Self-Supervised Learning Library by Researchers for Researchers<a class="headerlink" href="#the-self-supervised-learning-library-by-researchers-for-researchers" title="Link to this heading">#</a></h1>
-<p><em>Have a research idea? With stable-SSL, you can go from concept to execution in under 10 minutes. Start from scratch and quickly set up your pipeline, all while being able to generate high-quality figures and tables from your results. That’s the goal of stable-SSL.</em></p>
+<p><em>Got a research idea? With stable-SSL, you can go from concept to execution in under 10 minutes. Start from scratch and quickly set up your pipeline, all while being able to generate high-quality figures and tables from your results. That’s the goal of stable-SSL.</em></p>
 <p>We achieve that by taking the best–and only the best–from the most eponymous AI libraries: <code class="docutils literal notranslate"><span class="pre">PytorchLightning</span></code>, <code class="docutils literal notranslate"><span class="pre">VISSL</span></code>, <code class="docutils literal notranslate"><span class="pre">WandB</span></code>, <code class="docutils literal notranslate"><span class="pre">Hydra</span></code>, <code class="docutils literal notranslate"><span class="pre">Submitit</span></code>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> implements all the basic boilerplate code, including data loading, logging, checkpointing and optimization. It offers users full flexibility to customize each part of the pipeline through a configuration file, enabling easy selection of network architectures, loss functions, evaluation metrics, data augmentations and more.
+<p><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> implements all the basic boilerplate code, including job submission, data loading, optimization, evaluation, logging, monitoring, checkpointing, and requeuing. It offers users full flexibility to customize each part of the pipeline through a configuration file, enabling easy selection of network architectures, loss functions, evaluation metrics, data augmentations, and more.
 These components can be sourced from <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> itself, popular libraries like <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code>, or custom modules created by the user.</p>
+<p>While the organization is similar to that of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code>, the goal of <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is to significantly reduce codebase complexity without sacrificing performance. Think of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code> as industry-driven (abstracting everything away), whereas <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is academia-driven (offering complete visibility into all important aspects of the pipeline.).</p>
 <section id="why-stable-ssl">
 <h2>Why stable-SSL?<a class="headerlink" href="#why-stable-ssl" title="Link to this heading">#</a></h2>
 <p id="why">A quick search of <code class="docutils literal notranslate"><span class="pre">AI</span> <span class="pre">libraries</span></code> or <code class="docutils literal notranslate"><span class="pre">Self</span> <span class="pre">Supervised</span> <span class="pre">Learning</span> <span class="pre">libraries</span></code> will return hundreds of results. 99% will be independent project-centric libraries that can’t be reused for general purpose AI research. The other 1% includes:</p>
 <ul class="simple">
-<li><p>Framework libraries such as PytorchLightning that focus on production needs.</p></li>
-<li><p>SSL libraries such as VISSL, FFCV-SSL, LightlySSL that are too rigid, often discontinued or not maintained, or commercial.</p></li>
-<li><p>Standalone libraries such as Wandb, submitit, Hydra that do not offer enough boilerplate for AI research.</p></li>
+<li><p>Framework libraries such as <code class="docutils literal notranslate"><span class="pre">PytorchLightning</span></code> that focus on production needs.</p></li>
+<li><p>SSL libraries such as <code class="docutils literal notranslate"><span class="pre">VISSL</span></code>, <code class="docutils literal notranslate"><span class="pre">FFCV-SSL</span></code>, <code class="docutils literal notranslate"><span class="pre">LightlySSL</span></code> that are discontinued, not maintained or too rigid.</p></li>
+<li><p>Standalone libraries such as <code class="docutils literal notranslate"><span class="pre">Wandb</span></code>, <code class="docutils literal notranslate"><span class="pre">submitit</span></code>, <code class="docutils literal notranslate"><span class="pre">Hydra</span></code> that do not offer enough boilerplate for AI research.</p></li>
 </ul>
 <p>Hence our goal is to fill that void.</p>
 </section>
@@ -395,25 +394,19 @@ These components can be sourced from <code class="docutils literal notranslate">
 </section>
 <section id="minimal-documentation">
 <h2>Minimal Documentation<a class="headerlink" href="#minimal-documentation" title="Link to this heading">#</a></h2>
-<section id="library-design">
-<h3>Library Design<a class="headerlink" href="#library-design" title="Link to this heading">#</a></h3>
-<p id="design"><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides all the boilerplate to quickly get started with AI research, focusing on Self-Supervised Learning (SSL), albeit other applications can certainly build upon <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>.
-At its core, <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides a <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer">BaseTrainer</a> class that provides all the essential methods required to train and evaluate your model effectively. This class is intended to be subclassed for specific training needs (see these <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/trainers.html">trainers</a> as examples). For detailed instructions on configuring the trainers’ input parameters, refer to the <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html">User Guide</a>.</p>
-<p>While the organization is similar to that of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code>, the goal of <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is to significantly reduce codebase complexity without sacrificing performance. Think of <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">Lightning</span></code> as industry-driven (abstracting everything away), whereas <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is academia-driven (providing users with complete visibility into every aspect).</p>
-</section>
-<section id="how-to-launch-runs">
-<h3>How to launch runs<a class="headerlink" href="#how-to-launch-runs" title="Link to this heading">#</a></h3>
-<p id="launch">When using <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>, we recommend relying on configuration files to specify the parameters, typically using <code class="docutils literal notranslate"><span class="pre">Hydra</span></code> (see <a class="reference external" href="https://hydra.cc/">Hydra documentation</a>).</p>
-<p>The parameters are organized into the following groups (more details in the <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html">User Guide</a>):</p>
+<p><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides all the boilerplate to quickly get started with AI research, focusing on Self-Supervised Learning (SSL), albeit other applications can certainly build upon <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>.
+At its core, <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> provides a <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer">BaseTrainer</a> class that provides all the essential methods required to train and evaluate your model effectively. This class is intended to be subclassed for specific training needs (see these <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/trainers.html">trainers</a> as examples).</p>
+<p><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> relies on <code class="docutils literal notranslate"><span class="pre">Hydra</span></code> (see <a class="reference external" href="https://hydra.cc/">Hydra documentation</a>) to manage the configuration parameters.
+The parameters are organized into the following groups (more details in the <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html">User Guide</a>):</p>
 <ul class="simple">
 <li><p><strong>data</strong>: Defines the dataset, loading, and augmentation pipelines. Only the dataset called <code class="docutils literal notranslate"><span class="pre">train</span></code> is used for training. If there is no dataset named <code class="docutils literal notranslate"><span class="pre">train</span></code>, the model runs in evaluation mode. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#data">Example</a>.</p></li>
 <li><p><strong>module</strong>: Specifies the neural network modules, with a required <code class="docutils literal notranslate"><span class="pre">backbone</span></code> as the model’s core. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#module">Example</a>.</p></li>
-<li><p><strong>loss</strong>: Defines the model’s loss function. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#loss">Example</a>.</p></li>
 <li><p><strong>optim</strong>: Contains optimization parameters, including <code class="docutils literal notranslate"><span class="pre">epochs</span></code>, <code class="docutils literal notranslate"><span class="pre">max_steps</span></code> (per epoch), and <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> / <code class="docutils literal notranslate"><span class="pre">scheduler</span></code> settings. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#optim">Example</a>.</p></li>
 <li><p><strong>hardware</strong>: Specifies the hardware used, including the number of GPUs, CPUs, etc. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#hardware">Example</a>.</p></li>
 <li><p><strong>logger</strong>: Configures model performance monitoring. APIs like <a class="reference external" href="https://wandb.ai/home">WandB</a> are supported. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#logger">Example</a>.</p></li>
+<li><p><strong>loss</strong> (optional): Defines a loss function that can then be used in the <code class="docutils literal notranslate"><span class="pre">compute_loss</span></code> method of the trainer. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#loss">Example</a>.</p></li>
 </ul>
-<p>Then, create a Python script that will load the configuration and launch the run. Here is an example with Hydra:</p>
+<p>Then, create a Python script that will load the configuration and launch the run.</p>
 <div class="highlight-python notranslate" id="run-py"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hydra</span>
 <span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">OmegaConf</span>
 
@@ -437,44 +430,40 @@ At its core, <code class="docutils literal notranslate"><span class="pre">stable
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>run.py<span class="w"> </span>-m<span class="w"> </span>--config-name<span class="w"> </span>default_config<span class="w"> </span>--config-path<span class="w"> </span>configs/
 </pre></div>
 </div>
-</section>
 <section id="examples-of-methods">
 <h3>Examples of Methods<a class="headerlink" href="#examples-of-methods" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="table">
 <tbody>
 <tr class="row-odd"><td><p><strong>Method</strong></p></td>
 <td><p><strong>Trainer</strong></p></td>
-<td><p><strong>Loss</strong></p></td>
 <td><p><strong>Example Config</strong></p></td>
 </tr>
 <tr class="row-even"><td><p>Barlow Twins</p></td>
 <td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.BarlowTwinsLoss.html#stable_ssl.losses.BarlowTwinsLoss">BarlowTwinsLoss</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>BYOL</p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer">SelfDistillationTrainer</a></p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>MoCo</p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer">SelfDistillationTrainer</a></p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.NTXEntLoss.html#stable_ssl.losses.NTXEntLoss">NTXEntLoss</a></p></td>
+<tr class="row-even"><td><p>DINO</p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>SimCLR</p></td>
+<tr class="row-odd"><td><p>MoCo</p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>SimCLR</p></td>
 <td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.NTXEntLoss.html#stable_ssl.losses.NTXEntLoss">NTXEntLoss</a></p></td>
-<td><p><a class="reference external" href="_github_url/blob/main/examples/simclr_cifar10_full.yaml">link</a></p></td>
+<td><p><a class="reference external" href="https://github.com/huguesva/stable-SSL/tree/main/examples/config_examples/simclr_cifar10_full.yaml">link</a></p></td>
 </tr>
-<tr class="row-even"><td><p>SimSiam</p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer">SelfDistillationTrainer</a></p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></p></td>
+<tr class="row-odd"><td><p>SimSiam</p></td>
+<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>VICReg</p></td>
+<tr class="row-even"><td><p>VICReg</p></td>
 <td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></p></td>
-<td><p><a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/gen_modules/stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -543,8 +532,6 @@ At its core, <code class="docutils literal notranslate"><span class="pre">stable
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-stable-ssl">Why stable-SSL?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-documentation">Minimal Documentation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#library-design">Library Design</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-launch-runs">How to launch runs</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples-of-methods">Examples of Methods</a><ul class="nav section-nav flex-column">
 </ul>
 </li>

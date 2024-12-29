@@ -376,7 +376,7 @@
 <h1>BaseTrainer<a class="headerlink" href="#basetrainer" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="stable_ssl.BaseTrainer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.</span></span><span class="sig-name descname"><span class="pre">BaseTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardware</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/base.html#BaseTrainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.BaseTrainer" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.</span></span><span class="sig-name descname"><span class="pre">BaseTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardware</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/base.html#BaseTrainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.BaseTrainer" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://pytorch.org/docs/2.0/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
 <p>Base class for training a model.</p>
 <p>This class provides a general boilerplate for common operations that
@@ -386,7 +386,8 @@ These operations include training, evaluation, checkpointing, and training resta
 to suit diverse project requirements and use cases.</p>
 <p>This class is intended to be subclassed for specific training methods
 (see examples for more details). For each subclass, the following methods must
-be implemented: <code class="docutils literal notranslate"><span class="pre">forward</span></code>, <code class="docutils literal notranslate"><span class="pre">predict</span></code>, and <code class="docutils literal notranslate"><span class="pre">compute_loss</span></code>.</p>
+be implemented: <code class="docutils literal notranslate"><span class="pre">forward</span></code>, <code class="docutils literal notranslate"><span class="pre">predict</span></code> (used for supervised evaluation) and
+<code class="docutils literal notranslate"><span class="pre">compute_loss</span></code> (used for training).</p>
 <dl class="simple">
 <dt>Execution flow when calling <cite>launch</cite>:</dt><dd><ul class="simple">
 <li><p><cite>self.before_fit</cite> (nothing by default)</p></li>
@@ -450,8 +451,6 @@ The dataset named <cite>train</cite> is used for training.
 Any other dataset is used for validation.</p></li>
 <li><p><strong>module</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Names and definition of the modules (neural networks).
 See <a class="reference internal" href="../modules.html#module-stable_ssl.modules" title="stable_ssl.modules"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.modules</span></code></a> for examples of available modules.</p></li>
-<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Loss function used in the final criterion to be minimized.
-See <a class="reference internal" href="../losses.html#module-stable_ssl.losses" title="stable_ssl.losses"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.losses</span></code></a> for examples.</p></li>
 <li><p><strong>hardware</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Hardware parameters. See <a class="reference internal" href="stable_ssl.config.HardwareConfig.html#stable_ssl.config.HardwareConfig" title="stable_ssl.config.HardwareConfig"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.config.HardwareConfig</span></code></a>
 for the full list of parameters and their defaults.</p></li>
 <li><p><strong>optim</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Optimization parameters. See <a class="reference internal" href="stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig" title="stable_ssl.config.OptimConfig"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.config.OptimConfig</span></code></a>
@@ -459,6 +458,9 @@ for the full list of parameters and their defaults.</p></li>
 <li><p><strong>logger</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Logging and checkpointing parameters.
 See <a class="reference internal" href="stable_ssl.config.LoggerConfig.html#stable_ssl.config.LoggerConfig" title="stable_ssl.config.LoggerConfig"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.config.LoggerConfig</span></code></a>
 for the full list of parameters and their defaults.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a><em>, </em><em>optional</em>) – Loss function used in the final criterion to be minimized.
+See <a class="reference internal" href="../losses.html#module-stable_ssl.losses" title="stable_ssl.losses"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.losses</span></code></a> for examples.
+Defaults to None.</p></li>
 <li><p><strong>**kwargs</strong> – Additional arguments to be set as attributes of the class.</p></li>
 </ul>
 </dd>
@@ -543,7 +545,16 @@ method. At this point, <cite>self</cite> represents the current state of the mod
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.BaseTrainer.compute_loss">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compute_loss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/base.html#BaseTrainer.compute_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.BaseTrainer.compute_loss" title="Link to this definition">#</a></dt>
-<dd><p>Compute the global loss to be minimized.</p>
+<dd><p>Calculate the global loss to be minimized during training.</p>
+<p>Compute the total loss that the model aims to minimize.
+Implementations can utilize the <code class="docutils literal notranslate"><span class="pre">loss</span></code> function provided during the
+trainer’s initialization to calculate loss based on the current batch.</p>
+<p>Note that it can return a list or dictionary of losses. The various losses
+are logged independently and summed to compute the final loss.</p>
+<dl class="simple">
+<dt><strong>See Also</strong>:</dt><dd><p><a class="reference internal" href="../trainers.html#module-stable_ssl.trainers" title="stable_ssl.trainers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.trainers</span></code></a> for concrete examples of implementations.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -585,7 +596,16 @@ with a customizable boilerplate structure.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.BaseTrainer.predict">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/base.html#BaseTrainer.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.BaseTrainer.predict" title="Link to this definition">#</a></dt>
-<dd><p>Prediction of the model used for evaluation.</p>
+<dd><p>Generate model predictions for evaluation purposes.</p>
+<p>Supervised and Self-Supervised models are typically evaluated using
+predictions over discrete labels. This method should return the output
+of this classification used for evaluation.</p>
+<p>In SSL, this typically involves using a classifier head on top of the backbone,
+thus turning the SSL model into a supervised model for evaluation.</p>
+<dl class="simple">
+<dt><strong>See Also</strong>:</dt><dd><p><a class="reference internal" href="../trainers.html#module-stable_ssl.trainers" title="stable_ssl.trainers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.trainers</span></code></a> for concrete examples of implementations.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
