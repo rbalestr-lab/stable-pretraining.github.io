@@ -1218,6 +1218,11 @@
 
     <span class="k">def</span> <span class="nf">_check_modules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the required modules are defined.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;required_modules&quot;</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">-skipping module check as `required_modules&#39; was not provided.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
         <span class="n">missing_modules</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">incorrect_types</span> <span class="o">=</span> <span class="p">{}</span>
 
