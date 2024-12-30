@@ -18,7 +18,7 @@
 .. _sphx_glr_auto_examples_wandb_reader.py:
 
 
-This script demonstrates how to retieve data from wandb using the stable-SSL library.
+This script demonstrates how to retrieve data from wandb using the stable-SSL library.
 
 .. GENERATED FROM PYTHON SOURCE LINES 4-13
 

@@ -358,15 +358,15 @@ to download the full example code.</p>
 <p class="sphx-glr-example-title" id="sphx-glr-auto-examples-imbalance-supervised-learning-py">This example demonstrates how to use stable-SSL to train a supervised model on CIFAR10
 with class imbalance.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hydra</span>
-<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 <span class="kn">import</span> <span class="nn">torchvision</span>
+<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span>
 <span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">transforms</span>
 
 <span class="kn">import</span> <span class="nn">stable_ssl</span> <span class="k">as</span> <span class="nn">ssl</span>
 <span class="kn">from</span> <span class="nn">stable_ssl.supervised</span> <span class="kn">import</span> <span class="n">Supervised</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <span class="k">class</span> <span class="nc">MyCustomSupervised</span><span class="p">(</span><span class="n">Supervised</span><span class="p">):</span>
@@ -428,7 +428,6 @@ with class imbalance.</p>
 
 <span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">version_base</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">):</span>
-
     <span class="n">args</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">get_args</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--- Arguments ---&quot;</span><span class="p">)</span>
@@ -443,8 +442,8 @@ with class imbalance.</p>
 
 <span class="k">def</span> <span class="nf">visualization</span><span class="p">():</span>
     <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">colormaps</span>
     <span class="kn">import</span> <span class="nn">seaborn</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">colormaps</span>
 
     <span class="n">seaborn</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">font_scale</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 

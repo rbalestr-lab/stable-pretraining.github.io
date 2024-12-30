@@ -18,7 +18,7 @@ Below are example scripts showing how to use the library in various scenarios.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This script demonstrates how to retieve data from wandb using the stable-SSL library.">
+    <div class="sphx-glr-thumbcontainer" tooltip="This script demonstrates how to retrieve data from wandb using the stable-SSL library.">
 
 .. only:: html
 
@@ -29,7 +29,7 @@ Below are example scripts showing how to use the library in various scenarios.
 
 .. raw:: html
 
-      <div class="sphx-glr-thumbnail-title">This script demonstrates how to retieve data from wandb using the stable-SSL library.</div>
+      <div class="sphx-glr-thumbnail-title">This script demonstrates how to retrieve data from wandb using the stable-SSL library.</div>
     </div>
 
 

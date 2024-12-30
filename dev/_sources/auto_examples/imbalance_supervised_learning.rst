@@ -21,21 +21,21 @@
 This example demonstrates how to use stable-SSL to train a supervised model on CIFAR10
 with class imbalance.
 
-.. GENERATED FROM PYTHON SOURCE LINES 5-130
+.. GENERATED FROM PYTHON SOURCE LINES 5-129
 
 .. code-block:: Python
 
 
     import hydra
-    from omegaconf import DictConfig
+    import numpy as np
     import torch
     import torch.nn.functional as F
     import torchvision
+    from omegaconf import DictConfig
     from torchvision import transforms
 
     import stable_ssl as ssl
     from stable_ssl.supervised import Supervised
-    import numpy as np
 
 
     class MyCustomSupervised(Supervised):
@@ -97,7 +97,6 @@ with class imbalance.
 
     @hydra.main(version_base=None)
     def main(cfg: DictConfig):
-
         args = ssl.get_args(cfg)
 
         print("--- Arguments ---")
@@ -112,8 +111,8 @@ with class imbalance.
 
     def visualization():
         import matplotlib.pyplot as plt
-        from matplotlib import colormaps
         import seaborn
+        from matplotlib import colormaps
 
         seaborn.set(font_scale=2)
 

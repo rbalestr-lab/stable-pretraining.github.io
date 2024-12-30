@@ -21,16 +21,16 @@
 This example demonstrates how to create a custom supervised model using the
 `stable_ssl` library.
 
-.. GENERATED FROM PYTHON SOURCE LINES 5-80
+.. GENERATED FROM PYTHON SOURCE LINES 5-79
 
 .. code-block:: Python
 
 
     import hydra
-    from omegaconf import DictConfig
     import torch
     import torch.nn.functional as F
     import torchvision
+    from omegaconf import DictConfig
     from torchvision import transforms
 
     import stable_ssl
@@ -85,7 +85,6 @@ This example demonstrates how to create a custom supervised model using the
 
     @hydra.main()
     def main(cfg: DictConfig):
-
         args = stable_ssl.get_args(cfg)
 
         print("--- Arguments ---")

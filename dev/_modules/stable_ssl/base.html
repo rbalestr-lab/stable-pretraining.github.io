@@ -294,8 +294,7 @@
                 <article class="bd-article">
                   
   <h1>Source code for stable_ssl.base</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;Base class for training a model.&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Base class for training a model.&quot;&quot;&quot;</span>
 <span class="c1">#</span>
 <span class="c1"># Author: Hugues Van Assel &lt;vanasselhugues@gmail.com&gt;</span>
 <span class="c1">#         Randall Balestriero &lt;randallbalestriero@gmail.com&gt;</span>
@@ -303,34 +302,33 @@
 <span class="c1"># This source code is licensed under the license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">hydra</span>
 <span class="kn">import</span> <span class="nn">gc</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">submitit</span>
-<span class="kn">import</span> <span class="nn">jsonlines</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">omegaconf</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
-
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">asdict</span>
 
+<span class="kn">import</span> <span class="nn">hydra</span>
+<span class="kn">import</span> <span class="nn">jsonlines</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">omegaconf</span>
+<span class="kn">import</span> <span class="nn">submitit</span>
 <span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
-<span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">DistributedSamplerWrapper</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">reader</span>
 <span class="kn">from</span> <span class="nn">.config</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">LoggerConfig</span><span class="p">,</span>
-    <span class="n">WandbConfig</span><span class="p">,</span>
     <span class="n">HardwareConfig</span><span class="p">,</span>
+    <span class="n">LoggerConfig</span><span class="p">,</span>
     <span class="n">OptimConfig</span><span class="p">,</span>
+    <span class="n">WandbConfig</span><span class="p">,</span>
     <span class="n">collapse_nested_dict</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.monitors</span> <span class="kn">import</span> <span class="n">Monitor</span>
+<span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">DistributedSamplerWrapper</span>
 <span class="kn">from</span> <span class="nn">.modules</span> <span class="kn">import</span> <span class="n">TeacherStudentModule</span>
+<span class="kn">from</span> <span class="nn">.monitors</span> <span class="kn">import</span> <span class="n">Monitor</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">wandb</span>
@@ -343,10 +341,10 @@
     <span class="n">BreakAllEpochs</span><span class="p">,</span>
     <span class="n">BreakEpoch</span><span class="p">,</span>
     <span class="n">NanError</span><span class="p">,</span>
-    <span class="n">seed_everything</span><span class="p">,</span>
-    <span class="n">to_device</span><span class="p">,</span>
     <span class="n">get_gpu_info</span><span class="p">,</span>
     <span class="n">log_and_raise</span><span class="p">,</span>
+    <span class="n">seed_everything</span><span class="p">,</span>
+    <span class="n">to_device</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -968,7 +966,6 @@
                         <span class="n">total</span><span class="o">=</span><span class="n">max_steps</span><span class="p">,</span>
                         <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Eval </span><span class="si">{</span><span class="n">name_loader</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">epoch</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="p">):</span>
-
                         <span class="c1"># Call any user specified pre-step function.</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">before_eval_step</span><span class="p">()</span>
 
@@ -1077,7 +1074,6 @@
             <span class="n">dist_env</span> <span class="o">=</span> <span class="n">submitit</span><span class="o">.</span><span class="n">JobEnvironment</span><span class="p">()</span>
             <span class="n">port</span> <span class="o">=</span> <span class="mi">10000</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;SLURM_JOBID&quot;</span><span class="p">])</span> <span class="o">%</span> <span class="mi">55000</span>
             <span class="k">if</span> <span class="s2">&quot;SLURM_JOB_NODELIST&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-
                 <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;scontrol&quot;</span><span class="p">,</span> <span class="s2">&quot;show&quot;</span><span class="p">,</span> <span class="s2">&quot;hostnames&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SLURM_JOB_NODELIST&quot;</span><span class="p">)]</span>
                 <span class="n">host_name</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">dist_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tcp://</span><span class="si">{</span><span class="n">host_name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span>

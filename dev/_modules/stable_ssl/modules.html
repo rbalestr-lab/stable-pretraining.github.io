@@ -294,8 +294,7 @@
                 <article class="bd-article">
                   
   <h1>Source code for stable_ssl.modules</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;Neural network modules.&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Neural network modules.&quot;&quot;&quot;</span>
 <span class="c1">#</span>
 <span class="c1"># Author: Randall Balestriero &lt;randallbalestriero@gmail.com&gt;</span>
 <span class="c1">#         Hugues Van Assel &lt;vanasselhugues@gmail.com&gt;</span>
@@ -303,12 +302,12 @@
 <span class="c1"># This source code is licensed under the license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">import</span> <span class="nn">torchvision</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">torchvision</span>
 
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">log_and_raise</span>
 

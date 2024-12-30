@@ -294,8 +294,7 @@
                 <article class="bd-article">
                   
   <h1>Source code for stable_ssl.config</h1><div class="highlight"><pre>
-<span></span><span class="c1"># # -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;Configuration classes specifying default parameters for stable-SSL.&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Configuration classes specifying default parameters for stable-SSL.&quot;&quot;&quot;</span>
 
 <span class="c1"># # Author: Hugues Van Assel &lt;vanasselhugues@gmail.com&gt;</span>
 <span class="c1"># #         Randall Balestriero &lt;randallbalestriero@gmail.com&gt;</span>
@@ -303,15 +302,16 @@
 <span class="c1"># # This source code is licensed under the license found in the</span>
 <span class="c1"># # LICENSE file in the root directory of this source tree.</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">lzma</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">import</span> <span class="nn">lzma</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
 <span class="kn">import</span> <span class="nn">hydra</span>
-<span class="kn">from</span> <span class="nn">hydra.core.hydra_config</span> <span class="kn">import</span> <span class="n">HydraConfig</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">omegaconf</span>
+<span class="kn">from</span> <span class="nn">hydra.core.hydra_config</span> <span class="kn">import</span> <span class="n">HydraConfig</span>
 
 
 <span class="k">def</span> <span class="nf">collapse_nested_dict</span><span class="p">(</span>
@@ -368,7 +368,7 @@
 
 
 <span class="k">def</span> <span class="nf">instanciate_config</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">debug_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Instanciate the config and debug hash.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Instantiate the config and debug hash.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">debug_hash</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">cfg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Your debugging hash:&quot;</span><span class="p">,</span> <span class="n">lzma</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cfg</span><span class="p">)))</span>

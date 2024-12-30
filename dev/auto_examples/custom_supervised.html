@@ -358,10 +358,10 @@ to download the full example code.</p>
 <p class="sphx-glr-example-title" id="sphx-glr-auto-examples-custom-supervised-py">This example demonstrates how to create a custom supervised model using the
 <cite>stable_ssl</cite> library.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hydra</span>
-<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 <span class="kn">import</span> <span class="nn">torchvision</span>
+<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span>
 <span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">transforms</span>
 
 <span class="kn">import</span> <span class="nn">stable_ssl</span>
@@ -416,7 +416,6 @@ to download the full example code.</p>
 
 <span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">):</span>
-
     <span class="n">args</span> <span class="o">=</span> <span class="n">stable_ssl</span><span class="o">.</span><span class="n">get_args</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--- Arguments ---&quot;</span><span class="p">)</span>
