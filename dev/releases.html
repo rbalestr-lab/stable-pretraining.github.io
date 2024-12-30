@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Contributing &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>Releases &#8212; stable-SSL 0.1-dev documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'contributing';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'releases';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Bibliography" href="bibliography.html" />
-    <link rel="prev" title="Releases" href="releases.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="HardwareConfig" href="gen_modules/stable_ssl.config.HardwareConfig.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -151,8 +151,8 @@
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Contributing</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
@@ -253,7 +253,7 @@
       
       
       
-      <li><a href="_sources/contributing.rst" target="_blank"
+      <li><a href="_sources/releases.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -329,7 +329,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Contributing</h1>
+    <h1>Releases</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -339,9 +339,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pr-tutorial">PR Tutorial</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pr-checklist">PR Checklist</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-contributor-tips">New contributor tips</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-1">Version 0.1</a></li>
 </ul>
             </nav>
         </div>
@@ -353,77 +351,22 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="contributing">
-<h1>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">#</a></h1>
-<p>Thank you for your interest in contributing to <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>!
-This library is a community-driven project, and we greatly appreciate contributions of all kinds.</p>
-<p>If you encounter any issues or have suggestions, please open an issue on our <a class="reference external" href="https://github.com/rbalestr-lab/stable-SSL/issues">issue tracker</a>. This allows us to address problems and gather feedback from the community.</p>
-<p>For those who want to contribute code or documentation, you can submit a pull request. Below, you will find details on how to prepare and submit your pull request effectively.</p>
-<section id="pr-tutorial">
-<h2>PR Tutorial<a class="headerlink" href="#pr-tutorial" title="Link to this heading">#</a></h2>
-<p>The preferred workflow for contributing to <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is to fork the
-<a class="reference external" href="https://github.com/rbalestr-lab/stable-SSL">main repository</a> on
-GitHub, clone, and develop on a branch. Steps:</p>
-<ol class="arabic">
-<li><p>Fork the <a class="reference external" href="https://github.com/rbalestr-lab/stable-SSL">project repository</a>
-by clicking on the ‘Fork’ button near the top right of the page. This creates
-a copy of the code under your GitHub user account. For more details on
-how to fork a repository see <a class="reference external" href="https://help.github.com/articles/fork-a-repo/">this guide</a>.</p></li>
-<li><p>Clone your fork of the <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> repo from your GitHub account to your local disk:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:YourLogin/stable-SSL.git
-$ cd stable-SSL
-</pre></div>
-</div>
-</li>
-<li><p>Install the package in editable mode with the development dependencies, as well as the pre-commit hooks that will run on every commit:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install -e .[dev,doc] &amp;&amp; pre-commit install
-</pre></div>
-</div>
-</li>
-<li><p>Create a <code class="docutils literal notranslate"><span class="pre">feature</span></code> branch to hold your development changes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git checkout -b my-feature
-</pre></div>
-</div>
-<p>Always use a <code class="docutils literal notranslate"><span class="pre">feature</span></code> branch. It’s good practice to never work on the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch!</p>
-</li>
-<li><p>Develop the feature on your feature branch. Add changed files using <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">add</span></code> and then commit the changes using <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">commit</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git add modified_files
-$ git commit -m &quot;Your commit message here&quot;
-</pre></div>
-</div>
-<p>To record your changes in Git, then push the changes to your GitHub account with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git push -u origin my-feature
-</pre></div>
-</div>
-</li>
-<li><p>Follow <a class="reference external" href="https://help.github.com/articles/creating-a-pull-request-from-a-fork">these instructions</a>
-to create a pull request from your fork. Then, a project maintainer will review your changes.</p></li>
-</ol>
-</section>
-<section id="pr-checklist">
-<h2>PR Checklist<a class="headerlink" href="#pr-checklist" title="Link to this heading">#</a></h2>
-<p>When preparing the PR, please make sure to
-check the following points:</p>
+  <section id="releases">
+<span id="id1"></span><h1>Releases<a class="headerlink" href="#releases" title="Link to this heading">#</a></h1>
+<section id="version-0-1">
+<h2>Version 0.1<a class="headerlink" href="#version-0-1" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>The automatic tests pass on your local machine. This can be done by running <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pytest</span> <span class="pre">stable_ssl/tests</span></code> in the root directory of the repository after making the desired changes.</p></li>
-<li><p>If your pull request addresses an issue, please use the pull request title to describe the issue and mention the issue number in the pull request description. This will make sure a link back to the original issue is created.</p></li>
-<li><p>The documentation is updated if necessary. You can edit the documentation using any text editor and then generate the HTML output by typing <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> from the <code class="docutils literal notranslate"><span class="pre">docs/</span></code> directory. The resulting HTML files will be placed in <code class="docutils literal notranslate"><span class="pre">docs/build/html/</span></code> and are viewable in a web browser.</p></li>
+<li><p>Base trainer offering the basic functionalities of stable-SSL (logging, checkpointing, data loading etc).</p></li>
+<li><p>Template trainers for supervised and self-supervised learning (general joint embedding and teacher student models).</p></li>
+<li><p>Examples of self-supervised learning methods : SimCLR, Barlow Twins, VicReg, DINO, MoCo, SimSiam.</p></li>
+<li><p>Classes to load templates neural networks (backbone, projector, etc).</p></li>
+<li><p>LARS optimizer.</p></li>
+<li><p>Linear warmup schedulers.</p></li>
+<li><p>Loss functions: NTXEnt, Barlow Twins, Negative Cosine Similarity, VICReg.</p></li>
+<li><p>Base classes for multi-view dataloaders.</p></li>
+<li><p>Functionalities to read the loggings and easily export the results.</p></li>
+<li><p>RankMe metric to monitor training.</p></li>
 </ul>
-<p>When creating a pull request (PR), use the appropriate prefix to indicate its status:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">[MRG]</span></code> <strong>(Ready for Merge)</strong>: Use this prefix if your contribution is complete and ready for a detailed review. A core maintainer will review your code and approve it for merging if it meets the required standards.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">[WIP]</span></code> <strong>(Work in Progress)</strong>: Use this prefix for an incomplete contribution where further work is planned before seeking a full review. Consider including a <a class="reference external" href="https://github.com/blog/1375-task-lists-in-gfm-issues-pulls-comments">task list</a> in your PR description to outline planned work or track progress. Change the prefix to <cite>[MRG]</cite> once the PR is mature and ready for detailed review.</p></li>
-</ul>
-<p>A <code class="docutils literal notranslate"><span class="pre">[WIP]</span></code> PR can serve multiple purposes:
-1- Indicate that you are actively working on something to prevent duplicated efforts by others.
-2- Request early feedback on functionality, design, or API.
-3- Seek collaborators to assist with development.</p>
-</section>
-<section id="new-contributor-tips">
-<h2>New contributor tips<a class="headerlink" href="#new-contributor-tips" title="Link to this heading">#</a></h2>
-<p>A great way to start contributing to <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is to pick an item
-from the list of <a class="reference external" href="https://github.com/rbalestr-lab/stable-SSL/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22">good first issues</a> in the issue tracker. Resolving these issues allow you to start
-contributing to the project without much prior knowledge.</p>
 </section>
 </section>
 
@@ -439,20 +382,20 @@ contributing to the project without much prior knowledge.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="releases.html"
+       href="gen_modules/stable_ssl.config.HardwareConfig.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Releases</p>
+        <p class="prev-next-title">HardwareConfig</p>
       </div>
     </a>
     <a class="right-next"
-       href="bibliography.html"
+       href="contributing.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Bibliography</p>
+        <p class="prev-next-title">Contributing</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -473,9 +416,7 @@ contributing to the project without much prior knowledge.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pr-tutorial">PR Tutorial</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pr-checklist">PR Checklist</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-contributor-tips">New contributor tips</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-1">Version 0.1</a></li>
 </ul>
   </nav></div>
 
