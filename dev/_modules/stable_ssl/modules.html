@@ -453,7 +453,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Create a teacher network with the same architecture as the student.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">teacher</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">student</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">teacher</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">teacher</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># Teacher should not require gradients.</span>
 
             <span class="k">if</span> <span class="n">warm_init</span><span class="p">:</span>  <span class="c1"># Initialization step to match the student’s parameters.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ema_coefficient</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(())</span>
