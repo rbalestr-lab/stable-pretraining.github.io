@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>stable_ssl.schedulers &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>Contributing &#8212; stable-SSL 0.1-dev documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'schedulers';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'contributing';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="LinearWarmup" href="gen_modules/stable_ssl.schedulers.LinearWarmup.html" />
-    <link rel="prev" title="LARS" href="gen_modules/stable_ssl.optimizers.LARS.html" />
+    <link rel="next" title="Bibliography" href="bibliography.html" />
+    <link rel="prev" title="RankMe" href="gen_modules/stable_ssl.monitors.RankMe.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -153,7 +153,7 @@
 </details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
@@ -179,7 +179,7 @@
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.optimizers.LARS.html">LARS</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">stable_ssl.schedulers</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="schedulers.html">stable_ssl.schedulers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmup.html">LinearWarmup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
@@ -193,8 +193,8 @@
 </details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 </ul>
 
@@ -255,7 +255,7 @@
       
       
       
-      <li><a href="_sources/schedulers.rst" target="_blank"
+      <li><a href="_sources/contributing.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -318,7 +318,9 @@
 <button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
 </button>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -329,11 +331,21 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>stable_ssl.schedulers</h1>
+    <h1>Contributing</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pr-tutorial">PR Tutorial</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pr-checklist">PR Checklist</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-contributor-tips">New contributor tips</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -343,25 +355,78 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-stable_ssl.schedulers">
-<span id="stable-ssl-schedulers"></span><h1>stable_ssl.schedulers<a class="headerlink" href="#module-stable_ssl.schedulers" title="Link to this heading">#</a></h1>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmup.html#stable_ssl.schedulers.LinearWarmup" title="stable_ssl.schedulers.LinearWarmup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinearWarmup</span></code></a>(optimizer, total_steps[, ...])</p></td>
-<td><p>Create a linear warmup scheduler.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupCosineAnnealing.html#stable_ssl.schedulers.LinearWarmupCosineAnnealing" title="stable_ssl.schedulers.LinearWarmupCosineAnnealing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinearWarmupCosineAnnealing</span></code></a>(optimizer, ...)</p></td>
-<td><p>Combine linear warmup with cosine annealing decay.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html#stable_ssl.schedulers.LinearWarmupCyclicAnnealing" title="stable_ssl.schedulers.LinearWarmupCyclicAnnealing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinearWarmupCyclicAnnealing</span></code></a>(optimizer, ...)</p></td>
-<td><p>Combine linear warmup with cyclic cosine annealing.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html#stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing" title="stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinearWarmupThreeStepsAnnealing</span></code></a>(optimizer, ...)</p></td>
-<td><p>Combine linear warmup with a three-step learning rate annealing.</p></td>
-</tr>
-</tbody>
-</table>
+  <section id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">#</a></h1>
+<p>Thank you for your interest in contributing to <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code>!
+This library is a community-driven project, and we greatly appreciate contributions of all kinds.</p>
+<p>If you encounter any issues or have suggestions, please open an issue on our <a class="reference external" href="https://github.com/rbalestr-lab/stable-SSL/issues">issue tracker</a>. This allows us to address problems and gather feedback from the community.</p>
+<p>For those who want to contribute code or documentation, you can submit a pull request. Below, you will find details on how to prepare and submit your pull request effectively.</p>
+<section id="pr-tutorial">
+<h2>PR Tutorial<a class="headerlink" href="#pr-tutorial" title="Link to this heading">#</a></h2>
+<p>The preferred workflow for contributing to <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is to fork the
+<a class="reference external" href="https://github.com/rbalestr-lab/stable-SSL">main repository</a> on
+GitHub, clone, and develop on a branch. Steps:</p>
+<ol class="arabic">
+<li><p>Fork the <a class="reference external" href="https://github.com/rbalestr-lab/stable-SSL">project repository</a>
+by clicking on the ‘Fork’ button near the top right of the page. This creates
+a copy of the code under your GitHub user account. For more details on
+how to fork a repository see <a class="reference external" href="https://help.github.com/articles/fork-a-repo/">this guide</a>.</p></li>
+<li><p>Clone your fork of the <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> repo from your GitHub account to your local disk:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:YourLogin/stable-SSL.git
+$ cd stable-SSL
+</pre></div>
 </div>
+</li>
+<li><p>Install the package in editable mode with the development dependencies, as well as the pre-commit hooks that will run on every commit:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install -e .[dev,doc] &amp;&amp; pre-commit install
+</pre></div>
+</div>
+</li>
+<li><p>Create a <code class="docutils literal notranslate"><span class="pre">feature</span></code> branch to hold your development changes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git checkout -b my-feature
+</pre></div>
+</div>
+<p>Always use a <code class="docutils literal notranslate"><span class="pre">feature</span></code> branch. It’s good practice to never work on the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch!</p>
+</li>
+<li><p>Develop the feature on your feature branch. Add changed files using <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">add</span></code> and then commit the changes using <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">commit</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git add modified_files
+$ git commit -m &quot;Your commit message here&quot;
+</pre></div>
+</div>
+<p>To record your changes in Git, then push the changes to your GitHub account with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git push -u origin my-feature
+</pre></div>
+</div>
+</li>
+<li><p>Follow <a class="reference external" href="https://help.github.com/articles/creating-a-pull-request-from-a-fork">these instructions</a>
+to create a pull request from your fork. Then, a project maintainer will review your changes.</p></li>
+</ol>
+</section>
+<section id="pr-checklist">
+<h2>PR Checklist<a class="headerlink" href="#pr-checklist" title="Link to this heading">#</a></h2>
+<p>When preparing the PR, please make sure to
+check the following points:</p>
+<ul class="simple">
+<li><p>The automatic tests pass on your local machine. This can be done by running <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pytest</span> <span class="pre">stable_ssl/tests</span></code> in the root directory of the repository after making the desired changes.</p></li>
+<li><p>If your pull request addresses an issue, please use the pull request title to describe the issue and mention the issue number in the pull request description. This will make sure a link back to the original issue is created.</p></li>
+<li><p>The documentation is updated if necessary. You can edit the documentation using any text editor and then generate the HTML output by typing <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> from the <code class="docutils literal notranslate"><span class="pre">docs/</span></code> directory. The resulting HTML files will be placed in <code class="docutils literal notranslate"><span class="pre">docs/build/html/</span></code> and are viewable in a web browser.</p></li>
+</ul>
+<p>When creating a pull request (PR), use the appropriate prefix to indicate its status:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[MRG]</span></code> <strong>(Ready for Merge)</strong>: Use this prefix if your contribution is complete and ready for a detailed review. A core maintainer will review your code and approve it for merging if it meets the required standards.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[WIP]</span></code> <strong>(Work in Progress)</strong>: Use this prefix for an incomplete contribution where further work is planned before seeking a full review. Consider including a <a class="reference external" href="https://github.com/blog/1375-task-lists-in-gfm-issues-pulls-comments">task list</a> in your PR description to outline planned work or track progress. Change the prefix to <cite>[MRG]</cite> once the PR is mature and ready for detailed review.</p></li>
+</ul>
+<p>A <code class="docutils literal notranslate"><span class="pre">[WIP]</span></code> PR can serve multiple purposes:
+1- Indicate that you are actively working on something to prevent duplicated efforts by others.
+2- Request early feedback on functionality, design, or API.
+3- Seek collaborators to assist with development.</p>
+</section>
+<section id="new-contributor-tips">
+<h2>New contributor tips<a class="headerlink" href="#new-contributor-tips" title="Link to this heading">#</a></h2>
+<p>A great way to start contributing to <code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> is to pick an item
+from the list of <a class="reference external" href="https://github.com/rbalestr-lab/stable-SSL/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22">good first issues</a> in the issue tracker. Resolving these issues allow you to start
+contributing to the project without much prior knowledge.</p>
+</section>
 </section>
 
 
@@ -376,20 +441,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="gen_modules/stable_ssl.optimizers.LARS.html"
+       href="gen_modules/stable_ssl.monitors.RankMe.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">LARS</p>
+        <p class="prev-next-title">RankMe</p>
       </div>
     </a>
     <a class="right-next"
-       href="gen_modules/stable_ssl.schedulers.LinearWarmup.html"
+       href="bibliography.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">LinearWarmup</p>
+        <p class="prev-next-title">Bibliography</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -399,6 +464,24 @@
             </div>
             
             
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pr-tutorial">PR Tutorial</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pr-checklist">PR Checklist</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-contributor-tips">New contributor tips</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

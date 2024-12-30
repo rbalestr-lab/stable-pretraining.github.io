@@ -195,6 +195,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 </ul>
 
@@ -396,12 +397,12 @@ At its core, <code class="docutils literal notranslate"><span class="pre">stable
 <p><code class="docutils literal notranslate"><span class="pre">stable-SSL</span></code> uses <code class="docutils literal notranslate"><span class="pre">Hydra</span></code> (see the <a class="reference external" href="https://hydra.cc/">Hydra documentation</a>) to manage input parameters via configuration files.
 These parameters are grouped into the following categories (detailed in the <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html">User Guide</a>):</p>
 <ul class="simple">
-<li><p><strong>data</strong>: Defines the dataset, loading, and augmentation pipelines. Only the dataset called <code class="docutils literal notranslate"><span class="pre">train</span></code> is used for training. If there is no dataset named <code class="docutils literal notranslate"><span class="pre">train</span></code>, the model runs in evaluation mode. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#data">Example</a>.</p></li>
-<li><p><strong>module</strong>: Specifies the neural network modules, with a required <code class="docutils literal notranslate"><span class="pre">backbone</span></code> as the model’s core. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#module">Example</a>.</p></li>
-<li><p><strong>optim</strong>: Contains optimization parameters, including <code class="docutils literal notranslate"><span class="pre">epochs</span></code>, <code class="docutils literal notranslate"><span class="pre">max_steps</span></code> (per epoch), and <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> / <code class="docutils literal notranslate"><span class="pre">scheduler</span></code> settings. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#optim">Example</a>.</p></li>
-<li><p><strong>hardware</strong>: Specifies the hardware used, including the number of GPUs, CPUs, etc. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#hardware">Example</a>.</p></li>
-<li><p><strong>logger</strong>: Configures model performance monitoring. APIs like <a class="reference external" href="https://wandb.ai/home">WandB</a> are supported. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#logger">Example</a>.</p></li>
-<li><p><strong>loss</strong> (optional): Defines a loss function that can then be used in the <code class="docutils literal notranslate"><span class="pre">compute_loss</span></code> method of the trainer. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#loss">Example</a>.</p></li>
+<li><p><strong>data</strong>: defines the dataset, loading, and augmentation pipelines. Only the dataset called <code class="docutils literal notranslate"><span class="pre">train</span></code> is used for training. If there is no dataset named <code class="docutils literal notranslate"><span class="pre">train</span></code>, the model runs in evaluation mode. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#data">Example</a>.</p></li>
+<li><p><strong>module</strong>: specifies the neural network modules. For instance: <code class="docutils literal notranslate"><span class="pre">backbone</span></code>, <a href="#id2"><span class="problematic" id="id3">``</span></a>projector``etc. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#module">Example</a>.</p></li>
+<li><p><strong>optim</strong>: contains optimization parameters, including <code class="docutils literal notranslate"><span class="pre">epochs</span></code>, <code class="docutils literal notranslate"><span class="pre">max_steps</span></code> (per epoch), and <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> / <code class="docutils literal notranslate"><span class="pre">scheduler</span></code> settings. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#optim">Example</a>.</p></li>
+<li><p><strong>hardware</strong>: specifies the hardware used, including the number of GPUs, CPUs, etc. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#hardware">Example</a>.</p></li>
+<li><p><strong>logger</strong>: configures model performance monitoring. APIs like <a class="reference external" href="https://wandb.ai/home">WandB</a> are supported. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#logger">Example</a>.</p></li>
+<li><p><strong>loss</strong> (optional): defines a loss function that can then be used in the <code class="docutils literal notranslate"><span class="pre">compute_loss</span></code> method of the trainer. <a class="reference external" href="https://rbalestr-lab.github.io/stable-SSL.github.io/dev/user_guide.html#loss">Example</a>.</p></li>
 </ul>
 <p>To start a run using the <code class="docutils literal notranslate"><span class="pre">default_config.yaml</span></code> configuration file located in the <code class="docutils literal notranslate"><span class="pre">./configs/</span></code> folder, use the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stable-ssl<span class="w"> </span>--config-path<span class="w"> </span>configs/<span class="w"> </span>--config-name<span class="w"> </span>default_config
@@ -425,6 +426,7 @@ It is important to note that the multirun flag (<code class="docutils literal no
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">References</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 </ul>
 </div>
