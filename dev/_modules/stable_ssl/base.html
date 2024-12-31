@@ -294,6 +294,7 @@
                   
   <h1>Source code for stable_ssl.base</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Base class for training a model.&quot;&quot;&quot;</span>
+
 <span class="c1">#</span>
 <span class="c1"># Author: Hugues Van Assel &lt;vanasselhugues@gmail.com&gt;</span>
 <span class="c1">#         Randall Balestriero &lt;randallbalestriero@gmail.com&gt;</span>
@@ -549,12 +550,14 @@
     <span class="k">def</span> <span class="nf">get_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the logs from the logger.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Retrieving JSONL logs&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">reader</span><span class="o">.</span><span class="n">jsonl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;dump_path&quot;</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Retrieving Wandb logs&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">reader</span><span class="o">.</span><span class="n">wandb</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;entity&quot;</span><span class="p">],</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;project&quot;</span><span class="p">],</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;ID&quot;</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
                 <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span>
             <span class="p">)</span></div>
 
