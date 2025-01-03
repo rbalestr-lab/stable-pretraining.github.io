@@ -191,6 +191,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.monitors.Monitor.html">Monitor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.monitors.RankMe.html">RankMe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.monitors.LiDAR.html">LiDAR</a></li>
 </ul>
 </details></li>
 </ul>
@@ -309,6 +310,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">asdict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span> <span class="nn">hydra</span>
 <span class="kn">import</span> <span class="nn">jsonlines</span>
@@ -328,7 +330,9 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">DistributedSamplerWrapper</span>
 <span class="kn">from</span> <span class="nn">.modules</span> <span class="kn">import</span> <span class="n">TeacherStudentModule</span>
-<span class="kn">from</span> <span class="nn">.monitors</span> <span class="kn">import</span> <span class="n">Monitor</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.monitors</span> <span class="kn">import</span> <span class="n">Monitor</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">wandb</span>
@@ -617,7 +621,7 @@
         <span class="k">if</span> <span class="s2">&quot;train&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;monitor&quot;</span><span class="p">]:</span>
             <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;monitor&quot;</span><span class="p">][</span><span class="s2">&quot;train&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">metric</span><span class="p">:</span> <span class="n">Monitor</span>
-                <span class="n">score</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_latest_forward</span><span class="p">)</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;log_every_step&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">({</span><span class="sa">f</span><span class="s2">&quot;train/</span><span class="si">{</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">score</span><span class="p">})</span>
 
@@ -719,12 +723,6 @@
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">latest_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_latest_forward&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_latest_forward</span>
-
     <span class="nd">@epoch</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epoch</span> <span class="o">=</span> <span class="n">value</span>
@@ -732,10 +730,6 @@
     <span class="nd">@step</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@latest_forward</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">latest_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_latest_forward</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">_instanciate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">seed_everything</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>

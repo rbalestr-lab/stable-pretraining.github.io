@@ -191,6 +191,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.monitors.Monitor.html">Monitor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.monitors.RankMe.html">RankMe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.monitors.LiDAR.html">LiDAR</a></li>
 </ul>
 </details></li>
 </ul>
@@ -414,14 +415,16 @@
             <span class="p">)</span>
 
         <span class="n">views</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_views_labels</span><span class="p">()</span>
-        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="n">view</span><span class="p">)</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">latest_forward</span> <span class="o">=</span> <span class="n">embeddings</span>
-        <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector&quot;</span><span class="p">](</span><span class="n">embed</span><span class="p">)</span> <span class="k">for</span> <span class="n">embed</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+        <span class="n">representations</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="n">view</span><span class="p">)</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_latest_representations</span> <span class="o">=</span> <span class="n">representations</span>
 
-        <span class="n">loss_ssl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="o">*</span><span class="n">projections</span><span class="p">)</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector&quot;</span><span class="p">](</span><span class="n">_repr</span><span class="p">)</span> <span class="k">for</span> <span class="n">_repr</span> <span class="ow">in</span> <span class="n">representations</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_latest_embeddings</span> <span class="o">=</span> <span class="n">embeddings</span>
+
+        <span class="n">loss_ssl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="o">*</span><span class="n">embeddings</span><span class="p">)</span>
 
         <span class="n">classifier_losses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_loss_classifiers</span><span class="p">(</span>
-            <span class="n">embeddings</span><span class="p">,</span> <span class="n">projections</span><span class="p">,</span> <span class="n">labels</span>
+            <span class="n">representations</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">,</span> <span class="n">labels</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;loss_ssl&quot;</span><span class="p">:</span> <span class="n">loss_ssl</span><span class="p">,</span> <span class="o">**</span><span class="n">classifier_losses</span><span class="p">}</span></div>
@@ -448,7 +451,33 @@
             <span class="s2">&quot;loss_backbone_classifier&quot;</span><span class="p">:</span> <span class="n">loss_backbone_classifier</span><span class="p">,</span>
             <span class="s2">&quot;loss_projector_classifier&quot;</span><span class="p">:</span> <span class="n">loss_projector_classifier</span><span class="p">,</span>
         <span class="p">}</span></div>
-</div>
+
+
+    <span class="c1"># NOTE From the LiDAR paper:</span>
+    <span class="c1"># &quot;We adopt the terminology in (Garrido et al., 2022), and refer to the</span>
+    <span class="c1"># output of the encoder f as a representation, and the output of the</span>
+    <span class="c1"># composed encoder and projector # e = ψ◦f as an embedding&quot;</span>
+    <span class="c1"># My assumption is that all SSL methods have `representations` but only `JEA` draws</span>
+    <span class="c1"># the distinction between `representations` and `embeddings`.</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">latest_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_latest_embeddings&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_latest_embeddings</span>
+
+    <span class="nd">@latest_embeddings</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">latest_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_latest_embeddings</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">latest_representations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_latest_representations&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_latest_representations</span>
+
+    <span class="nd">@latest_representations</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">latest_representations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_latest_representations</span> <span class="o">=</span> <span class="n">value</span></div>
 
 
 
@@ -495,11 +524,12 @@
         <span class="n">embeddings_teacher</span> <span class="o">=</span> <span class="p">[</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">view</span><span class="p">)</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span>
         <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">latest_forward</span> <span class="o">=</span> <span class="n">embeddings_teacher</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">latest_representations</span> <span class="o">=</span> <span class="n">embeddings_teacher</span>
         <span class="n">projections_teacher</span> <span class="o">=</span> <span class="p">[</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">embed</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">embed</span> <span class="ow">in</span> <span class="n">embeddings_teacher</span>
         <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">latest_embeddings</span> <span class="o">=</span> <span class="n">projections_teacher</span>
 
         <span class="n">loss_ssl</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">projections_student</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">projections_teacher</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -590,11 +620,12 @@
             <span class="n">embeddings_teacher</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">view</span><span class="p">)</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">global_views</span>
             <span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">latest_forward</span> <span class="o">=</span> <span class="n">embeddings_teacher</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">latest_representations</span> <span class="o">=</span> <span class="n">embeddings_teacher</span>
             <span class="n">projections_teacher</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;projector&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">embed</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">embed</span> <span class="ow">in</span> <span class="n">embeddings_teacher</span>
             <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">latest_embeddings</span> <span class="o">=</span> <span class="n">projections_teacher</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_epochs_temperature_teacher</span><span class="p">:</span>
             <span class="n">temperature_teacher</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_teacher_schedule</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">epoch</span><span class="p">]</span>

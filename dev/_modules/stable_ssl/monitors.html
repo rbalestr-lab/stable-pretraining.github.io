@@ -191,6 +191,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.monitors.Monitor.html">Monitor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.monitors.RankMe.html">RankMe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.monitors.LiDAR.html">LiDAR</a></li>
 </ul>
 </details></li>
 </ul>
@@ -294,19 +295,28 @@
                   
   <h1>Source code for stable_ssl.monitors</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Training/evaluation metrics that are computed at the end of each step.&quot;&quot;&quot;</span>
+
 <span class="c1">#</span>
 <span class="c1"># Author: @sami-bg</span>
 <span class="c1">#</span>
 <span class="c1"># This source code is licensed under the license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
-
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.distributed</span> <span class="k">as</span> <span class="nn">dist</span>
 
-<span class="kn">from</span> <span class="nn">stable_ssl.utils</span> <span class="kn">import</span> <span class="n">gather</span><span class="p">,</span> <span class="n">warn_once</span>
+<span class="kn">from</span> <span class="nn">stable_ssl</span> <span class="kn">import</span> <span class="n">BaseTrainer</span><span class="p">,</span> <span class="n">JointEmbeddingTrainer</span>
+<span class="kn">from</span> <span class="nn">stable_ssl.utils</span> <span class="kn">import</span> <span class="n">broadcast</span><span class="p">,</span> <span class="n">gather</span><span class="p">,</span> <span class="n">reduce</span><span class="p">,</span> <span class="n">warn_once</span>
+
+
+<span class="k">def</span> <span class="nf">get_num_devices</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number of devices used in this run.&quot;&quot;&quot;</span>
+    <span class="n">num_devices</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">dist</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="ow">and</span> <span class="n">dist</span><span class="o">.</span><span class="n">is_initialized</span><span class="p">():</span>
+        <span class="n">num_devices</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">get_world_size</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">num_devices</span>
 
 
 <div class="viewcode-block" id="Monitor">
@@ -322,7 +332,7 @@
 
 <div class="viewcode-block" id="Monitor.compute">
 <a class="viewcode-back" href="../../gen_modules/stable_ssl.monitors.Monitor.html#stable_ssl.monitors.Monitor.compute">[docs]</a>
-    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">:</span> <span class="n">BaseTrainer</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Abstract method that calculates a score given a model.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
@@ -340,54 +350,162 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">global_limit</span> <span class="o">=</span> <span class="n">limit</span>
 
-        <span class="n">num_devices</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">dist</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="ow">and</span> <span class="n">dist</span><span class="o">.</span><span class="n">is_initialized</span><span class="p">():</span>
-            <span class="n">num_devices</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">get_world_size</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_devices</span> <span class="o">=</span> <span class="n">get_num_devices</span><span class="p">()</span>
 
         <span class="k">assert</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">global_limit</span> <span class="o">%</span> <span class="n">num_devices</span> <span class="o">==</span> <span class="mi">0</span>
-        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;RankMe </span><span class="si">{</span><span class="n">limit</span><span class="si">=}</span><span class="s2"> must be divisible by </span><span class="si">{</span><span class="n">num_devices</span><span class="si">=}</span><span class="s2">&quot;</span>
-        <span class="k">assert</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">global_limit</span> <span class="o">%</span> <span class="n">num_devices</span> <span class="o">==</span> <span class="mi">0</span>
-        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;RankMe </span><span class="si">{</span><span class="n">limit</span><span class="si">=}</span><span class="s2"> must be divisible by </span><span class="si">{</span><span class="n">num_devices</span><span class="si">=}</span><span class="s2">&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">device_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_limit</span> <span class="o">//</span> <span class="n">num_devices</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">global_limit</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_devices</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;RankMe </span><span class="si">{</span><span class="n">limit</span><span class="si">=}</span><span class="s2"> must be divisible by </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_devices</span><span class="si">=}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_limit</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_devices</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bounded_queue</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device_limit</span><span class="p">)</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_calculate_rankme</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="c1"># NOTE torch.linalg.svd only supports torch.float32 for now</span>
-        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
-            <span class="n">warn_once</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;RankMe expected tensors of type </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="si">}</span><span class="s2">, &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;but received </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">, will convert &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">-&gt;</span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-
-        <span class="n">_u</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">_vh</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="o">+</span> <span class="n">epsilon</span>
-        <span class="n">entropy</span> <span class="o">=</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">entropy</span><span class="p">)</span>
-
-<div class="viewcode-block" id="RankMe.compute">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.monitors.RankMe.html#stable_ssl.monitors.RankMe.compute">[docs]</a>
-    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="c1"># assume a list is of views, where each view is batch_size on the 0th dim</span>
-            <span class="c1"># (as per JointEmbeddng)</span>
-            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span> <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">encoding</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">encoding</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">def</span> <span class="nf">rankme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">),</span> <span class="n">device</span> <span class="o">=</span> <span class="n">encoding</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">encoding</span><span class="o">.</span><span class="n">device</span>
         <span class="n">encoding</span> <span class="o">=</span> <span class="n">encoding</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bounded_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span>
 
         <span class="n">encoding</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounded_queue</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">encoding</span> <span class="o">=</span> <span class="n">gather</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span>
+        <span class="n">encoding</span> <span class="o">=</span> <span class="n">gather</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">RankMe</span><span class="o">.</span><span class="n">_calculate_rankme</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span><span class="p">)</span></div>
+        <span class="c1"># NOTE torch.linalg.svd only supports torch.float32 for now</span>
+        <span class="k">if</span> <span class="n">encoding</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
+            <span class="n">warn_once</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;RankMe expected tensors of type </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;but received </span><span class="si">{</span><span class="n">encoding</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">, will convert &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">encoding</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">-&gt;</span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="n">encoding</span> <span class="o">=</span> <span class="n">encoding</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="n">_u</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">_vh</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="o">+</span> <span class="n">epsilon</span>
+        <span class="n">entropy</span> <span class="o">=</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+
+        <span class="n">rankme</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">entropy</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">broadcast</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">rankme</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span> <span class="n">src_rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+<div class="viewcode-block" id="RankMe.compute">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.monitors.RankMe.html#stable_ssl.monitors.RankMe.compute">[docs]</a>
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">:</span> <span class="n">BaseTrainer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">JointEmbeddingTrainer</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;RankMe only implemented for JointEmbeddingTrainer &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;and not yet implemented for type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">trainer</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">encoding</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">latest_representations</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># assume a list is of views, where each view is batch_size on the 0th dim</span>
+            <span class="c1"># (as per JointEmbeddng)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span> <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">encoding</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rankme</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="LiDAR">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.monitors.LiDAR.html#stable_ssl.monitors.LiDAR">[docs]</a>
+<span class="k">class</span> <span class="nc">LiDAR</span><span class="p">(</span><span class="n">Monitor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LiDAR (Linear Discriminant Analysis Rank) monitor from :cite`thilak2023lidar`.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;LiDAR&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span> <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_limit</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">delta</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_devices</span> <span class="o">=</span> <span class="n">get_num_devices</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_limit</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_devices</span>
+
+    <span class="k">def</span> <span class="nf">_init_bounded_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># NOTE Dynamically create queue, rounding it&#39;s capacity to</span>
+        <span class="c1"># the nearest batch size.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_limit</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device_limit</span> <span class="o">//</span> <span class="n">batch_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_limit</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_devices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device_limit</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_limit</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">:</span>
+            <span class="n">warn_once</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Received n=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="si">}</span><span class="s2"> but rounded to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">global_limit</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;To avoid this, make sure n=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="si">}</span><span class="s2"> and your batch size &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">) are divisible.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initialized LiDAR with n=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">global_limit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">lidar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_embeddings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">:</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_embeddings</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_bounded_queue</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">batch_embeddings</span><span class="p">)</span>
+
+        <span class="n">embeddings</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">local_n</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">d</span><span class="p">),</span> <span class="n">device</span> <span class="o">=</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">device</span>
+
+        <span class="n">n_total_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">local_n</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">n_total_tensor</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">n_total_tensor</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">dist</span><span class="o">.</span><span class="n">ReduceOp</span><span class="o">.</span><span class="n">SUM</span><span class="p">)</span>
+
+        <span class="n">n_total_tensor</span> <span class="o">=</span> <span class="n">broadcast</span><span class="p">(</span><span class="n">n_total_tensor</span><span class="p">,</span> <span class="n">src_rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">n_total</span> <span class="o">:=</span> <span class="n">n_total_tensor</span><span class="o">.</span><span class="n">item</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">warn_once</span><span class="p">(</span><span class="s2">&quot;LiDAR cannot compute within-class scatter with only one class!&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">1.0</span>
+
+        <span class="n">class_means</span> <span class="o">=</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grand_mean_local</span> <span class="o">=</span> <span class="n">class_means</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">local_Sb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">local_Sw</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">local_n</span><span class="p">):</span>
+            <span class="n">diff_b</span> <span class="o">=</span> <span class="p">(</span><span class="n">class_means</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">grand_mean_local</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">local_Sb</span> <span class="o">+=</span> <span class="n">diff_b</span> <span class="o">@</span> <span class="n">diff_b</span><span class="o">.</span><span class="n">T</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+                <span class="n">diff_w</span> <span class="o">=</span> <span class="p">(</span><span class="n">embeddings</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">class_means</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">local_Sw</span> <span class="o">+=</span> <span class="n">diff_w</span> <span class="o">@</span> <span class="n">diff_w</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">S_b</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">local_Sb</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">dist</span><span class="o">.</span><span class="n">ReduceOp</span><span class="o">.</span><span class="n">SUM</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_total</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">S_w</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">local_Sw</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">dist</span><span class="o">.</span><span class="n">ReduceOp</span><span class="o">.</span><span class="n">SUM</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_total</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">S_w</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="n">eigvals_w</span><span class="p">,</span> <span class="n">eigvecs_w</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">S_w</span><span class="p">)</span>
+        <span class="n">eigvals_w</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">eigvals_w</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span><span class="p">)</span>
+
+        <span class="n">invsqrt_w</span> <span class="o">=</span> <span class="p">(</span><span class="n">eigvecs_w</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">eigvals_w</span><span class="p">)))</span> <span class="o">@</span> <span class="n">eigvecs_w</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span>
+        <span class="p">)</span>
+        <span class="n">Sigma_lidar</span> <span class="o">=</span> <span class="n">invsqrt_w</span> <span class="o">@</span> <span class="n">S_b</span> <span class="o">@</span> <span class="n">invsqrt_w</span>
+
+        <span class="n">lam</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">Sigma_lidar</span><span class="p">)</span>
+        <span class="n">lam</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">lam_sum</span> <span class="o">=</span> <span class="n">lam</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">lam</span> <span class="o">/</span> <span class="n">lam_sum</span>
+
+        <span class="n">p_log_p</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span><span class="p">)</span>
+
+        <span class="n">lidar</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">p_log_p</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="n">broadcast</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">lidar</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span> <span class="n">src_rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+<div class="viewcode-block" id="LiDAR.compute">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.monitors.LiDAR.html#stable_ssl.monitors.LiDAR.compute">[docs]</a>
+    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">:</span> <span class="n">BaseTrainer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">JointEmbeddingTrainer</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;LiDAR only implemented for JointEmbeddingTrainer &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;and not yet implemented for type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">trainer</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">trainer</span><span class="p">:</span> <span class="n">JointEmbeddingTrainer</span>
+        <span class="n">embeddings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">latest_embeddings</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lidar</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

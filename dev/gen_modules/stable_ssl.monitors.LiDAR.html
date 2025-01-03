@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>SelfDistillationTrainer &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>LiDAR &#8212; stable-SSL 0.1-dev documentation</title>
   
   
   
@@ -47,11 +47,10 @@
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.trainers.SelfDistillationTrainer';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gen_modules/stable_ssl.monitors.LiDAR';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="DINOTrainer" href="stable_ssl.trainers.DINOTrainer.html" />
-    <link rel="prev" title="JointEmbeddingTrainer" href="stable_ssl.trainers.JointEmbeddingTrainer.html" />
+    <link rel="prev" title="RankMe" href="stable_ssl.monitors.RankMe.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -157,10 +156,10 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../trainers.html">stable_ssl.trainers</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">SelfDistillationTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></li>
 </ul>
 </details></li>
@@ -189,10 +188,10 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../monitors.html">stable_ssl.monitors</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.monitors.Monitor.html">Monitor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.monitors.RankMe.html">RankMe</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.monitors.LiDAR.html">LiDAR</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">LiDAR</a></li>
 </ul>
 </details></li>
 </ul>
@@ -254,7 +253,7 @@
       
       
       
-      <li><a href="../_sources/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.rst" target="_blank"
+      <li><a href="../_sources/gen_modules/stable_ssl.monitors.LiDAR.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -330,7 +329,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>SelfDistillationTrainer</h1>
+    <h1>LiDAR</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -340,8 +339,8 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer.compute_loss"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer.compute_loss()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.monitors.LiDAR"><code class="docutils literal notranslate"><span class="pre">LiDAR</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.monitors.LiDAR.compute"><code class="docutils literal notranslate"><span class="pre">LiDAR.compute()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -355,22 +354,22 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="selfdistillationtrainer">
-<h1>SelfDistillationTrainer<a class="headerlink" href="#selfdistillationtrainer" title="Link to this heading">#</a></h1>
+  <section id="lidar">
+<h1>LiDAR<a class="headerlink" href="#lidar" title="Link to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="stable_ssl.trainers.SelfDistillationTrainer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.trainers.</span></span><span class="sig-name descname"><span class="pre">SelfDistillationTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardware</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#SelfDistillationTrainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.SelfDistillationTrainer" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="stable_ssl.trainers.JointEmbeddingTrainer.html#stable_ssl.trainers.JointEmbeddingTrainer" title="stable_ssl.trainers.JointEmbeddingTrainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">JointEmbeddingTrainer</span></code></a></p>
-<p>Base class for training a self-distillation SSL model.</p>
+<dt class="sig sig-object py" id="stable_ssl.monitors.LiDAR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.monitors.</span></span><span class="sig-name descname"><span class="pre">LiDAR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/monitors.html#LiDAR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.monitors.LiDAR" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="stable_ssl.monitors.Monitor.html#stable_ssl.monitors.Monitor" title="stable_ssl.monitors.Monitor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Monitor</span></code></a></p>
+<p>LiDAR (Linear Discriminant Analysis Rank) monitor from :cite`thilak2023lidar`.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="stable_ssl.trainers.SelfDistillationTrainer.compute_loss">
-<span class="sig-name descname"><span class="pre">compute_loss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/trainers.html#SelfDistillationTrainer.compute_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.trainers.SelfDistillationTrainer.compute_loss" title="Link to this definition">#</a></dt>
-<dd><p>Compute final loss as sum of SSL loss and classifier losses.</p>
+<dt class="sig sig-object py" id="stable_ssl.monitors.LiDAR.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer" title="stable_ssl.base.BaseTrainer"><span class="pre">BaseTrainer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/stable_ssl/monitors.html#LiDAR.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.monitors.LiDAR.compute" title="Link to this definition">#</a></dt>
+<dd><p>Abstract method that calculates a score given a model.</p>
 </dd></dl>
 
 </dd></dl>
 
-<span class="target" id="sphx-glr-backref-stable-ssl-trainers-selfdistillationtrainer"></span></section>
+<span class="target" id="sphx-glr-backref-stable-ssl-monitors-lidar"></span></section>
 
 
                 </article>
@@ -384,22 +383,13 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="stable_ssl.trainers.JointEmbeddingTrainer.html"
+       href="stable_ssl.monitors.RankMe.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">JointEmbeddingTrainer</p>
+        <p class="prev-next-title">RankMe</p>
       </div>
-    </a>
-    <a class="right-next"
-       href="stable_ssl.trainers.DINOTrainer.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">DINOTrainer</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -418,8 +408,8 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.trainers.SelfDistillationTrainer.compute_loss"><code class="docutils literal notranslate"><span class="pre">SelfDistillationTrainer.compute_loss()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.monitors.LiDAR"><code class="docutils literal notranslate"><span class="pre">LiDAR</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.monitors.LiDAR.compute"><code class="docutils literal notranslate"><span class="pre">LiDAR.compute()</span></code></a></li>
 </ul>
 </li>
 </ul>
