@@ -30,7 +30,7 @@
   <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
@@ -356,6 +356,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.forward"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.forward()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.get_config"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.get_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.get_logs"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.get_logs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.get_project_logs"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.get_project_logs()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.launch"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.launch()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.predict"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.predict()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.setup"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.setup()</span></code></a></li>
@@ -571,8 +572,14 @@ are logged independently and summed to compute the final loss.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.BaseTrainer.get_logs">
-<span class="sig-name descname"><span class="pre">get_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/base.html#BaseTrainer.get_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.BaseTrainer.get_logs" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/base.html#BaseTrainer.get_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.BaseTrainer.get_logs" title="Link to this definition">#</a></dt>
 <dd><p>Retrieve the logs from the logger.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.BaseTrainer.get_project_logs">
+<span class="sig-name descname"><span class="pre">get_project_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['finished']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_ssl/base.html#BaseTrainer.get_project_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.BaseTrainer.get_project_logs" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the project logs from the logger.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -680,6 +687,7 @@ thus turning the SSL model into a supervised model for evaluation.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.forward"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.forward()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.get_config"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.get_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.get_logs"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.get_logs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.get_project_logs"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.get_project_logs()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.launch"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.launch()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.predict"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.predict()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.BaseTrainer.setup"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.setup()</span></code></a></li>

@@ -30,7 +30,7 @@
   <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
@@ -357,19 +357,19 @@ to download the full example code.</p>
 </div>
 <p class="sphx-glr-example-title" id="sphx-glr-auto-examples-custom-supervised-py">This example demonstrates how to create a custom supervised model using the
 <cite>stable_ssl</cite> library.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">hydra</span>
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
-<span class="kn">import</span> <span class="nn">torchvision</span>
-<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span>
-<span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">transforms</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hydra</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torchvision</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">omegaconf</span><span class="w"> </span><span class="kn">import</span> <span class="n">DictConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchvision</span><span class="w"> </span><span class="kn">import</span> <span class="n">transforms</span>
 
-<span class="kn">import</span> <span class="nn">stable_ssl</span>
-<span class="kn">from</span> <span class="nn">stable_ssl.supervised</span> <span class="kn">import</span> <span class="n">Supervised</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">stable_ssl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stable_ssl.supervised</span><span class="w"> </span><span class="kn">import</span> <span class="n">Supervised</span>
 
 
-<span class="k">class</span> <span class="nc">MyCustomSupervised</span><span class="p">(</span><span class="n">Supervised</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">initialize_train_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomSupervised</span><span class="p">(</span><span class="n">Supervised</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize_train_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
@@ -388,7 +388,7 @@ to download the full example code.</p>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">trainloader</span>
 
-    <span class="k">def</span> <span class="nf">initialize_test_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize_test_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
@@ -406,7 +406,7 @@ to download the full example code.</p>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">testloader</span>
 
-    <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The computer loss is called during training on each mini-batch</span>
 <span class="sd">        stable-SSL automatically stores the output of the data loader as `self.data`</span>
 <span class="sd">        which you can access directly within that function&quot;&quot;&quot;</span>
@@ -415,7 +415,7 @@ to download the full example code.</p>
 
 
 <span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">):</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">stable_ssl</span><span class="o">.</span><span class="n">get_args</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--- Arguments ---&quot;</span><span class="p">)</span>
