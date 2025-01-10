@@ -730,6 +730,15 @@
         <span class="k">return</span> <span class="n">submitit</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">DelayedSubmission</span><span class="p">(</span><span class="n">model</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="BaseTrainer.clean">
+<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.clean">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete the working directory with logs.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;dump_path&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Can&#39;t clean up properly since folder does not exist.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;dump_path&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span></div>
+
+
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rank</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
