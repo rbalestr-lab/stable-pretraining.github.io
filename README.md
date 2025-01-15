@@ -1,3 +1,3 @@
-# stable-SSL.github.io
+# stable-ssl.github.io
 
-This is the repository for the stable-SSL website and documentation.
+This is the repository for the stable-ssl website and documentation.
