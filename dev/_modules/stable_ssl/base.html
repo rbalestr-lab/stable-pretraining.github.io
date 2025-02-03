@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_ssl.base &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>stable_ssl.base &#8212; stable-SSL 0.0.0 documentation</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=eeab245b"></script>
+    <script src="../../_static/documentation_options.js?v=5db94ae7"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -128,7 +128,7 @@
   
   
   
-    <p class="title logo__title">stable-SSL 0.1-dev documentation</p>
+    <p class="title logo__title">stable-SSL 0.0.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -142,25 +142,22 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.BaseTrainer.html">BaseTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">stable-ssl</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../bibliography.html">Bibliography</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/base.html">stable_ssl.base</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html">BaseTrainer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/config.html">stable_ssl.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.config.WandbConfig.html">WandbConfig</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/data.html">stable_ssl.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -183,6 +180,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.modules.ConvMixer.html">ConvMixer</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.monitors.Monitor.html">Monitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.monitors.RankMe.html">RankMe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.monitors.LiDAR.html">LiDAR</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.optimizers.LARS.html">LARS</a></li>
 </ul>
@@ -194,10 +197,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.monitors.Monitor.html">Monitor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.monitors.RankMe.html">RankMe</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.monitors.LiDAR.html">LiDAR</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></li>
 </ul>
 </details></li>
 </ul>
@@ -393,7 +397,7 @@
 
 
 <div class="viewcode-block" id="BaseTrainer">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseTrainer</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for training a model.</span>
 
@@ -500,7 +504,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
 
 <div class="viewcode-block" id="BaseTrainer.setup">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.setup">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.setup">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate components and load the checkpoint (if applicable).&quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">])</span>
@@ -511,7 +515,7 @@
 
 
 <div class="viewcode-block" id="BaseTrainer.launch">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.launch">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.launch">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">launch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the core training and evaluation routine.</span>
 
@@ -541,7 +545,7 @@
 
 
 <div class="viewcode-block" id="BaseTrainer.forward">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.forward">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.forward">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass of the model.&quot;&quot;&quot;</span>
@@ -549,7 +553,7 @@
 
 
 <div class="viewcode-block" id="BaseTrainer.predict">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.predict">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.predict">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate model predictions for evaluation purposes.</span>
@@ -568,7 +572,7 @@
 
 
 <div class="viewcode-block" id="BaseTrainer.compute_loss">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.compute_loss">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.compute_loss">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the global loss to be minimized during training.</span>
@@ -587,7 +591,7 @@
 
 
 <div class="viewcode-block" id="BaseTrainer.get_project_logs">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.get_project_logs">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.get_project_logs">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_project_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;finished&quot;</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the project logs from the logger.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -610,7 +614,7 @@
         <span class="k">return</span> <span class="n">run</span>
 
 <div class="viewcode-block" id="BaseTrainer.get_logs">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.get_logs">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.get_logs">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_step</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_step</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the logs from the logger.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -634,7 +638,7 @@
 
 
 <div class="viewcode-block" id="BaseTrainer.get_config">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.get_config">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.get_config">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the configuration file of the trainer.&quot;&quot;&quot;</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">omegaconf</span><span class="o">.</span><span class="n">OmegaConf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
@@ -644,21 +648,21 @@
 
 
 <div class="viewcode-block" id="BaseTrainer.before_fit">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_fit">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.before_fit">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">before_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize training by setting the starting epoch.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="mi">0</span></div>
 
 
 <div class="viewcode-block" id="BaseTrainer.after_fit">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_fit">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.after_fit">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">after_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate the model after completing the training process.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="BaseTrainer.before_fit_epoch">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_fit_epoch">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.before_fit_epoch">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">before_fit_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare the training state and set the epoch for distributed training.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
@@ -667,21 +671,21 @@
 
 
 <div class="viewcode-block" id="BaseTrainer.after_fit_epoch">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_fit_epoch">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.after_fit_epoch">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">after_fit_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle post-epoch tasks after training (currently does nothing).&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="BaseTrainer.before_fit_step">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_fit_step">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.before_fit_step">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">before_fit_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare batch for training step by moving it to the appropriate device.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BaseTrainer.after_fit_step">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_fit_step">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.after_fit_step">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">after_fit_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle per-step monitoring and teacher update (if applicable).&quot;&quot;&quot;</span>
         <span class="c1"># Compute and log the monitoring metrics.</span>
@@ -702,35 +706,35 @@
 
 
 <div class="viewcode-block" id="BaseTrainer.before_eval">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_eval">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.before_eval">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">before_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the model to evaluation mode before validation/testing.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="BaseTrainer.after_eval">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_eval">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.after_eval">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">after_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle tasks after completing evaluation (currently does nothing).&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="BaseTrainer.before_eval_step">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_eval_step">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.before_eval_step">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">before_eval_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare batch for evaluation step by moving it to the appropriate device.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BaseTrainer.after_eval_step">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_eval_step">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.after_eval_step">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">after_eval_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle post-step tasks after an evaluation step (currently does nothing).&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="BaseTrainer.checkpoint">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.checkpoint">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.checkpoint">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">submitit</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">DelayedSubmission</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a checkpoint of the current state of the model.</span>
 
@@ -760,7 +764,7 @@
 
 
 <div class="viewcode-block" id="BaseTrainer.clean">
-<a class="viewcode-back" href="../../gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.clean">[docs]</a>
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.clean">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete the working directory with logs.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">[</span><span class="s2">&quot;dump_path&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>

@@ -1,0 +1,768 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>BaseTrainer &#8212; stable-SSL 0.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5db94ae7"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/gen_modules/stable_ssl.base.BaseTrainer';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="stable_ssl.config" href="../config.html" />
+    <link rel="prev" title="stable_ssl.base" href="../base.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">stable-SSL 0.0.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">stable-ssl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography.html">Bibliography</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../base.html">stable_ssl.base</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">BaseTrainer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../config.html">stable_ssl.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.config.WandbConfig.html">WandbConfig</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../data.html">stable_ssl.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.data.DistributedSamplerWrapper.html">DistributedSamplerWrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.data.MultiViewSampler.html">MultiViewSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.data.HuggingFaceDataset.html">HuggingFaceDataset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">stable_ssl.modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.load_backbone.html">load_backbone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.MLP.html">MLP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.Resnet9.html">Resnet9</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.modules.ConvMixer.html">ConvMixer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.monitors.Monitor.html">Monitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.monitors.RankMe.html">RankMe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.monitors.LiDAR.html">LiDAR</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.optimizers.LARS.html">LARS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../schedulers.html">stable_ssl.schedulers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmup.html">LinearWarmup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/api/gen_modules/stable_ssl.base.BaseTrainer.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>BaseTrainer</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer"><code class="docutils literal notranslate"><span class="pre">BaseTrainer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.after_eval"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.after_eval()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.after_eval_step"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.after_eval_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.after_fit"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.after_fit()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.after_fit_epoch"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.after_fit_epoch()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.after_fit_step"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.after_fit_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.before_eval"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.before_eval()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.before_eval_step"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.before_eval_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.before_fit"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.before_fit()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.before_fit_epoch"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.before_fit_epoch()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.before_fit_step"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.before_fit_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.checkpoint"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.checkpoint()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.clean"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.clean()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.compute_loss"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.compute_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.forward"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.forward()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.get_config"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.get_config()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.get_logs"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.get_logs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.get_project_logs"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.get_project_logs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.launch"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.launch()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.predict"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.predict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.setup"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.setup()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="basetrainer">
+<h1>BaseTrainer<a class="headerlink" href="#basetrainer" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.base.</span></span><span class="sig-name descname"><span class="pre">BaseTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardware</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://pytorch.org/docs/2.0/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
+<p>Base class for training a model.</p>
+<p>This class provides a general boilerplate for common operations that
+occur during the training lifecycle.
+These operations include training, evaluation, checkpointing, and training restart.</p>
+<p>The class is highly configurable, enabling customization of its internal workflows
+to suit diverse project requirements and use cases.</p>
+<p>This class is intended to be subclassed for specific training methods
+(see examples for more details). For each subclass, the following methods must
+be implemented: <code class="docutils literal notranslate"><span class="pre">forward</span></code>, <code class="docutils literal notranslate"><span class="pre">predict</span></code> (used for supervised evaluation) and
+<code class="docutils literal notranslate"><span class="pre">compute_loss</span></code> (used for training).</p>
+<dl class="simple">
+<dt>Execution flow when calling <cite>launch</cite>:</dt><dd><ul class="simple">
+<li><p><cite>self.before_fit</cite> (nothing by default)</p></li>
+<li><dl class="simple">
+<dt><cite>self._fit</cite> (executes all the training/intermittent evaluation by default)</dt><dd><ul>
+<li><dl class="simple">
+<dt>for <cite>self.optim[“epochs”]</cite> epochs:</dt><dd><ul>
+<li><p><cite>self.before_fit_epoch</cite> (setup in train mode)</p></li>
+<li><dl class="simple">
+<dt><cite>self._fit_epoch</cite> (one training epoch by default)</dt><dd><ul>
+<li><dl class="simple">
+<dt>loop over mini-batches</dt><dd><ul>
+<li><p><cite>self.before_fit_step</cite> (moves data to device)</p></li>
+<li><p><cite>self._fit_step</cite> (optimization step)</p></li>
+<li><p><cite>self.after_fit_step</cite> (perf monitoring and teacher update)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><cite>self.after_fit_epoch</cite> (nothing by default)</p></li>
+<li><dl class="simple">
+<dt><cite>self._evaluate</cite> (if asked, looping over all non-train datasets)</dt><dd><ul>
+<li><p><cite>self.before_eval</cite> (setup in eval mode)</p></li>
+<li><dl class="simple">
+<dt>loop over mini-batches</dt><dd><ul>
+<li><p><cite>self.before_eval_step</cite> (moves data to device)</p></li>
+<li><p><cite>self._eval_step</cite> (computes eval metric)</p></li>
+<li><p><cite>self.after_eval_step</cite> (nothing by default)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><cite>self.after_eval</cite> (nothing by default)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Save intermittent checkpoint if asked by user config</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Save final checkpoint if asked by user config</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p><cite>self.after_fit</cite> (evaluates by default)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Names and construction of the dataloaders with their transform pipelines.
+The dataset named <cite>train</cite> is used for training.
+Any other dataset is used for validation.</p></li>
+<li><p><strong>module</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Names and definition of the modules (neural networks).
+See <a class="reference internal" href="../modules.html#module-stable_ssl.modules" title="stable_ssl.modules"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.modules</span></code></a> for examples of available modules.</p></li>
+<li><p><strong>hardware</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Hardware parameters. See <a class="reference internal" href="stable_ssl.config.HardwareConfig.html#stable_ssl.config.HardwareConfig" title="stable_ssl.config.HardwareConfig"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.config.HardwareConfig</span></code></a>
+for the full list of parameters and their defaults.</p></li>
+<li><p><strong>optim</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Optimization parameters. See <a class="reference internal" href="stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig" title="stable_ssl.config.OptimConfig"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.config.OptimConfig</span></code></a>
+for the full list of parameters and their defaults.</p></li>
+<li><p><strong>logger</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – Logging and checkpointing parameters.
+See <a class="reference internal" href="stable_ssl.config.LoggerConfig.html#stable_ssl.config.LoggerConfig" title="stable_ssl.config.LoggerConfig"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.config.LoggerConfig</span></code></a>
+for the full list of parameters and their defaults.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a><em>, </em><em>optional</em>) – Loss function used in the final criterion to be minimized.
+See <a class="reference internal" href="../losses.html#module-stable_ssl.losses" title="stable_ssl.losses"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.losses</span></code></a> for examples.
+Defaults to None.</p></li>
+<li><p><strong>**kwargs</strong> – Additional arguments to be set as attributes of the class.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.after_eval">
+<span class="sig-name descname"><span class="pre">after_eval</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.after_eval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.after_eval" title="Link to this definition">#</a></dt>
+<dd><p>Handle tasks after completing evaluation (currently does nothing).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.after_eval_step">
+<span class="sig-name descname"><span class="pre">after_eval_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.after_eval_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.after_eval_step" title="Link to this definition">#</a></dt>
+<dd><p>Handle post-step tasks after an evaluation step (currently does nothing).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.after_fit">
+<span class="sig-name descname"><span class="pre">after_fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.after_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.after_fit" title="Link to this definition">#</a></dt>
+<dd><p>Evaluate the model after completing the training process.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.after_fit_epoch">
+<span class="sig-name descname"><span class="pre">after_fit_epoch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.after_fit_epoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.after_fit_epoch" title="Link to this definition">#</a></dt>
+<dd><p>Handle post-epoch tasks after training (currently does nothing).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.after_fit_step">
+<span class="sig-name descname"><span class="pre">after_fit_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.after_fit_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.after_fit_step" title="Link to this definition">#</a></dt>
+<dd><p>Handle per-step monitoring and teacher update (if applicable).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.before_eval">
+<span class="sig-name descname"><span class="pre">before_eval</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.before_eval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.before_eval" title="Link to this definition">#</a></dt>
+<dd><p>Set the model to evaluation mode before validation/testing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.before_eval_step">
+<span class="sig-name descname"><span class="pre">before_eval_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.before_eval_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.before_eval_step" title="Link to this definition">#</a></dt>
+<dd><p>Prepare batch for evaluation step by moving it to the appropriate device.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.before_fit">
+<span class="sig-name descname"><span class="pre">before_fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.before_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.before_fit" title="Link to this definition">#</a></dt>
+<dd><p>Initialize training by setting the starting epoch.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.before_fit_epoch">
+<span class="sig-name descname"><span class="pre">before_fit_epoch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.before_fit_epoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.before_fit_epoch" title="Link to this definition">#</a></dt>
+<dd><p>Prepare the training state and set the epoch for distributed training.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.before_fit_step">
+<span class="sig-name descname"><span class="pre">before_fit_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.before_fit_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.before_fit_step" title="Link to this definition">#</a></dt>
+<dd><p>Prepare batch for training step by moving it to the appropriate device.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.checkpoint">
+<span class="sig-name descname"><span class="pre">checkpoint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DelayedSubmission</span></span></span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.checkpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.checkpoint" title="Link to this definition">#</a></dt>
+<dd><p>Create a checkpoint of the current state of the model.</p>
+<p>This method is called asynchronously when the SLURM manager sends a
+preemption signal. It is invoked with the same arguments as the <cite>__call__</cite>
+method. At this point, <cite>self</cite> represents the current state of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>submitit.helpers.DelayedSubmission</strong> – representing the requeued task with the current model state.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>A delayed submission object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.clean">
+<span class="sig-name descname"><span class="pre">clean</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.clean" title="Link to this definition">#</a></dt>
+<dd><p>Delete the working directory with logs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.compute_loss">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compute_loss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.compute_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.compute_loss" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the global loss to be minimized during training.</p>
+<p>Compute the total loss that the model aims to minimize.
+Implementations can utilize the <code class="docutils literal notranslate"><span class="pre">loss</span></code> function provided during the
+trainer’s initialization to calculate loss based on the current batch.</p>
+<p>Note that it can return a list or dictionary of losses. The various losses
+are logged independently and summed to compute the final loss.</p>
+<dl class="simple">
+<dt><strong>See Also</strong>:</dt><dd><p><a class="reference internal" href="../trainers.html#module-stable_ssl.trainers" title="stable_ssl.trainers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.trainers</span></code></a> for concrete examples of implementations.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.forward">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass of the model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.get_config" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the configuration file of the trainer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.get_logs">
+<span class="sig-name descname"><span class="pre">get_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.get_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.get_logs" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the logs from the logger.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.get_project_logs">
+<span class="sig-name descname"><span class="pre">get_project_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['finished']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.get_project_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.get_project_logs" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the project logs from the logger.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.launch">
+<span class="sig-name descname"><span class="pre">launch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.launch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.launch" title="Link to this definition">#</a></dt>
+<dd><p>Execute the core training and evaluation routine.</p>
+<p>This method runs the training and evaluation process,
+with a customizable boilerplate structure.</p>
+<p>The default flow includes:
+- Running evaluation and cleanup if no “train” dataset is found in <cite>self.data</cite>.
+- Otherwise performing pre-training, training, and post-training tasks.</p>
+<section id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt>BreakAllEpochs</dt><dd><p>Raised if the training is interrupted by the user.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.predict">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.predict" title="Link to this definition">#</a></dt>
+<dd><p>Generate model predictions for evaluation purposes.</p>
+<p>Supervised and Self-Supervised models are typically evaluated using
+predictions over discrete labels. This method should return the output
+of this classification used for evaluation.</p>
+<p>In SSL, this typically involves using a classifier head on top of the backbone,
+thus turning the SSL model into a supervised model for evaluation.</p>
+<dl class="simple">
+<dt><strong>See Also</strong>:</dt><dd><p><a class="reference internal" href="../trainers.html#module-stable_ssl.trainers" title="stable_ssl.trainers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">stable_ssl.trainers</span></code></a> for concrete examples of implementations.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.base.BaseTrainer.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/base.html#BaseTrainer.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.base.BaseTrainer.setup" title="Link to this definition">#</a></dt>
+<dd><p>Instantiate components and load the checkpoint (if applicable).</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="sphx-glr-backref-stable-ssl-base-basetrainer"></span></section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../base.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">stable_ssl.base</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../config.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">stable_ssl.config</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer"><code class="docutils literal notranslate"><span class="pre">BaseTrainer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.after_eval"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.after_eval()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.after_eval_step"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.after_eval_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.after_fit"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.after_fit()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.after_fit_epoch"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.after_fit_epoch()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.after_fit_step"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.after_fit_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.before_eval"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.before_eval()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.before_eval_step"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.before_eval_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.before_fit"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.before_fit()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.before_fit_epoch"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.before_fit_epoch()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.before_fit_step"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.before_fit_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.checkpoint"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.checkpoint()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.clean"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.clean()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.compute_loss"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.compute_loss()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.forward"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.forward()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.get_config"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.get_config()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.get_logs"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.get_logs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.get_project_logs"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.get_project_logs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.launch"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.launch()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.predict"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.predict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.base.BaseTrainer.setup"><code class="docutils literal notranslate"><span class="pre">BaseTrainer.setup()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By stable-SSL team
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, stable-SSL team.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

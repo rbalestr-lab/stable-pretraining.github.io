@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; stable-SSL 0.1-dev documentation</title>
+    <title>Index &#8212; stable-SSL 0.0.0 documentation</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=eeab245b"></script>
+    <script src="_static/documentation_options.js?v=5db94ae7"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -128,7 +128,7 @@
   
   
   
-    <p class="title logo__title">stable-SSL 0.1-dev documentation</p>
+    <p class="title logo__title">stable-SSL 0.0.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -142,25 +142,22 @@
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="index.html">The Self-Supervised Learning Library by Researchers for Researchers</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="user_guide.html">User Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.BaseTrainer.html">BaseTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">stable-ssl</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="api/trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/base.html">stable_ssl.base</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.base.BaseTrainer.html">BaseTrainer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/config.html">stable_ssl.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.config.WandbConfig.html">WandbConfig</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/data.html">stable_ssl.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -183,6 +180,12 @@
 <li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.modules.ConvMixer.html">ConvMixer</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.monitors.Monitor.html">Monitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.monitors.RankMe.html">RankMe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.monitors.LiDAR.html">LiDAR</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.optimizers.LARS.html">LARS</a></li>
 </ul>
@@ -194,10 +197,11 @@
 <li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api/monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.monitors.Monitor.html">Monitor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.monitors.RankMe.html">RankMe</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.monitors.LiDAR.html">LiDAR</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></li>
 </ul>
 </details></li>
 </ul>
@@ -325,17 +329,17 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_eval">after_eval() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.after_eval">after_eval() (stable_ssl.base.BaseTrainer method)</a>
 </li>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_eval_step">after_eval_step() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.after_eval_step">after_eval_step() (stable_ssl.base.BaseTrainer method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_fit">after_fit() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.after_fit">after_fit() (stable_ssl.base.BaseTrainer method)</a>
 </li>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_fit_epoch">after_fit_epoch() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.after_fit_epoch">after_fit_epoch() (stable_ssl.base.BaseTrainer method)</a>
 </li>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.after_fit_step">after_fit_step() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.after_fit_step">after_fit_step() (stable_ssl.base.BaseTrainer method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -345,19 +349,19 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/gen_modules/stable_ssl.losses.BarlowTwinsLoss.html#stable_ssl.losses.BarlowTwinsLoss">BarlowTwinsLoss (class in stable_ssl.losses)</a>
 </li>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer">BaseTrainer (class in stable_ssl)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer">BaseTrainer (class in stable_ssl.base)</a>
 </li>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_eval">before_eval() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.before_eval">before_eval() (stable_ssl.base.BaseTrainer method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_eval_step">before_eval_step() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.before_eval_step">before_eval_step() (stable_ssl.base.BaseTrainer method)</a>
 </li>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_fit">before_fit() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.before_fit">before_fit() (stable_ssl.base.BaseTrainer method)</a>
 </li>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_fit_epoch">before_fit_epoch() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.before_fit_epoch">before_fit_epoch() (stable_ssl.base.BaseTrainer method)</a>
 </li>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.before_fit_step">before_fit_step() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.before_fit_step">before_fit_step() (stable_ssl.base.BaseTrainer method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -365,9 +369,9 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.checkpoint">checkpoint() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.checkpoint">checkpoint() (stable_ssl.base.BaseTrainer method)</a>
 </li>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.clean">clean() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.clean">clean() (stable_ssl.base.BaseTrainer method)</a>
 </li>
       <li><a href="api/gen_modules/stable_ssl.monitors.LiDAR.html#stable_ssl.monitors.LiDAR.compute">compute() (stable_ssl.monitors.LiDAR method)</a>
 
@@ -377,7 +381,7 @@
         <li><a href="api/gen_modules/stable_ssl.monitors.RankMe.html#stable_ssl.monitors.RankMe.compute">(stable_ssl.monitors.RankMe method)</a>
 </li>
       </ul></li>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.compute_loss">compute_loss() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.compute_loss">compute_loss() (stable_ssl.base.BaseTrainer method)</a>
 
       <ul>
         <li><a href="api/gen_modules/stable_ssl.trainers.DINOTrainer.html#stable_ssl.trainers.DINOTrainer.compute_loss">(stable_ssl.trainers.DINOTrainer method)</a>
@@ -413,7 +417,7 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.forward">forward() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.forward">forward() (stable_ssl.base.BaseTrainer method)</a>
 
       <ul>
         <li><a href="api/gen_modules/stable_ssl.losses.BarlowTwinsLoss.html#stable_ssl.losses.BarlowTwinsLoss.forward">(stable_ssl.losses.BarlowTwinsLoss method)</a>
@@ -441,13 +445,13 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.get_config">get_config() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.get_config">get_config() (stable_ssl.base.BaseTrainer method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.get_logs">get_logs() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.get_logs">get_logs() (stable_ssl.base.BaseTrainer method)</a>
 </li>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.get_project_logs">get_project_logs() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.get_project_logs">get_project_logs() (stable_ssl.base.BaseTrainer method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -455,7 +459,7 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/gen_modules/stable_ssl.config.HardwareConfig.html#stable_ssl.config.HardwareConfig">HardwareConfig (class in stable_ssl.config)</a>, <a href="gen_modules/stable_ssl.config.HardwareConfig.html#stable_ssl.config.HardwareConfig">[1]</a>
+      <li><a href="api/gen_modules/stable_ssl.config.HardwareConfig.html#stable_ssl.config.HardwareConfig">HardwareConfig (class in stable_ssl.config)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -477,7 +481,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/gen_modules/stable_ssl.optimizers.LARS.html#stable_ssl.optimizers.LARS">LARS (class in stable_ssl.optimizers)</a>
 </li>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.launch">launch() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.launch">launch() (stable_ssl.base.BaseTrainer method)</a>
 </li>
       <li><a href="api/gen_modules/stable_ssl.monitors.LiDAR.html#stable_ssl.monitors.LiDAR">LiDAR (class in stable_ssl.monitors)</a>
 </li>
@@ -493,7 +497,7 @@
 </li>
       <li><a href="api/gen_modules/stable_ssl.modules.load_backbone.html#stable_ssl.modules.load_backbone">load_backbone() (in module stable_ssl.modules)</a>
 </li>
-      <li><a href="api/gen_modules/stable_ssl.config.LoggerConfig.html#stable_ssl.config.LoggerConfig">LoggerConfig (class in stable_ssl.config)</a>, <a href="gen_modules/stable_ssl.config.LoggerConfig.html#stable_ssl.config.LoggerConfig">[1]</a>
+      <li><a href="api/gen_modules/stable_ssl.config.LoggerConfig.html#stable_ssl.config.LoggerConfig">LoggerConfig (class in stable_ssl.config)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -507,7 +511,7 @@
     module
 
       <ul>
-        <li><a href="user_guide.html#module-stable_ssl">stable_ssl</a>
+        <li><a href="api/base.html#module-stable_ssl.base">stable_ssl.base</a>
 </li>
         <li><a href="api/config.html#module-stable_ssl.config">stable_ssl.config</a>
 </li>
@@ -550,7 +554,7 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/gen_modules/stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig">OptimConfig (class in stable_ssl.config)</a>, <a href="gen_modules/stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig">[1]</a>
+      <li><a href="api/gen_modules/stable_ssl.config.OptimConfig.html#stable_ssl.config.OptimConfig">OptimConfig (class in stable_ssl.config)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -558,7 +562,7 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.predict">predict() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.predict">predict() (stable_ssl.base.BaseTrainer method)</a>
 
       <ul>
         <li><a href="api/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html#stable_ssl.trainers.JointEmbeddingTrainer.predict">(stable_ssl.trainers.JointEmbeddingTrainer method)</a>
@@ -586,13 +590,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html#stable_ssl.trainers.SelfDistillationTrainer">SelfDistillationTrainer (class in stable_ssl.trainers)</a>
 </li>
-      <li><a href="gen_modules/stable_ssl.BaseTrainer.html#stable_ssl.BaseTrainer.setup">setup() (stable_ssl.BaseTrainer method)</a>
+      <li><a href="api/gen_modules/stable_ssl.base.BaseTrainer.html#stable_ssl.base.BaseTrainer.setup">setup() (stable_ssl.base.BaseTrainer method)</a>
 </li>
       <li>
-    stable_ssl
+    stable_ssl.base
 
       <ul>
-        <li><a href="user_guide.html#module-stable_ssl">module</a>
+        <li><a href="api/base.html#module-stable_ssl.base">module</a>
 </li>
       </ul></li>
       <li>
