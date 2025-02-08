@@ -202,6 +202,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.JointEmbeddingPredictiveTrainer.html">JointEmbeddingPredictiveTrainer</a></li>
 </ul>
 </details></li>
 </ul>
@@ -317,7 +318,11 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch.distributed</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dist</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">stable_ssl</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseTrainer</span><span class="p">,</span> <span class="n">JointEmbeddingTrainer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stable_ssl</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BaseTrainer</span><span class="p">,</span>
+    <span class="n">JointEmbeddingPredictiveTrainer</span><span class="p">,</span>
+    <span class="n">JointEmbeddingTrainer</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">stable_ssl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">broadcast</span><span class="p">,</span> <span class="n">gather</span><span class="p">,</span> <span class="n">reduce</span><span class="p">,</span> <span class="n">warn_once</span>
 
 
@@ -398,9 +403,11 @@
 <div class="viewcode-block" id="RankMe.compute">
 <a class="viewcode-back" href="../../api/gen_modules/stable_ssl.monitors.RankMe.html#stable_ssl.monitors.RankMe.compute">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">:</span> <span class="n">BaseTrainer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">JointEmbeddingTrainer</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">trainer</span><span class="p">,</span> <span class="p">(</span><span class="n">JointEmbeddingTrainer</span><span class="p">,</span> <span class="n">JointEmbeddingPredictiveTrainer</span><span class="p">)</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;RankMe only implemented for JointEmbeddingTrainer &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;RankMe only implemented for JointEmbeddingTrainer, JointEmbeddingPredictiveTrainer &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;and not yet implemented for type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">trainer</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
@@ -507,13 +514,15 @@
 <div class="viewcode-block" id="LiDAR.compute">
 <a class="viewcode-back" href="../../api/gen_modules/stable_ssl.monitors.LiDAR.html#stable_ssl.monitors.LiDAR.compute">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">:</span> <span class="n">BaseTrainer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">JointEmbeddingTrainer</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">trainer</span><span class="p">,</span> <span class="p">(</span><span class="n">JointEmbeddingTrainer</span><span class="p">,</span> <span class="n">JointEmbeddingPredictiveTrainer</span><span class="p">)</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;LiDAR only implemented for JointEmbeddingTrainer &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;LiDAR only implemented for JointEmbeddingTrainer, JointEmbeddingPredictiveTrainer &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;and not yet implemented for type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">trainer</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
-        <span class="n">trainer</span><span class="p">:</span> <span class="n">JointEmbeddingTrainer</span>
+        <span class="n">trainer</span><span class="p">:</span> <span class="n">JointEmbeddingTrainer</span> <span class="o">|</span> <span class="n">JointEmbeddingPredictiveTrainer</span>
         <span class="n">embeddings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">latest_embeddings</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lidar</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span></div>
 </div>

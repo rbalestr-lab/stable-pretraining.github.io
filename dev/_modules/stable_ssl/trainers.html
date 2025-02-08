@@ -202,6 +202,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.trainers.JointEmbeddingPredictiveTrainer.html">JointEmbeddingPredictiveTrainer</a></li>
 </ul>
 </details></li>
 </ul>
@@ -546,6 +547,98 @@
 
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;loss_ssl&quot;</span><span class="p">:</span> <span class="n">loss_ssl</span><span class="p">,</span> <span class="o">**</span><span class="n">classifier_losses</span><span class="p">}</span></div>
 </div>
+
+
+
+<div class="viewcode-block" id="JointEmbeddingPredictiveTrainer">
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.trainers.JointEmbeddingPredictiveTrainer.html#stable_ssl.trainers.JointEmbeddingPredictiveTrainer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">JointEmbeddingPredictiveTrainer</span><span class="p">(</span><span class="n">BaseTrainer</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for training a joint-embedding predictive architecture.&quot;&quot;&quot;</span>
+
+    <span class="n">required_modules</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;context_encoder&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+        <span class="s2">&quot;target_encoder&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+        <span class="s2">&quot;predictor&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_context_target</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">context_transforms</span><span class="p">),</span> <span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">target_transforms</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;JointEmbeddingPredictiveTrainer requires 2 views.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">context_transforms</span><span class="p">),</span> <span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">target_transforms</span><span class="p">)</span>
+
+<div class="viewcode-block" id="JointEmbeddingPredictiveTrainer.forward">
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.trainers.JointEmbeddingPredictiveTrainer.html#stable_ssl.trainers.JointEmbeddingPredictiveTrainer.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass of the context encoder.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;context_encoder&quot;</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JointEmbeddingPredictiveTrainer.forward_target">
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.trainers.JointEmbeddingPredictiveTrainer.html#stable_ssl.trainers.JointEmbeddingPredictiveTrainer.forward_target">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass of the target encoder.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;target_encoder&quot;</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JointEmbeddingPredictiveTrainer.forward_predictor">
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.trainers.JointEmbeddingPredictiveTrainer.html#stable_ssl.trainers.JointEmbeddingPredictiveTrainer.forward_predictor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_predictor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass of the predictor, that transforms the context latents into the target latents.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">[</span><span class="s2">&quot;predictor&quot;</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="JointEmbeddingPredictiveTrainer.compute_loss">
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.trainers.JointEmbeddingPredictiveTrainer.html#stable_ssl.trainers.JointEmbeddingPredictiveTrainer.compute_loss">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the final loss as the L1 distance between the predicted and target latents.&quot;&quot;&quot;</span>
+        <span class="p">(</span>
+            <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">context_transformation_parameters</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">target_transformation_parameters</span><span class="p">),</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_context_target</span><span class="p">()</span>
+
+        <span class="n">context_representations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span>
+            <span class="n">context</span><span class="p">,</span> <span class="n">context_transformation_parameters</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_latest_representations</span> <span class="o">=</span> <span class="n">context_representations</span>
+
+        <span class="n">target_representations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_target</span><span class="p">(</span>
+            <span class="n">target</span><span class="p">,</span> <span class="n">target_transformation_parameters</span>
+        <span class="p">)</span>
+
+        <span class="c1"># NOTE The forward predictor can take some additional arguments, such as the transformation arguments.</span>
+        <span class="n">predicted_representations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_predictor</span><span class="p">(</span>
+            <span class="n">context_representations</span><span class="p">,</span>
+            <span class="n">target_representations</span><span class="p">,</span>
+            <span class="n">context_transformation_parameters</span><span class="p">,</span>
+            <span class="n">target_transformation_parameters</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_latest_embeddings</span> <span class="o">=</span> <span class="n">predicted_representations</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">predicted_representations</span><span class="p">,</span> <span class="n">target_representations</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;loss_ssl&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">}</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">latest_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_latest_embeddings&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_latest_embeddings</span>
+
+    <span class="nd">@latest_embeddings</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">latest_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_latest_embeddings</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">latest_representations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_latest_representations&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_latest_representations</span>
+
+    <span class="nd">@latest_representations</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">latest_representations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_latest_representations</span> <span class="o">=</span> <span class="n">value</span></div>
 
 
 
