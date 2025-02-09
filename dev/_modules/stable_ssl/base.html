@@ -343,14 +343,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">DistributedSamplerWrapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.modules</span><span class="w"> </span><span class="kn">import</span> <span class="n">TeacherStudentModule</span>
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">wandb</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">wandbapi</span>
-<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-        <span class="s2">&quot;Wandb module is not installed, make sure to not use wandb for logging &quot;</span>
-        <span class="s2">&quot;or an error will be thrown.&quot;</span>
-    <span class="p">)</span>
-
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.monitors</span><span class="w"> </span><span class="kn">import</span> <span class="n">Monitor</span>
 
@@ -361,7 +353,6 @@
         <span class="s2">&quot;Wandb module is not installed, make sure not to use wandb for logging &quot;</span>
         <span class="s2">&quot;or an error will be thrown.&quot;</span>
     <span class="p">)</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">BreakAllEpochs</span><span class="p">,</span>
@@ -369,32 +360,11 @@
     <span class="n">NanError</span><span class="p">,</span>
     <span class="n">get_gpu_info</span><span class="p">,</span>
     <span class="n">log_and_raise</span><span class="p">,</span>
+    <span class="n">rgetattr</span><span class="p">,</span>
+    <span class="n">rsetattr</span><span class="p">,</span>
     <span class="n">seed_everything</span><span class="p">,</span>
     <span class="n">to_device</span><span class="p">,</span>
 <span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">rsetattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-    <span class="n">pre</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">post</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-    <span class="n">parent</span> <span class="o">=</span> <span class="n">rgetattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pre</span><span class="p">)</span> <span class="k">if</span> <span class="n">pre</span> <span class="k">else</span> <span class="n">obj</span>
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="n">parent</span><span class="p">[</span><span class="n">post</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">post</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-
-
-<span class="c1"># using wonder&#39;s beautiful simplification: https://stackoverflow.com/questions/31174295/getattr-and-setattr-on-nested-objects/31174427?noredirect=1#comment86638618_31174427</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_adaptive_getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">obj</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">rgetattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">_adaptive_getattr</span><span class="p">,</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span> <span class="o">+</span> <span class="n">attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="BaseTrainer">
@@ -607,7 +577,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">wandb_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">api</span> <span class="o">=</span> <span class="n">wandbapi</span><span class="o">.</span><span class="n">Api</span><span class="p">()</span>
+        <span class="n">api</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">Api</span><span class="p">()</span>
         <span class="n">entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;entity&quot;</span><span class="p">]</span>
         <span class="n">project</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;project&quot;</span><span class="p">]</span>
         <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
