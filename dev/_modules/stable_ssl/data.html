@@ -314,7 +314,7 @@
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dataset</span>
@@ -396,37 +396,41 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    path: str</span>
-<span class="sd">        Path to the dataset (can be a Hugging Face dataset name or a local path).</span>
-<span class="sd">    x: str</span>
-<span class="sd">        Name of the column to treat as x (input).</span>
-<span class="sd">    y: str</span>
-<span class="sd">        Name of the column to treat as y (label).</span>
-<span class="sd">    transform (optional): callable, default=None</span>
-<span class="sd">        Transform to apply on x. By default, no transform is applied (identity transform).</span>
 <span class="sd">    *args: list</span>
 <span class="sd">        Additional arguments to pass to `datasets.load_dataset`.</span>
+<span class="sd">    rename_columns: dict</span>
+<span class="sd">        A mapping of names from the HF dataset to what the dict should contain in this dataset.</span>
+<span class="sd">        For example `{&quot;x&quot;:&quot;image&quot;, &quot;y&quot;:&quot;label&quot;}</span>
+<span class="sd">    remove_columns: list</span>
+<span class="sd">        A mapping of names from the HF dataset to what the dict should contain in this dataset.</span>
+<span class="sd">        For example `{&quot;x&quot;:&quot;image&quot;, &quot;y&quot;:&quot;label&quot;}</span>
+<span class="sd">    transform: dict[str: callable]</span>
+<span class="sd">        Which key to transform</span>
+<span class="sd">    add_index: bool</span>
+<span class="sd">        Whether to add a key &quot;index&quot; with the datum index</span>
 <span class="sd">    **kwargs: dict</span>
 <span class="sd">        Additional keyword arguments to pass to `datasets.load_dataset`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">y</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">transform</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+        <span class="n">rename_columns</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">remove_columns</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">transform</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">add_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_index</span> <span class="o">=</span> <span class="n">add_index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">remove_columns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">remove_columns</span><span class="p">(</span><span class="n">remove_columns</span><span class="p">)</span>
 
-        <span class="k">assert</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">column_names</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&#39; not found in the dataset.&quot;</span>
-        <span class="k">assert</span> <span class="n">y</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">column_names</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">&#39; not found in the dataset.&quot;</span>
+        <span class="k">if</span> <span class="n">rename_columns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">rename_columns</span><span class="p">(</span><span class="n">rename_columns</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span> <span class="k">if</span> <span class="n">transform</span> <span class="k">else</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the length of the dataset.&quot;&quot;&quot;</span>
@@ -442,18 +446,22 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        tuple: (transformed x, y)</span>
-<span class="sd">            A tuple containing the transformed input (x) and the label (y).</span>
+<span class="sd">        dict: (str, data)</span>
+<span class="sd">            A dict containing the data sample.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="n">idx</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
-        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">]</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">]</span>
-
-        <span class="n">x_transformed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">x_transformed</span><span class="p">,</span> <span class="n">y</span></div>
+        <span class="n">sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">sample</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_index</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;index&quot;</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tried to add index in data but already present&quot;</span><span class="p">)</span>
+            <span class="n">sample</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+        <span class="k">return</span> <span class="n">sample</span></div>
 
 </pre></div>
 
