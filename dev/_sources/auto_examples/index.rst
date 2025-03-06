@@ -67,6 +67,23 @@ Below are example scripts showing how to use the library in various scenarios.
     </div>
 
 
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This script demonstrates how to retrieve data from wandb using the stable-SSL library and create plots from it.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_wandb_figures_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_auto_examples_wandb_figures.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">This script demonstrates how to retrieve data from wandb using the stable-SSL library and create plots from it.</div>
+    </div>
+
+
 .. thumbnail-parent-div-close
 
 .. raw:: html
@@ -80,6 +97,7 @@ Below are example scripts showing how to use the library in various scenarios.
    /auto_examples/wandb_reader
    /auto_examples/custom_supervised
    /auto_examples/imbalance_supervised_learning
+   /auto_examples/wandb_figures
 
 
 .. only:: html
