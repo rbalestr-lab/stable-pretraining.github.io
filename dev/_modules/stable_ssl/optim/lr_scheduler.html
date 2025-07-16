@@ -1,0 +1,680 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stable_ssl.optim.lr_scheduler &#8212; stable-SSL 0.0.1.dev0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=064caaba"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/stable_ssl/optim/lr_scheduler';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">stable-SSL 0.0.1.dev0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">stable-ssl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bibliography.html">Bibliography</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/backbone.html">stable_ssl.backbone</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.MLP.html">MLP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.Resnet9.html">Resnet9</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.ConvMixer.html">ConvMixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.from_timm.html">from_timm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.from_torchvision.html">from_torchvision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.set_embedding_dim.html">set_embedding_dim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentModule.html">TeacherStudentModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.EvalOnly.html">EvalOnly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.mae.html">mae</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/data.html">stable_ssl.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.DataModule.html">DataModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.Collator.html">Collator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.GMM.html">GMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.FromTorchDataset.html">FromTorchDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.HFDataset.html">HFDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.Categorical.html">Categorical</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.ExponentialMixtureNoiseModel.html">ExponentialMixtureNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.ExponentialNormalNoiseModel.html">ExponentialNormalNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.fold_views.html">fold_views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.random_split.html">random_split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.download.html">download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.bulk_download.html">bulk_download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.transforms.html">transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.dataset.html">dataset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.losses.NTXEntLoss.html">NTXEntLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.losses.VICRegLoss.html">VICRegLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/manager.html">stable_ssl.manager</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.manager.Manager.html">Manager</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/module.html">stable_ssl.module</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.module.Module.html">Module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/monitors.html">stable_ssl.callbacks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineProbe.html">OnlineProbe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineKNN.html">OnlineKNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineWriter.html">OnlineWriter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.callbacks.RankMe.html">RankMe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.callbacks.LiDAR.html">LiDAR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.callbacks.EarlyStopping.html">EarlyStopping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.callbacks.TrainerInfo.html">TrainerInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.callbacks.LoggingCallback.html">LoggingCallback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.callbacks.ModuleSummary.html">ModuleSummary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.callbacks.SklearnCheckpoint.html">SklearnCheckpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.callbacks.ImageRetrieval.html">ImageRetrieval</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/optim.html">stable_ssl.optim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.optim.LARS.html">LARS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.optim.CosineDecayer.html">CosineDecayer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.optim.LinearWarmup.html">LinearWarmup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.optim.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.optim.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.optim.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for stable_ssl.optim.lr_scheduler</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.optim.lr_scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CosineAnnealingLR</span><span class="p">,</span>
+    <span class="n">LambdaLR</span><span class="p">,</span>
+    <span class="n">LinearLR</span><span class="p">,</span>
+    <span class="n">MultiStepLR</span><span class="p">,</span>
+    <span class="n">SequentialLR</span><span class="p">,</span>
+    <span class="n">_LRScheduler</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="CosineDecayer">
+<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.optim.CosineDecayer.html#stable_ssl.optim.CosineDecayer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CosineDecayer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply cosine decay with multiple cycles for learning rate scheduling.</span>
+
+<span class="sd">    This class implements a cosine decay function with multiple cycles that can be used</span>
+<span class="sd">    as a learning rate scheduler. The decay follows a cosine curve with additional</span>
+<span class="sd">    cyclic variations.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        total_steps (int): Total number of training steps.</span>
+<span class="sd">        n_cycles (int, optional): Number of cycles in the cosine decay. Defaults to 3.</span>
+<span class="sd">        gamma (float, optional): Gamma parameter for cycle amplitude. Defaults to 0.2.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; decayer = CosineDecayer(total_steps=1000, n_cycles=3)</span>
+<span class="sd">        &gt;&gt;&gt; lr_factor = decayer(step=500)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">total_steps</span><span class="p">,</span> <span class="n">n_cycles</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_steps</span> <span class="o">=</span> <span class="n">total_steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_cycles</span> <span class="o">=</span> <span class="n">n_cycles</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the learning rate factor for the given step.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            step (int): Current training step.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Learning rate multiplier factor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">step</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_steps</span>
+        <span class="n">cycle</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_cycles</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">step</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_steps</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">cycle</span></div>
+
+
+
+<div class="viewcode-block" id="LinearWarmup">
+<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.optim.LinearWarmup.html#stable_ssl.optim.LinearWarmup">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">LinearWarmup</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">total_steps</span><span class="p">,</span> <span class="n">start_factor</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">peak_step</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a linear warmup learning rate scheduler.</span>
+
+<span class="sd">    This function creates a linear warmup scheduler that gradually increases the</span>
+<span class="sd">    learning rate from a small value to the full learning rate over a specified</span>
+<span class="sd">    number of steps.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        optimizer (torch.optim.Optimizer): The optimizer to schedule.</span>
+<span class="sd">        total_steps (int): Total number of training steps.</span>
+<span class="sd">        start_factor (float, optional): Initial learning rate factor. Defaults to 0.01.</span>
+<span class="sd">        peak_step (float, optional): Step at which warmup peaks (as fraction of total_steps).</span>
+<span class="sd">                                   Defaults to 0.1.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        torch.optim.lr_scheduler.LinearLR: Linear warmup scheduler.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; optimizer = torch.optim.Adam(model.parameters(), lr=0.001)</span>
+<span class="sd">        &gt;&gt;&gt; scheduler = LinearWarmup(optimizer, total_steps=1000, start_factor=0.01)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">peak_step</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">peak_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">peak_step</span> <span class="o">*</span> <span class="n">total_steps</span><span class="p">)</span>
+    <span class="n">warmup</span> <span class="o">=</span> <span class="n">LinearLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">start_factor</span><span class="p">,</span> <span class="n">total_iters</span><span class="o">=</span><span class="n">peak_step</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">warmup</span></div>
+
+
+
+<div class="viewcode-block" id="LinearWarmupCosineAnnealing">
+<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.optim.LinearWarmupCosineAnnealing.html#stable_ssl.optim.LinearWarmupCosineAnnealing">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">LinearWarmupCosineAnnealing</span><span class="p">(</span>
+    <span class="n">optimizer</span><span class="p">,</span> <span class="n">total_steps</span><span class="p">,</span> <span class="n">start_factor</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">end_lr</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">peak_step</span><span class="o">=</span><span class="mf">0.01</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine linear warmup with cosine annealing decay.</span>
+
+<span class="sd">    This function creates a scheduler that first linearly warms up the learning rate,</span>
+<span class="sd">    then applies cosine annealing decay. This is commonly used in self-supervised</span>
+<span class="sd">    learning to achieve better convergence.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        optimizer (torch.optim.Optimizer): The optimizer to schedule.</span>
+<span class="sd">        total_steps (int): Total number of training steps.</span>
+<span class="sd">        start_factor (float, optional): Initial learning rate factor for warmup. Defaults to 0.01.</span>
+<span class="sd">        end_lr (float, optional): Final learning rate after annealing. Defaults to 0.0.</span>
+<span class="sd">        peak_step (float, optional): Step at which warmup ends (as fraction of total_steps).</span>
+<span class="sd">                                   Defaults to 0.01.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        torch.optim.lr_scheduler.SequentialLR: Combined warmup and annealing scheduler.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; optimizer = torch.optim.Adam(model.parameters(), lr=0.001)</span>
+<span class="sd">        &gt;&gt;&gt; scheduler = LinearWarmupCosineAnnealing(optimizer, total_steps=1000)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">peak_step</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">peak_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">peak_step</span> <span class="o">*</span> <span class="n">total_steps</span><span class="p">)</span>
+    <span class="n">warmup</span> <span class="o">=</span> <span class="n">LinearLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">start_factor</span><span class="p">,</span> <span class="n">total_iters</span><span class="o">=</span><span class="n">peak_step</span><span class="p">)</span>
+    <span class="n">anneal</span> <span class="o">=</span> <span class="n">CosineAnnealingLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">T_max</span><span class="o">=</span><span class="n">total_steps</span> <span class="o">-</span> <span class="n">peak_step</span><span class="p">,</span> <span class="n">eta_min</span><span class="o">=</span><span class="n">end_lr</span><span class="p">)</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">SequentialLR</span><span class="p">(</span>
+        <span class="n">optimizer</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">warmup</span><span class="p">,</span> <span class="n">anneal</span><span class="p">],</span>
+        <span class="n">milestones</span><span class="o">=</span><span class="p">[</span><span class="n">peak_step</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">scheduler</span></div>
+
+
+
+<div class="viewcode-block" id="LinearWarmupCyclicAnnealing">
+<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.optim.LinearWarmupCyclicAnnealing.html#stable_ssl.optim.LinearWarmupCyclicAnnealing">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">LinearWarmupCyclicAnnealing</span><span class="p">(</span>
+    <span class="n">optimizer</span><span class="p">,</span> <span class="n">total_steps</span><span class="p">,</span> <span class="n">start_factor</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">peak_step</span><span class="o">=</span><span class="mf">0.1</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine linear warmup with cyclic cosine annealing.</span>
+
+<span class="sd">    This function creates a scheduler that combines linear warmup with cyclic cosine</span>
+<span class="sd">    annealing. The cyclic annealing provides multiple learning rate cycles which can</span>
+<span class="sd">    help escape local minima during training.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        optimizer (torch.optim.Optimizer): The optimizer to schedule.</span>
+<span class="sd">        total_steps (int): Total number of training steps.</span>
+<span class="sd">        start_factor (float, optional): Initial learning rate factor for warmup. Defaults to 0.01.</span>
+<span class="sd">        peak_step (float, optional): Step at which warmup ends (as fraction of total_steps).</span>
+<span class="sd">                                   Defaults to 0.1.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        torch.optim.lr_scheduler.SequentialLR: Combined warmup and cyclic annealing scheduler.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; optimizer = torch.optim.Adam(model.parameters(), lr=0.001)</span>
+<span class="sd">        &gt;&gt;&gt; scheduler = LinearWarmupCyclicAnnealing(optimizer, total_steps=1000)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">peak_step</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">peak_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">peak_step</span> <span class="o">*</span> <span class="n">total_steps</span><span class="p">)</span>
+
+    <span class="n">warmup</span> <span class="o">=</span> <span class="n">LinearLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">start_factor</span><span class="p">,</span> <span class="n">total_iters</span><span class="o">=</span><span class="n">peak_step</span><span class="p">)</span>
+    <span class="n">decay</span> <span class="o">=</span> <span class="n">LambdaLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">CosineDecayer</span><span class="p">(</span><span class="n">total_steps</span> <span class="o">-</span> <span class="n">peak_step</span><span class="p">))</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">SequentialLR</span><span class="p">(</span>
+        <span class="n">optimizer</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">warmup</span><span class="p">,</span> <span class="n">decay</span><span class="p">],</span>
+        <span class="n">milestones</span><span class="o">=</span><span class="p">[</span><span class="n">peak_step</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">scheduler</span></div>
+
+
+
+<div class="viewcode-block" id="LinearWarmupThreeStepsAnnealing">
+<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.optim.LinearWarmupThreeStepsAnnealing.html#stable_ssl.optim.LinearWarmupThreeStepsAnnealing">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">LinearWarmupThreeStepsAnnealing</span><span class="p">(</span>
+    <span class="n">optimizer</span><span class="p">,</span> <span class="n">total_steps</span><span class="p">,</span> <span class="n">start_factor</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">peak_step</span><span class="o">=</span><span class="mf">0.05</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine linear warmup with a three-step learning rate annealing.</span>
+
+<span class="sd">    This function creates a scheduler that combines linear warmup with a three-step</span>
+<span class="sd">    annealing schedule. The annealing reduces the learning rate at three predefined</span>
+<span class="sd">    milestones, which can help with fine-tuning and convergence.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        optimizer (torch.optim.Optimizer): The optimizer to schedule.</span>
+<span class="sd">        total_steps (int): Total number of training steps.</span>
+<span class="sd">        start_factor (float, optional): Initial learning rate factor for warmup. Defaults to 0.001.</span>
+<span class="sd">        gamma (float, optional): Multiplicative factor for learning rate reduction. Defaults to 0.3.</span>
+<span class="sd">        peak_step (float, optional): Step at which warmup ends (as fraction of total_steps).</span>
+<span class="sd">                                   Defaults to 0.05.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        torch.optim.lr_scheduler.SequentialLR: Combined warmup and three-step annealing scheduler.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; optimizer = torch.optim.Adam(model.parameters(), lr=0.001)</span>
+<span class="sd">        &gt;&gt;&gt; scheduler = LinearWarmupThreeStepsAnnealing(optimizer, total_steps=1000)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">peak_step</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">peak_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">peak_step</span> <span class="o">*</span> <span class="n">total_steps</span><span class="p">)</span>
+    <span class="n">warmup</span> <span class="o">=</span> <span class="n">LinearLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">start_factor</span><span class="p">,</span> <span class="n">total_iters</span><span class="o">=</span><span class="n">peak_step</span><span class="p">)</span>
+    <span class="n">anneal</span> <span class="o">=</span> <span class="n">MultiStepLR</span><span class="p">(</span>
+        <span class="n">optimizer</span><span class="p">,</span>
+        <span class="n">milestones</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">total_steps</span> <span class="o">-</span> <span class="n">peak_step</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.4</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">total_steps</span> <span class="o">-</span> <span class="n">peak_step</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.6</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">total_steps</span> <span class="o">-</span> <span class="n">peak_step</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">SequentialLR</span><span class="p">(</span>
+        <span class="n">optimizer</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">warmup</span><span class="p">,</span> <span class="n">anneal</span><span class="p">],</span>
+        <span class="n">milestones</span><span class="o">=</span><span class="p">[</span><span class="n">peak_step</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">scheduler</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">LinearWarmupCosineAnnealingLR</span><span class="p">(</span><span class="n">_LRScheduler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Learning rate scheduler with linear warmup followed by cosine annealing.</span>
+
+<span class="sd">    This scheduler implements a custom learning rate schedule that combines linear</span>
+<span class="sd">    warmup with cosine annealing. It provides more control over the warmup and</span>
+<span class="sd">    annealing phases compared to the factory function approach.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        optimizer (torch.optim.Optimizer): The optimizer to schedule.</span>
+<span class="sd">        warmup_steps (int): Number of steps for linear warmup.</span>
+<span class="sd">        max_steps (int): Total number of training steps.</span>
+<span class="sd">        warmup_start_lr (float, optional): Starting learning rate for warmup. Defaults to 0.0.</span>
+<span class="sd">        eta_min (float, optional): Minimum learning rate after annealing. Defaults to 0.0.</span>
+<span class="sd">        last_epoch (int, optional): The index of last epoch. Defaults to -1.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; optimizer = torch.optim.Adam(model.parameters(), lr=0.001)</span>
+<span class="sd">        &gt;&gt;&gt; scheduler = LinearWarmupCosineAnnealingLR(</span>
+<span class="sd">        ...     optimizer, warmup_steps=100, max_steps=1000</span>
+<span class="sd">        ... )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">optimizer</span><span class="p">,</span>
+        <span class="n">warmup_steps</span><span class="p">,</span>
+        <span class="n">max_steps</span><span class="p">,</span>
+        <span class="n">warmup_start_lr</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">eta_min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">last_epoch</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">warmup_steps</span> <span class="o">=</span> <span class="n">warmup_steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="o">=</span> <span class="n">max_steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">warmup_start_lr</span> <span class="o">=</span> <span class="n">warmup_start_lr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eta_min</span> <span class="o">=</span> <span class="n">eta_min</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LinearWarmupCosineAnnealingLR</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">last_epoch</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_lr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the learning rate for the current epoch.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List of learning rates for each parameter group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_epoch</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_steps</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">warmup_start_lr</span>
+                    <span class="o">+</span> <span class="p">(</span><span class="n">base_lr</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_start_lr</span><span class="p">)</span>
+                    <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_epoch</span>
+                    <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_steps</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">base_lr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_lrs</span>
+            <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">eta_min</span>
+                <span class="o">+</span> <span class="p">(</span><span class="n">base_lr</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta_min</span><span class="p">)</span>
+                <span class="o">*</span> <span class="p">(</span>
+                    <span class="mi">1</span>
+                    <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span>
+                        <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+                        <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_epoch</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_steps</span><span class="p">)</span>
+                        <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_steps</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="o">/</span> <span class="mi">2</span>
+                <span class="k">for</span> <span class="n">base_lr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_lrs</span>
+            <span class="p">]</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By stable-SSL team
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, stable-SSL team.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Bibliography &#8212; stable-SSL 0.0.0 documentation</title>
+    <title>Bibliography &#8212; stable-SSL 0.0.1.dev0 documentation</title>
   
   
   
@@ -40,14 +40,14 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=5db94ae7"></script>
+    <script src="_static/documentation_options.js?v=064caaba"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'bibliography';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="stable_ssl.base" href="api/base.html" />
+    <link rel="next" title="stable_ssl.backbone" href="api/backbone.html" />
     <link rel="prev" title="Contributing" href="contributing.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -136,7 +136,7 @@
   
   
   
-    <p class="title logo__title">stable-SSL 0.0.0 documentation</p>
+    <p class="title logo__title">stable-SSL 0.0.1.dev0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -161,21 +161,38 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="api/base.html">stable_ssl.base</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.base.BaseTrainer.html">BaseTrainer</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api/config.html">stable_ssl.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.config.WandbConfig.html">WandbConfig</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/backbone.html">stable_ssl.backbone</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.backbone.MLP.html">MLP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.backbone.Resnet9.html">Resnet9</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.backbone.ConvMixer.html">ConvMixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.backbone.from_timm.html">from_timm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.backbone.from_torchvision.html">from_torchvision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.backbone.set_embedding_dim.html">set_embedding_dim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.backbone.TeacherStudentModule.html">TeacherStudentModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.backbone.EvalOnly.html">EvalOnly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.backbone.mae.html">mae</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/data.html">stable_ssl.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.DistributedSamplerWrapper.html">DistributedSamplerWrapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.MultiViewSampler.html">MultiViewSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.HuggingFaceDataset.html">HuggingFaceDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.DataModule.html">DataModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.Collator.html">Collator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.GMM.html">GMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.FromTorchDataset.html">FromTorchDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.HFDataset.html">HFDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.Categorical.html">Categorical</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.ExponentialMixtureNoiseModel.html">ExponentialMixtureNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.ExponentialNormalNoiseModel.html">ExponentialNormalNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.fold_views.html">fold_views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.random_split.html">random_split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.download.html">download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.bulk_download.html">bulk_download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.transforms.html">transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.data.dataset.html">dataset</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -185,36 +202,35 @@
 <li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">stable_ssl.modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.modules.load_backbone.html">load_backbone</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.modules.MLP.html">MLP</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.modules.Resnet9.html">Resnet9</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.modules.ConvMixer.html">ConvMixer</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/manager.html">stable_ssl.manager</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.manager.Manager.html">Manager</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api/monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.monitors.Monitor.html">Monitor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.monitors.RankMe.html">RankMe</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.monitors.LiDAR.html">LiDAR</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/module.html">stable_ssl.module</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.module.Module.html">Module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api/optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.optimizers.LARS.html">LARS</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/monitors.html">stable_ssl.callbacks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.callbacks.OnlineProbe.html">OnlineProbe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.callbacks.OnlineKNN.html">OnlineKNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.callbacks.OnlineWriter.html">OnlineWriter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.callbacks.RankMe.html">RankMe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.callbacks.LiDAR.html">LiDAR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.callbacks.EarlyStopping.html">EarlyStopping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.callbacks.TrainerInfo.html">TrainerInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.callbacks.LoggingCallback.html">LoggingCallback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.callbacks.ModuleSummary.html">ModuleSummary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.callbacks.SklearnCheckpoint.html">SklearnCheckpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.callbacks.ImageRetrieval.html">ImageRetrieval</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api/schedulers.html">stable_ssl.schedulers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.schedulers.LinearWarmup.html">LinearWarmup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.schedulers.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api/trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.trainers.JointEmbeddingPredictiveTrainer.html">JointEmbeddingPredictiveTrainer</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/optim.html">stable_ssl.optim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.optim.LARS.html">LARS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.optim.CosineDecayer.html">CosineDecayer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.optim.LinearWarmup.html">LinearWarmup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.optim.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.optim.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_ssl.optim.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
 </ul>
 </details></li>
 </ul>
@@ -375,10 +391,6 @@ document.write(`
 <span class="label"><span class="fn-bracket">[</span>BPL21<span class="fn-bracket">]</span></span>
 <p>Adrien Bardes, Jean Ponce, and Yann LeCun. Vicreg: variance-invariance-covariance regularization for self-supervised learning. <em>arXiv preprint arXiv:2105.04906</em>, 2021.</p>
 </div>
-<div class="citation" id="id9" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>CTM+21<span class="fn-bracket">]</span></span>
-<p>Mathilde Caron, Hugo Touvron, Ishan Misra, Hervé Jégou, Julien Mairal, Piotr Bojanowski, and Armand Joulin. Emerging properties in self-supervised vision transformers. In <em>Proceedings of the IEEE/CVF international conference on computer vision</em>, 9650–9660. 2021.</p>
-</div>
 <div class="citation" id="id2" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>CKNH20<span class="fn-bracket">]</span></span>
 <p>Ting Chen, Simon Kornblith, Mohammad Norouzi, and Geoffrey Hinton. A simple framework for contrastive learning of visual representations. In <em>International conference on machine learning</em>, 1597–1607. PMLR, 2020.</p>
@@ -432,11 +444,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="api/base.html"
+       href="api/backbone.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">stable_ssl.base</p>
+        <p class="prev-next-title">stable_ssl.backbone</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

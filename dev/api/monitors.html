@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>stable_ssl.monitors &#8212; stable-SSL 0.0.0 documentation</title>
+    <title>stable_ssl.callbacks &#8212; stable-SSL 0.0.1.dev0 documentation</title>
   
   
   
@@ -40,15 +40,15 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=5db94ae7"></script>
+    <script src="../_static/documentation_options.js?v=064caaba"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/monitors';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Monitor" href="gen_modules/stable_ssl.monitors.Monitor.html" />
-    <link rel="prev" title="ConvMixer" href="gen_modules/stable_ssl.modules.ConvMixer.html" />
+    <link rel="next" title="OnlineProbe" href="gen_modules/stable_ssl.callbacks.OnlineProbe.html" />
+    <link rel="prev" title="Module" href="gen_modules/stable_ssl.module.Module.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -136,7 +136,7 @@
   
   
   
-    <p class="title logo__title">stable-SSL 0.0.0 documentation</p>
+    <p class="title logo__title">stable-SSL 0.0.1.dev0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -161,21 +161,38 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="base.html">stable_ssl.base</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.base.BaseTrainer.html">BaseTrainer</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="config.html">stable_ssl.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.config.WandbConfig.html">WandbConfig</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="backbone.html">stable_ssl.backbone</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.MLP.html">MLP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.Resnet9.html">Resnet9</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.ConvMixer.html">ConvMixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.from_timm.html">from_timm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.from_torchvision.html">from_torchvision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.set_embedding_dim.html">set_embedding_dim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.TeacherStudentModule.html">TeacherStudentModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.EvalOnly.html">EvalOnly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.mae.html">mae</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="data.html">stable_ssl.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.DistributedSamplerWrapper.html">DistributedSamplerWrapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.MultiViewSampler.html">MultiViewSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.HuggingFaceDataset.html">HuggingFaceDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.DataModule.html">DataModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.Collator.html">Collator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.GMM.html">GMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.FromTorchDataset.html">FromTorchDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.HFDataset.html">HFDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.Categorical.html">Categorical</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.ExponentialMixtureNoiseModel.html">ExponentialMixtureNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.ExponentialNormalNoiseModel.html">ExponentialNormalNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.fold_views.html">fold_views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.random_split.html">random_split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.download.html">download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.bulk_download.html">bulk_download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.transforms.html">transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.data.dataset.html">dataset</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -185,36 +202,35 @@
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">stable_ssl.modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.modules.load_backbone.html">load_backbone</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.modules.MLP.html">MLP</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.modules.Resnet9.html">Resnet9</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.modules.ConvMixer.html">ConvMixer</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="manager.html">stable_ssl.manager</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.manager.Manager.html">Manager</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">stable_ssl.monitors</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.monitors.Monitor.html">Monitor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.monitors.RankMe.html">RankMe</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.monitors.LiDAR.html">LiDAR</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="module.html">stable_ssl.module</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.module.Module.html">Module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.optimizers.LARS.html">LARS</a></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">stable_ssl.callbacks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.callbacks.OnlineProbe.html">OnlineProbe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.callbacks.OnlineKNN.html">OnlineKNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.callbacks.OnlineWriter.html">OnlineWriter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.callbacks.RankMe.html">RankMe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.callbacks.LiDAR.html">LiDAR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.callbacks.EarlyStopping.html">EarlyStopping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.callbacks.TrainerInfo.html">TrainerInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.callbacks.LoggingCallback.html">LoggingCallback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.callbacks.ModuleSummary.html">ModuleSummary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.callbacks.SklearnCheckpoint.html">SklearnCheckpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.callbacks.ImageRetrieval.html">ImageRetrieval</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="schedulers.html">stable_ssl.schedulers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmup.html">LinearWarmup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.trainers.JointEmbeddingPredictiveTrainer.html">JointEmbeddingPredictiveTrainer</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="optim.html">stable_ssl.optim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.optim.LARS.html">LARS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.optim.CosineDecayer.html">CosineDecayer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.optim.LinearWarmup.html">LinearWarmup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.optim.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.optim.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.optim.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
 </ul>
 </details></li>
 </ul>
@@ -342,7 +358,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -353,11 +371,22 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>stable_ssl.monitors</h1>
+    <h1>stable_ssl.callbacks</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#online-monitoring">Online Monitoring</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-utilities">Training Utilities</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-persistence">Model Persistence</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation">Evaluation</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -367,22 +396,74 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-stable_ssl.monitors">
-<span id="stable-ssl-monitors"></span><h1>stable_ssl.monitors<a class="headerlink" href="#module-stable_ssl.monitors" title="Link to this heading">#</a></h1>
+  <section id="module-stable_ssl.callbacks">
+<span id="stable-ssl-callbacks"></span><h1>stable_ssl.callbacks<a class="headerlink" href="#module-stable_ssl.callbacks" title="Link to this heading">#</a></h1>
+<p>The callbacks module provides various monitoring and evaluation tools for self-supervised learning training.</p>
+<section id="online-monitoring">
+<h2>Online Monitoring<a class="headerlink" href="#online-monitoring" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.monitors.Monitor.html#stable_ssl.monitors.Monitor" title="stable_ssl.monitors.Monitor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Monitor</span></code></a>()</p></td>
-<td><p>Base class for metrics that are monitored at the end of each step.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.OnlineProbe.html#stable_ssl.callbacks.OnlineProbe" title="stable_ssl.callbacks.OnlineProbe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnlineProbe</span></code></a>(name, pl_module, input, target, ...)</p></td>
+<td><p>Attaches a MLP for fine-tuning using the standard self-supervised protocol.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.monitors.RankMe.html#stable_ssl.monitors.RankMe" title="stable_ssl.monitors.RankMe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RankMe</span></code></a>([limit, epsilon])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.OnlineKNN.html#stable_ssl.callbacks.OnlineKNN" title="stable_ssl.callbacks.OnlineKNN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnlineKNN</span></code></a>(pl_module, name, input, target, ...)</p></td>
+<td><p>Weighted KNN online evaluator for self-supervised learning.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.OnlineWriter.html#stable_ssl.callbacks.OnlineWriter" title="stable_ssl.callbacks.OnlineWriter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnlineWriter</span></code></a>(names, path, during[, ...])</p></td>
+<td><p>Attaches an OnlineWriter callback.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.RankMe.html#stable_ssl.callbacks.RankMe" title="stable_ssl.callbacks.RankMe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RankMe</span></code></a>(pl_module, name, target, ...)</p></td>
 <td><p>RankMe (effective rank) monitor from <span id="id1">[<a class="reference internal" href="../bibliography.html#id10" title="Quentin Garrido, Randall Balestriero, Laurent Najman, and Yann Lecun. Rankme: assessing the downstream performance of pretrained self-supervised representations by their rank. In International conference on machine learning, 10929–10974. PMLR, 2023.">Garrido <em>et al.</em>, 2023</a>]</span>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.monitors.LiDAR.html#stable_ssl.monitors.LiDAR" title="stable_ssl.monitors.LiDAR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LiDAR</span></code></a>([n, epsilon, delta])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.LiDAR.html#stable_ssl.callbacks.LiDAR" title="stable_ssl.callbacks.LiDAR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LiDAR</span></code></a>(pl_module, name, target, queue_length, ...)</p></td>
 <td><p>LiDAR (Linear Discriminant Analysis Rank) monitor from :cite`thilak2023lidar`.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+</section>
+<section id="training-utilities">
+<h2>Training Utilities<a class="headerlink" href="#training-utilities" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.EarlyStopping.html#stable_ssl.callbacks.EarlyStopping" title="stable_ssl.callbacks.EarlyStopping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EarlyStopping</span></code></a>([mode, milestones, ...])</p></td>
+<td><p>Early stopping module that can stop training based on metric milestones.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.TrainerInfo.html#stable_ssl.callbacks.TrainerInfo" title="stable_ssl.callbacks.TrainerInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TrainerInfo</span></code></a>()</p></td>
+<td><p>Callback for linking trainer to DataModule and providing extra information.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.LoggingCallback.html#stable_ssl.callbacks.LoggingCallback" title="stable_ssl.callbacks.LoggingCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LoggingCallback</span></code></a>()</p></td>
+<td><p>Callback for logging validation metrics in a formatted table.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.ModuleSummary.html#stable_ssl.callbacks.ModuleSummary" title="stable_ssl.callbacks.ModuleSummary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModuleSummary</span></code></a>()</p></td>
+<td><p>Callback for logging module summaries in a formatted table.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="model-persistence">
+<h2>Model Persistence<a class="headerlink" href="#model-persistence" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.SklearnCheckpoint.html#stable_ssl.callbacks.SklearnCheckpoint" title="stable_ssl.callbacks.SklearnCheckpoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SklearnCheckpoint</span></code></a>()</p></td>
+<td><p>Callback for saving and loading sklearn models in PyTorch Lightning checkpoints.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="evaluation">
+<h2>Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.ImageRetrieval.html#stable_ssl.callbacks.ImageRetrieval" title="stable_ssl.callbacks.ImageRetrieval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImageRetrieval</span></code></a>(pl_module, name, input, ...)</p></td>
+<td><p>Image Retrieval evaluator for self-supervised learning.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 </section>
 
 
@@ -397,20 +478,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="gen_modules/stable_ssl.modules.ConvMixer.html"
+       href="gen_modules/stable_ssl.module.Module.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">ConvMixer</p>
+        <p class="prev-next-title">Module</p>
       </div>
     </a>
     <a class="right-next"
-       href="gen_modules/stable_ssl.monitors.Monitor.html"
+       href="gen_modules/stable_ssl.callbacks.OnlineProbe.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Monitor</p>
+        <p class="prev-next-title">OnlineProbe</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -420,6 +501,24 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#online-monitoring">Online Monitoring</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-utilities">Training Utilities</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-persistence">Model Persistence</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation">Evaluation</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

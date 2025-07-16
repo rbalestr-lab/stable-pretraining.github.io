@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>&lt;no title&gt; &#8212; stable-SSL 0.0.0 documentation</title>
+    <title>&lt;no title&gt; &#8212; stable-SSL 0.0.1.dev0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=5db94ae7"></script>
+    <script src="../_static/documentation_options.js?v=064caaba"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -134,7 +134,7 @@
   
   
   
-    <p class="title logo__title">stable-SSL 0.0.0 documentation</p>
+    <p class="title logo__title">stable-SSL 0.0.1.dev0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -159,21 +159,38 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/base.html">stable_ssl.base</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.base.BaseTrainer.html">BaseTrainer</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/config.html">stable_ssl.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.config.HardwareConfig.html">HardwareConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.config.OptimConfig.html">OptimConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.config.LoggerConfig.html">LoggerConfig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.config.WandbConfig.html">WandbConfig</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/backbone.html">stable_ssl.backbone</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.backbone.MLP.html">MLP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.backbone.Resnet9.html">Resnet9</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.backbone.ConvMixer.html">ConvMixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.backbone.from_timm.html">from_timm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.backbone.from_torchvision.html">from_torchvision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.backbone.set_embedding_dim.html">set_embedding_dim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.backbone.TeacherStudentModule.html">TeacherStudentModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.backbone.EvalOnly.html">EvalOnly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.backbone.mae.html">mae</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/data.html">stable_ssl.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.DistributedSamplerWrapper.html">DistributedSamplerWrapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.MultiViewSampler.html">MultiViewSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.HuggingFaceDataset.html">HuggingFaceDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.DataModule.html">DataModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.Collator.html">Collator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.GMM.html">GMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.FromTorchDataset.html">FromTorchDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.HFDataset.html">HFDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.Categorical.html">Categorical</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.ExponentialMixtureNoiseModel.html">ExponentialMixtureNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.ExponentialNormalNoiseModel.html">ExponentialNormalNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.fold_views.html">fold_views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.random_split.html">random_split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.download.html">download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.bulk_download.html">bulk_download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.transforms.html">transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.dataset.html">dataset</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -183,36 +200,35 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.losses.BarlowTwinsLoss.html">BarlowTwinsLoss</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/modules.html">stable_ssl.modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.modules.load_backbone.html">load_backbone</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.modules.MLP.html">MLP</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.modules.Resnet9.html">Resnet9</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.modules.ConvMixer.html">ConvMixer</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/manager.html">stable_ssl.manager</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.manager.Manager.html">Manager</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/monitors.html">stable_ssl.monitors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.monitors.Monitor.html">Monitor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.monitors.RankMe.html">RankMe</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.monitors.LiDAR.html">LiDAR</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/module.html">stable_ssl.module</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.module.Module.html">Module</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/optimizers.html">stable_ssl.optimizers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.optimizers.LARS.html">LARS</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/monitors.html">stable_ssl.callbacks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.callbacks.OnlineProbe.html">OnlineProbe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.callbacks.OnlineKNN.html">OnlineKNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.callbacks.OnlineWriter.html">OnlineWriter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.callbacks.RankMe.html">RankMe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.callbacks.LiDAR.html">LiDAR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.callbacks.EarlyStopping.html">EarlyStopping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.callbacks.TrainerInfo.html">TrainerInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.callbacks.LoggingCallback.html">LoggingCallback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.callbacks.ModuleSummary.html">ModuleSummary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.callbacks.SklearnCheckpoint.html">SklearnCheckpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.callbacks.ImageRetrieval.html">ImageRetrieval</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/schedulers.html">stable_ssl.schedulers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.schedulers.LinearWarmup.html">LinearWarmup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.schedulers.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.schedulers.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.schedulers.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
-</ul>
-</details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/trainers.html">stable_ssl.trainers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.trainers.SupervisedTrainer.html">SupervisedTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.trainers.JointEmbeddingTrainer.html">JointEmbeddingTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.trainers.SelfDistillationTrainer.html">SelfDistillationTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.trainers.DINOTrainer.html">DINOTrainer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.trainers.JointEmbeddingPredictiveTrainer.html">JointEmbeddingPredictiveTrainer</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/optim.html">stable_ssl.optim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.optim.LARS.html">LARS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.optim.CosineDecayer.html">CosineDecayer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.optim.LinearWarmup.html">LinearWarmup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.optim.LinearWarmupCosineAnnealing.html">LinearWarmupCosineAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.optim.LinearWarmupCyclicAnnealing.html">LinearWarmupCyclicAnnealing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.optim.LinearWarmupThreeStepsAnnealing.html">LinearWarmupThreeStepsAnnealing</a></li>
 </ul>
 </details></li>
 </ul>
@@ -408,7 +424,7 @@ with class imbalance.</p>
         <span class="n">distribution</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.exp.html#numpy.exp" title="numpy.exp" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-data"><span class="n">np</span><span class="o">.</span><span class="n">exp</span></a><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace" title="numpy.linspace" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">linspace</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">distribution</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
         <span class="n">distribution</span> <span class="o">/=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.sum.html#numpy.sum" title="numpy.sum" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">sum</span></a><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
         <span class="n">trainset</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">resample_classes</span><span class="p">(</span><span class="n">trainset</span><span class="p">,</span> <span class="n">distribution</span><span class="p">)</span>
-        <span class="n">trainloader</span> <span class="o">=</span> <a href="http://pytorch.org/docs/2.0/data.html#torch.utils.data.DataLoader" title="torch.utils.data.DataLoader" class="sphx-glr-backref-module-torch-utils-data sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span></a><span class="p">(</span>
+        <span class="n">trainloader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
             <span class="n">trainset</span><span class="p">,</span>
             <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
             <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -427,7 +443,7 @@ with class imbalance.</p>
         <span class="n">testset</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">CIFAR10</span><span class="p">(</span>
             <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span>
         <span class="p">)</span>
-        <span class="n">testloader</span> <span class="o">=</span> <a href="http://pytorch.org/docs/2.0/data.html#torch.utils.data.DataLoader" title="torch.utils.data.DataLoader" class="sphx-glr-backref-module-torch-utils-data sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span></a><span class="p">(</span>
+        <span class="n">testloader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
             <span class="n">testset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">2</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">testloader</span>
@@ -448,7 +464,7 @@ with class imbalance.</p>
             <span class="p">{</span><span class="s2">&quot;train/step/acc1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s2">&quot;train/step/acc1&quot;</span><span class="p">](</span><span class="n">preds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])},</span>
             <span class="n">commit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <a href="http://pytorch.org/docs/2.0/generated/torch.nn.functional.cross_entropy.html#torch.nn.functional.cross_entropy" title="torch.nn.functional.cross_entropy" class="sphx-glr-backref-module-torch-nn-functional sphx-glr-backref-type-py-function"><span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span></a><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
 
 <span class="nd">@hydra</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">version_base</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
