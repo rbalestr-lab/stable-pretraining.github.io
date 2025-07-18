@@ -406,14 +406,14 @@ document.write(`
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.OnlineProbe.html#stable_ssl.callbacks.OnlineProbe" title="stable_ssl.callbacks.OnlineProbe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnlineProbe</span></code></a>(name, pl_module, input, target, ...)</p></td>
 <td><p>Attaches a MLP for fine-tuning using the standard self-supervised protocol.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.OnlineKNN.html#stable_ssl.callbacks.OnlineKNN" title="stable_ssl.callbacks.OnlineKNN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnlineKNN</span></code></a>(pl_module, name, input, target, ...)</p></td>
-<td><p>Weighted KNN online evaluator for self-supervised learning.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.OnlineKNN.html#stable_ssl.callbacks.OnlineKNN" title="stable_ssl.callbacks.OnlineKNN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnlineKNN</span></code></a>(name, input, target, queue_length, ...)</p></td>
+<td><p>Weighted KNN online evaluator using queue discovery.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.OnlineWriter.html#stable_ssl.callbacks.OnlineWriter" title="stable_ssl.callbacks.OnlineWriter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnlineWriter</span></code></a>(names, path, during[, ...])</p></td>
 <td><p>Attaches an OnlineWriter callback.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.RankMe.html#stable_ssl.callbacks.RankMe" title="stable_ssl.callbacks.RankMe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RankMe</span></code></a>(pl_module, name, target, ...)</p></td>
-<td><p>RankMe (effective rank) monitor from <span id="id1">[<a class="reference internal" href="../bibliography.html#id10" title="Quentin Garrido, Randall Balestriero, Laurent Najman, and Yann Lecun. Rankme: assessing the downstream performance of pretrained self-supervised representations by their rank. In International conference on machine learning, 10929–10974. PMLR, 2023.">Garrido <em>et al.</em>, 2023</a>]</span>.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.RankMe.html#stable_ssl.callbacks.RankMe" title="stable_ssl.callbacks.RankMe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RankMe</span></code></a>(name, target, queue_length, target_shape)</p></td>
+<td><p>RankMe (effective rank) monitor using queue discovery.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.LiDAR.html#stable_ssl.callbacks.LiDAR" title="stable_ssl.callbacks.LiDAR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LiDAR</span></code></a>(pl_module, name, target, queue_length, ...)</p></td>
 <td><p>LiDAR (Linear Discriminant Analysis Rank) monitor from :cite`thilak2023lidar`.</p></td>
