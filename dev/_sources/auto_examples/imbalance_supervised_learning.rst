@@ -17,11 +17,9 @@
 
 .. _sphx_glr_auto_examples_imbalance_supervised_learning.py:
 
+This example demonstrates how to use stable-SSL to train a supervised model on CIFAR10 with class imbalance.
 
-This example demonstrates how to use stable-SSL to train a supervised model on CIFAR10
-with class imbalance.
-
-.. GENERATED FROM PYTHON SOURCE LINES 5-129
+.. GENERATED FROM PYTHON SOURCE LINES 2-130
 
 .. code-block:: Python
 
@@ -39,6 +37,8 @@ with class imbalance.
 
 
     class MyCustomSupervised(Supervised):
+        """Custom supervised example model for an imbalanced dataset."""
+
         def initialize_train_loader(self):
             transform = transforms.Compose(
                 [
@@ -83,9 +83,11 @@ with class imbalance.
             return self.model(x)
 
         def compute_loss(self):
-            """The computer loss is called during training on each mini-batch
-            stable-SSL automatically stores the output of the data loader as `self.data`
-            which you can access directly within that function"""
+            """The compute_loss method is called during training on each mini-batch.
+
+            stable-SSL automatically stores the output of the data loader as `self.data`,
+            which you can access directly within this function.
+            """
             preds = self.forward(self.data[0])
             print(self.data[1][:4])
             self.log(

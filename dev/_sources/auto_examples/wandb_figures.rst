@@ -17,8 +17,8 @@
 
 .. _sphx_glr_auto_examples_wandb_figures.py:
 
-
 This script demonstrates how to retrieve data from wandb using the stable-SSL library and create plots from it.
+
 To use, you should set the entity variable to your WandB entity and the project variable to the specific project within
 your WandB entity that you want to access runs from.
 
@@ -27,10 +27,10 @@ your WandB entity that you want to access runs from.
 .. code-block:: Python
 
 
-    import stable_ssl as ssl
-    import re
     import matplotlib.pyplot as plt
     from tqdm import tqdm
+
+    import stable_ssl as ssl
 
     entity = "[YOUR ENTITY HERE]"
     project = "[YOUR PROJECT HERE]"
@@ -89,7 +89,7 @@ your WandB entity that you want to access runs from.
                 and spurious_proportion >= 0
                 and lora_rank is not None
                 and use_spurious
-                and using_list == None
+                and using_list is None
             ):
                 # Extract balanced accuracy from the run
                 new_df, config = ssl.reader.wandb(entity, project, run_id)

@@ -191,7 +191,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.data.download.html">download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.data.bulk_download.html">bulk_download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.data.transforms.html">transforms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.data.dataset.html">dataset</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -335,7 +334,8 @@ document.write(`
                 <article class="bd-article">
                   
   <h1>Source code for stable_ssl.module</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 
@@ -345,34 +345,110 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tabulate</span><span class="w"> </span><span class="kn">import</span> <span class="n">tabulate</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_required_fn_parameters</span>
-
 
 <div class="viewcode-block" id="Module">
 <a class="viewcode-back" href="../../api/gen_modules/stable_ssl.module.Module.html#stable_ssl.module.Module">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Module</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">LightningModule</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;PyTorch Lightning module with callbacks support, user-defined forward and metrics.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;PyTorch Lightning module using manual optimization with multi-optimizer support.</span>
+
+<span class="sd">    Core usage</span>
+<span class="sd">    - Provide a custom `forward(self, batch, stage)` via the `forward` argument at init.</span>
+<span class="sd">    - During training, `forward` must return a dict with `state[&quot;loss&quot;]` (a single joint loss).</span>
+<span class="sd">      When multiple optimizers are configured, this joint loss is used for all optimizers.</span>
+
+<span class="sd">    Optimizer configuration (`self.optim`)</span>
+<span class="sd">    - Single optimizer:</span>
+<span class="sd">      {&quot;optimizer&quot;: str|dict|partial|Class, &quot;scheduler&quot;: &lt;see below&gt;, &quot;interval&quot;: &quot;step&quot;|&quot;epoch&quot;, &quot;frequency&quot;: int}</span>
+<span class="sd">      - Optimizer accepted forms:</span>
+<span class="sd">        * string name (e.g., &quot;AdamW&quot;, &quot;SGD&quot;) from torch.optim</span>
+<span class="sd">        * dict: {&quot;type&quot;: &quot;AdamW&quot;, &quot;lr&quot;: 1e-3, ...}</span>
+<span class="sd">        * functools.partial: partial(torch.optim.AdamW, lr=1e-3)</span>
+<span class="sd">        * optimizer class: torch.optim.AdamW</span>
+<span class="sd">    - Multiple optimizers:</span>
+<span class="sd">      {</span>
+<span class="sd">        name: {</span>
+<span class="sd">          &quot;modules&quot;: &quot;regex&quot;,                # assign params by module-name pattern (children inherit)</span>
+<span class="sd">          &quot;optimizer&quot;: str|dict|partial|Class, # optimizer factory (same accepted forms as above)</span>
+<span class="sd">          &quot;scheduler&quot;: str|dict|partial|Class, # flexible scheduler config (see below)</span>
+<span class="sd">          &quot;interval&quot;: &quot;step&quot;|&quot;epoch&quot;,       # scheduler interval</span>
+<span class="sd">          &quot;frequency&quot;: int,                   # optimizer step frequency</span>
+<span class="sd">          &quot;monitor&quot;: str                      # (optional) for ReduceLROnPlateau; alternatively set inside scheduler dict</span>
+<span class="sd">        }, ...</span>
+<span class="sd">      }</span>
+
+<span class="sd">    Parameter assignment (multi-optimizer)</span>
+<span class="sd">    - Modules are matched by regex on their qualified name. Children inherit the parent&#39;s assignment</span>
+<span class="sd">      unless they match a more specific pattern. Only direct parameters of each module are collected</span>
+<span class="sd">      to avoid duplication.</span>
+
+<span class="sd">    Schedulers (flexible)</span>
+<span class="sd">    - Accepted forms: string name (e.g., &quot;CosineAnnealingLR&quot;, &quot;StepLR&quot;), dict with {&quot;type&quot;: &quot;...&quot;, ...},</span>
+<span class="sd">      functools.partial, or a scheduler class. Smart defaults are applied when params are omitted for</span>
+<span class="sd">      common schedulers (CosineAnnealingLR, OneCycleLR, StepLR, ExponentialLR, ReduceLROnPlateau,</span>
+<span class="sd">      LinearLR, ConstantLR). For ReduceLROnPlateau, a `monitor` key is added (default: &quot;val_loss&quot;).</span>
+<span class="sd">      You may specify `monitor` either alongside the optimizer config (top level) or inside the</span>
+<span class="sd">      scheduler dict itself.</span>
+<span class="sd">    - The resulting Lightning scheduler dict includes `interval` and `frequency` (or `scheduler_frequency`).</span>
+
+<span class="sd">    Training loop behavior</span>
+<span class="sd">    - Manual optimization (`automatic_optimization = False`).</span>
+<span class="sd">    - Gradient accumulation: scales loss by 1/N where N = Trainer.accumulate_grad_batches and steps on the boundary.</span>
+<span class="sd">    - Per-optimizer step frequency: each optimizer steps only when its frequency boundary is met (in addition to accumulation boundary).</span>
+<span class="sd">    - Gradient clipping: uses Trainer&#39;s `gradient_clip_val` and `gradient_clip_algorithm` before each step.</span>
+<span class="sd">    - Returns the `state` dict from `forward` unchanged for logging/inspection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Centralized defaults for common schedulers (callables receive self and optimizer)</span>
+    <span class="n">_SCHEDULER_DEFAULT_FACTORIES</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;T_max&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">estimated_stepping_batches</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;OneCycleLR&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;max_lr&quot;</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;lr&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;total_steps&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">estimated_stepping_batches</span><span class="p">,</span>
+            <span class="s2">&quot;pct_start&quot;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="mi">10</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">max_epochs</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;StepLR&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;step_size&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span>
+        <span class="s2">&quot;ExponentialLR&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">},</span>
+        <span class="s2">&quot;ReduceLROnPlateau&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;patience&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;LinearLR&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s2">&quot;ConstantLR&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">forward</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span> <span class="n">hparams</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Configuring module! 🔧&quot;</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting `automatic_optimization` to False! 🔧&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Initializing Module configuration...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Manual optimization to support multiple optimizers and custom stepping</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">automatic_optimization</span> <span class="o">=</span> <span class="kc">False</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks_modules</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks_metrics</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;takes no args! this is to simplify logging&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Module does not accept positional arguments (*args). Please use keyword arguments instead (e.g., Module(forward=my_forward, hparams=my_hparams)).&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">if</span> <span class="n">hparams</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No hparams given, none will be logged!&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;No hyperparameters provided - hyperparameter logging is disabled.&quot;</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Saving user&#39;s hparams!&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Saving provided hyperparameters.&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save_hyperparameters</span><span class="p">(</span><span class="n">hparams</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Using forward method from user&quot;</span><span class="p">)</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting custom forward method.&quot;</span><span class="p">)</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;forward&quot;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">forward</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
+
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting `self.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">` with </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2"> from user&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting attribute: self.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
         <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Stage&quot;</span><span class="p">,</span> <span class="s2">&quot;Inputs&quot;</span><span class="p">,</span> <span class="s2">&quot;Metric&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;metrics&quot;</span><span class="p">):</span>
             <span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
@@ -389,54 +465,131 @@ document.write(`
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">tabulate</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span><span class="w"> </span><span class="n">headers</span><span class="p">,</span><span class="w"> </span><span class="n">tablefmt</span><span class="o">=</span><span class="s1">&#39;heavy_outline&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">train</span><span class="o">=</span><span class="p">{},</span> <span class="n">validate</span><span class="o">=</span><span class="p">{},</span> <span class="n">test</span><span class="o">=</span><span class="p">{},</span> <span class="n">predict</span><span class="o">=</span><span class="p">{})</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No `metrics` given, automatic metric disabled&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;No metrics configuration provided - automatic metric tracking is disabled.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Internal optimizer metadata filled in configure_optimizers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_by_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Module.forward">
 <a class="viewcode-back" href="../../api/gen_modules/stable_ssl.module.Module.html#stable_ssl.module.Module.forward">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The forward() method must be implemented.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Module.named_parameters">
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.module.Module.html#stable_ssl.module.Module.named_parameters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">named_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override to globally exclude callback-related parameters.</span>
+
+<span class="sd">        Excludes parameters that belong to `self._callbacks_modules` or `self._callbacks_metrics`.</span>
+<span class="sd">        This prevents accidental optimization of callback/metric internals, even if external code</span>
+<span class="sd">        calls `self.parameters()` or `self.named_parameters()` directly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_callbacks_modules.&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                <span class="s2">&quot;_callbacks_metrics.&quot;</span>
+            <span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">yield</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span></div>
+
+
+<div class="viewcode-block" id="Module.parameters">
+<a class="viewcode-back" href="../../api/gen_modules/stable_ssl.module.Module.html#stable_ssl.module.Module.parameters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override to route through the filtered `named_parameters` implementation.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">param</span></div>
 
 
 <div class="viewcode-block" id="Module.training_step">
 <a class="viewcode-back" href="../../api/gen_modules/stable_ssl.module.Module.html#stable_ssl.module.Module.training_step">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">training_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">batch_idx</span><span class="p">):</span>
-        <span class="c1"># self.toggle_optimizer(opt)</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="s2">&quot;fit&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;loss&quot;</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">manual_backward</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;callbacks_training_step&quot;</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks_training_step</span><span class="p">:</span>
-                <span class="n">fn</span><span class="p">(</span><span class="n">batch_idx</span><span class="p">)</span>
-        <span class="c1"># if no optimization is happening we can leave early</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">state</span>
-        <span class="k">if</span> <span class="s2">&quot;loss&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="s2">&quot;the forward dictionary should contain `loss` otherwise use `optim=False` in your module&quot;</span>
-                <span class="s2">&quot;if you don&#39;t need training/optimization&quot;</span>
-            <span class="p">)</span>
-        <span class="c1"># self.untoggle_optimizer(opt)</span>
-        <span class="c1"># accumulate gradients of N batches</span>
-        <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">accumulate_grad_batches</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">N</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="c1"># clip gradients</span>
-            <span class="n">opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="p">()</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
-                <span class="n">opt</span> <span class="o">=</span> <span class="n">opt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">clip_gradients</span><span class="p">(</span>
-                <span class="n">opt</span><span class="p">,</span>
-                <span class="n">gradient_clip_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">gradient_clip_val</span><span class="p">,</span>
-                <span class="n">gradient_clip_algorithm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">gradient_clip_algorithm</span><span class="p">,</span>
-            <span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manual optimization training step with support for multiple optimizers.</span>
 
-            <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-            <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">(</span><span class="n">set_to_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">sch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr_schedulers</span><span class="p">()</span>
-            <span class="c1"># TODO: should we always use 0?</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">sch</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
-                <span class="n">sch</span> <span class="o">=</span> <span class="n">sch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">sch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">sch</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+<span class="sd">        Expected output from forward during training (stage=&quot;fit&quot;):</span>
+<span class="sd">        - state[&quot;loss&quot;]: torch.Tensor - Single joint loss for all optimizers</span>
+
+<span class="sd">        When multiple optimizers are configured, the same loss is used for all of them.</span>
+<span class="sd">        Each optimizer updates its assigned parameters based on gradients from this joint loss.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="s2">&quot;fit&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Early exit if optimization disabled</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;optim&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">state</span>
+
+        <span class="k">if</span> <span class="s2">&quot;loss&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Training step requires &#39;loss&#39; in the output state.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Resolve optimizers and schedulers (can be single or list)</span>
+        <span class="n">optimizers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">optimizers</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">optimizers</span> <span class="o">=</span> <span class="p">[</span><span class="n">optimizers</span><span class="p">]</span>
+
+        <span class="n">schedulers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr_schedulers</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">schedulers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">schedulers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">schedulers</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">schedulers</span> <span class="o">=</span> <span class="p">[</span><span class="n">schedulers</span><span class="p">]</span>
+
+        <span class="c1"># Get the joint loss</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Log training loss each step (and aggregate per epoch)</span>
+        <span class="n">log_value</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+            <span class="s2">&quot;train/loss&quot;</span><span class="p">,</span>
+            <span class="n">log_value</span><span class="p">,</span>
+            <span class="n">on_step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">on_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">prog_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">logger</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">sync_dist</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Gradient accumulation factor</span>
+        <span class="n">accum</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;accumulate_grad_batches&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">accum</span><span class="p">)</span>
+
+        <span class="c1"># Compute gradients once for the joint loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manual_backward</span><span class="p">(</span><span class="n">loss</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)</span>
+
+        <span class="c1"># Stepping and gradient clipping at accumulation boundary</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">accum</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">opt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">optimizers</span><span class="p">):</span>
+                <span class="c1"># Honor per-optimizer frequency if available</span>
+                <span class="n">step_freq</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                    <span class="n">step_freq</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">step_freq</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">step_freq</span> <span class="o">=</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">step_freq</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Clip gradients for this optimizer then step</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clip_gradients</span><span class="p">(</span>
+                    <span class="n">opt</span><span class="p">,</span>
+                    <span class="n">gradient_clip_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">gradient_clip_val</span><span class="p">,</span>
+                    <span class="n">gradient_clip_algorithm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">gradient_clip_algorithm</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+                <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">(</span><span class="n">set_to_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="c1"># Step matching scheduler if it exists</span>
+                <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">schedulers</span><span class="p">)</span> <span class="ow">and</span> <span class="n">schedulers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">schedulers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Scheduler step failed for optimizer index </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="p">)</span>
+
         <span class="k">return</span> <span class="n">state</span></div>
 
 
@@ -461,79 +614,429 @@ document.write(`
         <span class="k">return</span> <span class="n">state</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">create_scheduler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optim</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">CosineAnnealingLR</span><span class="p">(</span>
-                <span class="n">optim</span><span class="p">,</span> <span class="n">T_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">estimated_stepping_batches</span>
-            <span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;OneCycleLR&quot;</span><span class="p">:</span>
-            <span class="n">pct</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">10</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">max_epochs</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">OneCycleLR</span><span class="p">(</span>
-                <span class="n">optim</span><span class="p">,</span>
-                <span class="n">max_lr</span><span class="o">=</span><span class="n">optim</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;lr&quot;</span><span class="p">],</span>
-                <span class="n">total_steps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">estimated_stepping_batches</span><span class="p">,</span>
-                <span class="n">pct_start</span><span class="o">=</span><span class="n">pct</span><span class="p">,</span>
-            <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_scheduler_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scheduler_config</span><span class="p">,</span> <span class="n">scheduler_instance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract scheduler name from various config formats.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scheduler_config</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">scheduler_config</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scheduler_config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">scheduler_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">scheduler_config</span><span class="p">,</span> <span class="s2">&quot;func&quot;</span><span class="p">):</span>  <span class="c1"># partial</span>
+            <span class="k">return</span> <span class="n">scheduler_config</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">elif</span> <span class="n">scheduler_instance</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">scheduler_instance</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span>
+            <span class="k">return</span> <span class="s2">&quot;Unknown&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_scheduler_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build scheduler config dict for Lightning.&quot;&quot;&quot;</span>
+        <span class="n">scheduler_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="n">scheduler</span><span class="p">,</span>
+            <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler_frequency&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">scheduler_dict</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+
+        <span class="c1"># Add monitor for ReduceLROnPlateau</span>
+        <span class="n">scheduler_cfg</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler&quot;</span><span class="p">,</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">)</span>
+        <span class="n">scheduler_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scheduler_name</span><span class="p">(</span><span class="n">scheduler_cfg</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">scheduler_name</span> <span class="o">==</span> <span class="s2">&quot;ReduceLROnPlateau&quot;</span><span class="p">:</span>
+            <span class="c1"># Prefer nested monitor inside scheduler dict, fallback to top-level</span>
+            <span class="n">nested_monitor</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scheduler_cfg</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">nested_monitor</span> <span class="o">=</span> <span class="n">scheduler_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;monitor&quot;</span><span class="p">)</span>
+            <span class="n">scheduler_dict</span><span class="p">[</span><span class="s2">&quot;monitor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nested_monitor</span> <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;monitor&quot;</span><span class="p">,</span> <span class="s2">&quot;val_loss&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">scheduler_dict</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">optimizer_config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an optimizer from flexible configuration.</span>
+
+<span class="sd">        Accepts:</span>
+<span class="sd">        - str: optimizer name from torch.optim (e.g., &quot;AdamW&quot;, &quot;SGD&quot;)</span>
+<span class="sd">        - dict: {&quot;type&quot;: &quot;AdamW&quot;, &quot;lr&quot;: 1e-3, ...}</span>
+<span class="sd">        - partial: pre-configured optimizer factory</span>
+<span class="sd">        - class: optimizer class (e.g., torch.optim.AdamW)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># partial -&gt; call with params</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">optimizer_config</span><span class="p">,</span> <span class="n">partial</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">optimizer_config</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="c1"># dict -&gt; extract type and kwargs</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">optimizer_config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">config_copy</span> <span class="o">=</span> <span class="n">optimizer_config</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">opt_type</span> <span class="o">=</span> <span class="n">config_copy</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;AdamW&quot;</span><span class="p">)</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">config_copy</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">opt_type</span> <span class="o">=</span> <span class="n">optimizer_config</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># resolve class</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">opt_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="p">,</span> <span class="n">opt_type</span><span class="p">):</span>
+                <span class="n">opt_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="p">,</span> <span class="n">opt_type</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Optimizer &#39;</span><span class="si">{</span><span class="n">opt_type</span><span class="si">}</span><span class="s2">&#39; not found in torch.optim. Available: &quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="p">)</span> <span class="k">if</span> <span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">()])</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">opt_class</span> <span class="o">=</span> <span class="n">opt_type</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">opt_class</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">opt_class</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
+            <span class="n">required</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span>
+                <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">,</span> <span class="s2">&quot;params&quot;</span><span class="p">]</span>
+            <span class="p">]</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Failed to create </span><span class="si">{</span><span class="n">opt_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">. Required parameters: </span><span class="si">{</span><span class="n">required</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Provided: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">. Original error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_scheduler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler_config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a learning rate scheduler with flexible configuration.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            optimizer: The optimizer to attach the scheduler to</span>
+<span class="sd">            scheduler_config: Can be:</span>
+<span class="sd">                - str: Name of scheduler (e.g., &quot;CosineAnnealingLR&quot;)</span>
+<span class="sd">                - partial: Pre-configured scheduler (e.g., partial(CosineAnnealingLR, T_max=1000))</span>
+<span class="sd">                - dict: {&quot;type&quot;: &quot;CosineAnnealingLR&quot;, &quot;T_max&quot;: 1000, ...}</span>
+<span class="sd">                - class: Direct scheduler class (will use smart defaults)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Configured scheduler instance</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; # Simple string (uses smart defaults)</span>
+<span class="sd">            &gt;&gt;&gt; scheduler = self._create_scheduler(opt, &quot;CosineAnnealingLR&quot;)</span>
+
+<span class="sd">            &gt;&gt;&gt; # With custom parameters</span>
+<span class="sd">            &gt;&gt;&gt; scheduler = self._create_scheduler(</span>
+<span class="sd">            ...     opt, {&quot;type&quot;: &quot;StepLR&quot;, &quot;step_size&quot;: 30, &quot;gamma&quot;: 0.1}</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            &gt;&gt;&gt; # Using partial for full control</span>
+<span class="sd">            &gt;&gt;&gt; from functools import partial</span>
+<span class="sd">            &gt;&gt;&gt; scheduler = self._create_scheduler(</span>
+<span class="sd">            ...     opt, partial(torch.optim.lr_scheduler.ExponentialLR, gamma=0.95)</span>
+<span class="sd">            ... )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Handle partial - already configured, just call it</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scheduler_config</span><span class="p">,</span> <span class="n">partial</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">scheduler_config</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+
+        <span class="c1"># Handle dict format</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scheduler_config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">config_copy</span> <span class="o">=</span> <span class="n">scheduler_config</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">scheduler_type</span> <span class="o">=</span> <span class="n">config_copy</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">)</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="n">config_copy</span>
+        <span class="c1"># Handle string or class</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scheduler_type</span> <span class="o">=</span> <span class="n">scheduler_config</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Get scheduler class</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scheduler_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># Try to get from torch.optim.lr_scheduler</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="p">,</span> <span class="n">scheduler_type</span><span class="p">):</span>
+                <span class="n">scheduler_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="p">,</span> <span class="n">scheduler_type</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Scheduler &#39;</span><span class="si">{</span><span class="n">scheduler_type</span><span class="si">}</span><span class="s2">&#39; not found in torch.optim.lr_scheduler. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Available schedulers: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">dir</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)])</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scheduler_class</span> <span class="o">=</span> <span class="n">scheduler_type</span>
+
+        <span class="c1"># Apply smart defaults for common schedulers if params not provided</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">:</span>
+            <span class="n">scheduler_name</span> <span class="o">=</span> <span class="n">scheduler_class</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="k">if</span> <span class="n">scheduler_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SCHEDULER_DEFAULT_FACTORIES</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SCHEDULER_DEFAULT_FACTORIES</span><span class="p">[</span><span class="n">scheduler_name</span><span class="p">](</span>
+                        <span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Failed to build default params for </span><span class="si">{</span><span class="n">scheduler_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. Using library defaults.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Unknown scheduler: rely on library defaults</span>
+                <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Create scheduler</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">scheduler_class</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># Provide helpful error message</span>
+            <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">scheduler_class</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
+            <span class="n">required_params</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span>
+                <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">,</span> <span class="s2">&quot;optimizer&quot;</span><span class="p">]</span>
+            <span class="p">]</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Failed to create </span><span class="si">{</span><span class="n">scheduler_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Required parameters: </span><span class="si">{</span><span class="n">required_params</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Provided: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Original error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_collect_parameters_by_optimizer_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optim_items</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assign modules and collect parameters per optimizer group defined by regex.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            optim_items: list of (name, config) where config contains a &quot;modules&quot; regex</span>
+<span class="sd">                describing group membership.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            params_by_name: dict[name, List[nn.Parameter]]</span>
+<span class="sd">            modules_by_name: dict[name, List[str]]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Pre-compile regex with stable order from optim_items</span>
+        <span class="n">compiled</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;modules&quot;</span><span class="p">]))</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">optim_items</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Initialize containers</span>
+        <span class="n">params_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">compiled</span><span class="p">}</span>
+        <span class="n">modules_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">compiled</span><span class="p">}</span>
+
+        <span class="c1"># Map module -&gt; group index with inheritance</span>
+        <span class="n">module_to_group</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">qual_name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">named_modules</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">&quot;_callbacks_modules&quot;</span> <span class="ow">in</span> <span class="n">qual_name</span> <span class="ow">or</span> <span class="s2">&quot;_callbacks_metrics&quot;</span> <span class="ow">in</span> <span class="n">qual_name</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># inherit parent&#39;s group if any</span>
+            <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">qual_name</span><span class="p">:</span>
+                <span class="n">parent_name</span> <span class="o">=</span> <span class="n">qual_name</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">group_idx</span> <span class="o">=</span> <span class="n">module_to_group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">parent_name</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">group_idx</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="c1"># override if explicit match</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">regex</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">compiled</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">regex</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">qual_name</span><span class="p">):</span>
+                    <span class="n">group_idx</span> <span class="o">=</span> <span class="n">idx</span>
+                    <span class="k">break</span>
+
+            <span class="n">module_to_group</span><span class="p">[</span><span class="n">qual_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_idx</span>
+
+            <span class="k">if</span> <span class="n">group_idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">group_name</span> <span class="o">=</span> <span class="n">compiled</span><span class="p">[</span><span class="n">group_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="c1"># record module name</span>
+                <span class="n">modules_by_name</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">qual_name</span><span class="p">)</span>
+                <span class="c1"># collect direct parameters only to avoid duplication</span>
+                <span class="n">direct_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">direct_params</span><span class="p">:</span>
+                    <span class="n">params_by_name</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">direct_params</span><span class="p">)</span>
+
+        <span class="c1"># Logging summary</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">optim_items</span><span class="p">:</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;modules&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">tensors</span> <span class="o">=</span> <span class="n">params_by_name</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span>
+            <span class="n">num_tensors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tensors</span><span class="p">)</span>
+            <span class="n">num_elements</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">numel</span><span class="p">())</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">tensors</span><span class="p">)</span>
+            <span class="n">num_requires_grad</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">tensors</span><span class="p">)</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">group_name</span><span class="p">,</span>
+                    <span class="n">pattern</span><span class="p">,</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">modules_by_name</span><span class="p">[</span><span class="n">group_name</span><span class="p">]),</span>
+                    <span class="n">num_tensors</span><span class="p">,</span>
+                    <span class="n">num_elements</span><span class="p">,</span>
+                    <span class="n">num_requires_grad</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">rows</span><span class="p">:</span>
+            <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">&quot;Optimizer&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Pattern&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Matched Modules&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Param Tensors&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Total Params&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;RequiresGrad Tensors&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">tabulate</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s2">&quot;heavy_outline&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">params_by_name</span><span class="p">,</span> <span class="n">modules_by_name</span>
 
 <div class="viewcode-block" id="Module.configure_optimizers">
 <a class="viewcode-back" href="../../api/gen_modules/stable_ssl.module.Module.html#stable_ssl.module.Module.configure_optimizers">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">configure_optimizers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;`configure_optimizers` (main) 🔧&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configure optimizers and schedulers for manual optimization.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict or tuple: Optimizer configuration with optional learning rate scheduler.</span>
+<span class="sd">            For single optimizer: Returns a dict with optimizer and lr_scheduler.</span>
+<span class="sd">            For multiple optimizers: Returns a tuple of (optimizers, schedulers).</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            Multi-optimizer configuration with module pattern matching and schedulers:</span>
+
+<span class="sd">            &gt;&gt;&gt; # Simple single optimizer with scheduler</span>
+<span class="sd">            &gt;&gt;&gt; self.optim = {</span>
+<span class="sd">            ...     &quot;optimizer&quot;: partial(torch.optim.AdamW, lr=1e-3),</span>
+<span class="sd">            ...     &quot;scheduler&quot;: &quot;CosineAnnealingLR&quot;,  # Uses smart defaults</span>
+<span class="sd">            ...     &quot;interval&quot;: &quot;step&quot;,</span>
+<span class="sd">            ...     &quot;frequency&quot;: 1,</span>
+<span class="sd">            ... }</span>
+
+<span class="sd">            &gt;&gt;&gt; # Multi-optimizer with custom scheduler configs</span>
+<span class="sd">            &gt;&gt;&gt; self.optim = {</span>
+<span class="sd">            ...     &quot;encoder_opt&quot;: {</span>
+<span class="sd">            ...         &quot;modules&quot;: &quot;encoder&quot;,  # Matches &#39;encoder&#39; and all children</span>
+<span class="sd">            ...         &quot;optimizer&quot;: {&quot;type&quot;: &quot;AdamW&quot;, &quot;lr&quot;: 1e-3},</span>
+<span class="sd">            ...         &quot;scheduler&quot;: {</span>
+<span class="sd">            ...             &quot;type&quot;: &quot;OneCycleLR&quot;,</span>
+<span class="sd">            ...             &quot;max_lr&quot;: 1e-3,</span>
+<span class="sd">            ...             &quot;total_steps&quot;: 10000,</span>
+<span class="sd">            ...         },</span>
+<span class="sd">            ...         &quot;interval&quot;: &quot;step&quot;,</span>
+<span class="sd">            ...         &quot;frequency&quot;: 1,</span>
+<span class="sd">            ...     },</span>
+<span class="sd">            ...     &quot;head_opt&quot;: {</span>
+<span class="sd">            ...         &quot;modules&quot;: &quot;.*head$&quot;,  # Matches modules ending with &#39;head&#39;</span>
+<span class="sd">            ...         &quot;optimizer&quot;: &quot;SGD&quot;,</span>
+<span class="sd">            ...         &quot;scheduler&quot;: {</span>
+<span class="sd">            ...             &quot;type&quot;: &quot;ReduceLROnPlateau&quot;,</span>
+<span class="sd">            ...             &quot;mode&quot;: &quot;max&quot;,</span>
+<span class="sd">            ...             &quot;patience&quot;: 5,</span>
+<span class="sd">            ...             &quot;factor&quot;: 0.5,</span>
+<span class="sd">            ...         },</span>
+<span class="sd">            ...         &quot;monitor&quot;: &quot;val_accuracy&quot;,  # Required for ReduceLROnPlateau</span>
+<span class="sd">            ...         &quot;interval&quot;: &quot;epoch&quot;,</span>
+<span class="sd">            ...         &quot;frequency&quot;: 2,</span>
+<span class="sd">            ...     },</span>
+<span class="sd">            ... }</span>
+
+<span class="sd">            With model structure:</span>
+<span class="sd">            - encoder                 -&gt; encoder_opt (matches &quot;encoder&quot;)</span>
+<span class="sd">            - encoder.layer1          -&gt; encoder_opt (inherits from parent)</span>
+<span class="sd">            - encoder.layer1.conv     -&gt; encoder_opt (inherits from encoder.layer1)</span>
+<span class="sd">            - classifier_head         -&gt; head_opt (matches &quot;.*head$&quot;)</span>
+<span class="sd">            - classifier_head.linear  -&gt; head_opt (inherits from parent)</span>
+<span class="sd">            - decoder                 -&gt; None (no match, no parameters collected)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Configuring optimizers and learning rate schedulers...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Early exit for disabled optimization</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;optim&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Optimization disabled - skipping optimizer configuration.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;optim&quot;</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;No optimizer specified, using default AdamW and no scheduler!&quot;</span>
+                <span class="s2">&quot;Using default optimization setup: AdamW optimizer with CosineAnnealingLR scheduler.&quot;</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optim</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;⚠️⚠️⚠️ No optimizer given! Skipping...&quot;</span><span class="p">)</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;optimizer&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">partial</span><span class="p">):</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">retreived a single optimizer with correct type!&quot;</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">])</span>
-            <span class="k">assert</span> <span class="n">get_required_fn_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">()</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">if</span> <span class="s2">&quot;_callbacks_modules&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-            <span class="n">opt</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">](</span><span class="n">params</span><span class="p">)]</span>
-            <span class="n">sched_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler&quot;</span><span class="p">,</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">)</span>
-            <span class="n">sched</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_scheduler</span><span class="p">(</span><span class="n">opt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sched_name</span><span class="p">)</span>
-            <span class="n">opt_name</span> <span class="o">=</span> <span class="n">opt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="c1"># Single optimizer case</span>
+        <span class="n">optimizer_cfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;optimizer&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">optimizer_cfg</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">optimizer_cfg</span><span class="p">,</span> <span class="s2">&quot;__call__&quot;</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Configuring single optimizer.&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Direct parameter extraction - use globally filtered parameters</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+
+            <span class="n">opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_optimizer</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">optimizer_cfg</span> <span class="ow">or</span> <span class="s2">&quot;AdamW&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Create scheduler</span>
+            <span class="n">sched_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler&quot;</span><span class="p">,</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">)</span>
+            <span class="n">sched</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_scheduler</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">sched_config</span><span class="p">)</span>
+            <span class="n">sched_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scheduler_name</span><span class="p">(</span><span class="n">sched_config</span><span class="p">,</span> <span class="n">sched</span><span class="p">)</span>
+
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">- optimizer </span><span class="si">{</span><span class="n">opt_name</span><span class="si">}</span><span class="s2">: with trainable parameters, </span><span class="si">{</span><span class="n">sched_name</span><span class="si">}</span><span class="s2"> sched. ✅&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Configured </span><span class="si">{</span><span class="n">opt</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> optimizer with </span><span class="si">{</span><span class="n">sched_name</span><span class="si">}</span><span class="s2"> scheduler.&quot;</span>
             <span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Configuring optimizers, done!  ✅&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">opt</span><span class="p">,</span> <span class="p">[{</span><span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="n">sched</span><span class="p">,</span> <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="s2">&quot;step&quot;</span><span class="p">}]</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">optimizer specified by type (type(optimizer))...&quot;</span>
-                <span class="s2">&quot;we need a torch.optim.Optimizer type or dict!&quot;</span>
+
+            <span class="c1"># Track names/frequencies for training_step</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="p">}</span>
+
+            <span class="c1"># Build scheduler config dict for Lightning</span>
+            <span class="n">scheduler_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_scheduler_config</span><span class="p">(</span><span class="n">sched</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">)</span>
+
+            <span class="c1"># Return in list/dict style compatible with lr_schedulers() access</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">opt</span><span class="p">],</span> <span class="p">[</span><span class="n">scheduler_dict</span><span class="p">]</span>
+
+        <span class="c1"># Multiple optimizers case - check once</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Optimizer must be either a partial function or a dict of optimizer configs&quot;</span>
             <span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span>
+
+        <span class="c1"># Verify all values are dicts</span>
+        <span class="n">optim_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">optim_items</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;For multiple optimizers, all config values must be dicts&quot;</span><span class="p">)</span>
+
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">optimizer specified by Dict with keys </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">... 🔧&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Optimizer specified by Dict with keys </span><span class="si">{</span><span class="p">[</span><span class="n">k</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">optim_items</span><span class="p">]</span><span class="si">}</span><span class="s2">... 🔧&quot;</span>
         <span class="p">)</span>
-        <span class="n">regexes</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="s2">&quot;modules&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
-        <span class="n">parameters</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">regexes</span><span class="p">))]</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">named_modules</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">regex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">regexes</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">regex</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-                    <span class="n">parameters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
-                    <span class="k">break</span>
-        <span class="n">optimizer</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">opti</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">](</span><span class="n">params</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">opti</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">parameters</span><span class="p">)</span>
-        <span class="p">]</span>
-        <span class="n">scheduler</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">optim</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
-            <span class="n">sched_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler&quot;</span><span class="p">,</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">)</span>
-            <span class="n">sched</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_scheduler</span><span class="p">(</span><span class="n">optim</span><span class="p">,</span> <span class="n">sched_name</span><span class="p">)</span>
-            <span class="n">scheduler</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="n">sched</span><span class="p">,</span> <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">})</span>
+
+        <span class="c1"># Build grouping with detailed logging</span>
+        <span class="n">params_by_name</span><span class="p">,</span> <span class="n">modules_by_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collect_parameters_by_optimizer_groups</span><span class="p">(</span>
+            <span class="n">optim_items</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Build optimizers and schedulers</span>
+        <span class="n">optimizers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">schedulers</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_by_name</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">optim_items</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="n">params_by_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No parameters matched for optimizer </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="c1"># skip registration when there are no parameters</span>
+                <span class="k">continue</span>
+
+            <span class="n">opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_optimizer</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">])</span>
+            <span class="n">optimizers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
+
+            <span class="n">sched_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler&quot;</span><span class="p">,</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">)</span>
+            <span class="n">scheduler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_scheduler</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">sched_config</span><span class="p">)</span>
+            <span class="n">sched_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scheduler_name</span><span class="p">(</span><span class="n">sched_config</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">)</span>
+
+            <span class="c1"># Build scheduler config dict for Lightning</span>
+            <span class="n">scheduler_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_scheduler_config</span><span class="p">(</span><span class="n">scheduler</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">schedulers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scheduler_dict</span><span class="p">)</span>
+
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">- optimizer </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="si">}</span><span class="s2"> parameters, </span><span class="si">{</span><span class="n">sched_name</span><span class="si">}</span><span class="s2"> sched. ✅&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Configured optimizer &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; (modules=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">modules_by_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="p">[]))</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;param_tensors=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="si">}</span><span class="s2">, total_params=</span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">numel</span><span class="p">())</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">params</span><span class="p">)</span><span class="si">}</span><span class="s2">) &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;with </span><span class="si">{</span><span class="n">sched_name</span><span class="si">}</span><span class="s2"> scheduler.&quot;</span>
             <span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Configuring optimizers, done!  ✅&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span></div>
+
+            <span class="c1"># Track names and frequencies aligned to optimizer order</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_by_name</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">optimizers</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">optimizers</span><span class="p">,</span> <span class="n">schedulers</span></div>
 </div>
 
 </pre></div>

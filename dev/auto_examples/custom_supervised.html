@@ -190,7 +190,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.download.html">download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.bulk_download.html">bulk_download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.transforms.html">transforms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/gen_modules/stable_ssl.data.dataset.html">dataset</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -396,8 +395,7 @@ document.write(`
 <p><a class="reference internal" href="#sphx-glr-download-auto-examples-custom-supervised-py"><span class="std std-ref">Go to the end</span></a>
 to download the full example code.</p>
 </div>
-<p class="sphx-glr-example-title" id="sphx-glr-auto-examples-custom-supervised-py">This example demonstrates how to create a custom supervised model using the
-<cite>stable_ssl</cite> library.</p>
+<p class="sphx-glr-example-title" id="sphx-glr-auto-examples-custom-supervised-py">This example demonstrates how to create a custom supervised model using the <cite>stable_ssl</cite> library.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hydra</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
@@ -410,6 +408,8 @@ to download the full example code.</p>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyCustomSupervised</span><span class="p">(</span><span class="n">Supervised</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom supervised example model.&quot;&quot;&quot;</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">initialize_train_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span>
             <span class="p">[</span>
@@ -448,9 +448,11 @@ to download the full example code.</p>
         <span class="k">return</span> <span class="n">testloader</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The computer loss is called during training on each mini-batch</span>
-<span class="sd">        stable-SSL automatically stores the output of the data loader as `self.data`</span>
-<span class="sd">        which you can access directly within that function&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The compute_loss method is called during training on each mini-batch.</span>
+
+<span class="sd">        stable-SSL automatically stores the output of the data loader as `self.data`,</span>
+<span class="sd">        which you can access directly within this function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 

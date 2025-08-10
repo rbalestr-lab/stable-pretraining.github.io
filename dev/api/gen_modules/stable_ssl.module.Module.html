@@ -192,7 +192,6 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.data.download.html">download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.data.bulk_download.html">bulk_download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.data.transforms.html">transforms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.data.dataset.html">dataset</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -384,6 +383,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module"><code class="docutils literal notranslate"><span class="pre">Module</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.configure_optimizers"><code class="docutils literal notranslate"><span class="pre">Module.configure_optimizers()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.forward"><code class="docutils literal notranslate"><span class="pre">Module.forward()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.named_parameters"><code class="docutils literal notranslate"><span class="pre">Module.named_parameters()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.parameters"><code class="docutils literal notranslate"><span class="pre">Module.parameters()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.predict_step"><code class="docutils literal notranslate"><span class="pre">Module.predict_step()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.test_step"><code class="docutils literal notranslate"><span class="pre">Module.test_step()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.training_step"><code class="docutils literal notranslate"><span class="pre">Module.training_step()</span></code></a></li>
@@ -407,108 +408,130 @@ document.write(`
 <dt class="sig sig-object py" id="stable_ssl.module.Module">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.module.</span></span><span class="sig-name descname"><span class="pre">Module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hparams</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/module.html#Module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.module.Module" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LightningModule</span></code></p>
-<p>PyTorch Lightning module with callbacks support, user-defined forward and metrics.</p>
+<p>PyTorch Lightning module using manual optimization with multi-optimizer support.</p>
+<p>Core usage
+- Provide a custom <cite>forward(self, batch, stage)</cite> via the <cite>forward</cite> argument at init.
+- During training, <cite>forward</cite> must return a dict with <cite>state[“loss”]</cite> (a single joint loss).</p>
+<blockquote>
+<div><p>When multiple optimizers are configured, this joint loss is used for all optimizers.</p>
+</div></blockquote>
+<p>Optimizer configuration (<cite>self.optim</cite>)
+- Single optimizer:</p>
+<blockquote>
+<div><p>{“optimizer”: str|dict|partial|Class, “scheduler”: &lt;see below&gt;, “interval”: “step”|”epoch”, “frequency”: int}
+- Optimizer accepted forms:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>string name (e.g., “AdamW”, “SGD”) from torch.optim</p></li>
+<li><p>dict: {“type”: “AdamW”, “lr”: 1e-3, …}</p></li>
+<li><p>functools.partial: partial(torch.optim.AdamW, lr=1e-3)</p></li>
+<li><p>optimizer class: torch.optim.AdamW</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<ul>
+<li><p>Multiple optimizers:
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>name: {</dt><dd><p>“modules”: “regex”,                # assign params by module-name pattern (children inherit)
+“optimizer”: str|dict|partial|Class, # optimizer factory (same accepted forms as above)
+“scheduler”: str|dict|partial|Class, # flexible scheduler config (see below)
+“interval”: “step”|”epoch”,       # scheduler interval
+“frequency”: int,                   # optimizer step frequency
+“monitor”: str                      # (optional) for ReduceLROnPlateau; alternatively set inside scheduler dict</p>
+</dd>
+</dl>
+<p>}, …</p>
+</div></blockquote>
+<p>}</p>
+</li>
+</ul>
+<p>Parameter assignment (multi-optimizer)
+- Modules are matched by regex on their qualified name. Children inherit the parent’s assignment</p>
+<blockquote>
+<div><p>unless they match a more specific pattern. Only direct parameters of each module are collected
+to avoid duplication.</p>
+</div></blockquote>
+<p>Schedulers (flexible)
+- Accepted forms: string name (e.g., “CosineAnnealingLR”, “StepLR”), dict with {“type”: “…”, …},</p>
+<blockquote>
+<div><p>functools.partial, or a scheduler class. Smart defaults are applied when params are omitted for
+common schedulers (CosineAnnealingLR, OneCycleLR, StepLR, ExponentialLR, ReduceLROnPlateau,
+LinearLR, ConstantLR). For ReduceLROnPlateau, a <cite>monitor</cite> key is added (default: “val_loss”).
+You may specify <cite>monitor</cite> either alongside the optimizer config (top level) or inside the
+scheduler dict itself.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>The resulting Lightning scheduler dict includes <cite>interval</cite> and <cite>frequency</cite> (or <cite>scheduler_frequency</cite>).</p></li>
+</ul>
+<p>Training loop behavior
+- Manual optimization (<cite>automatic_optimization = False</cite>).
+- Gradient accumulation: scales loss by 1/N where N = Trainer.accumulate_grad_batches and steps on the boundary.
+- Per-optimizer step frequency: each optimizer steps only when its frequency boundary is met (in addition to accumulation boundary).
+- Gradient clipping: uses Trainer’s <cite>gradient_clip_val</cite> and <cite>gradient_clip_algorithm</cite> before each step.
+- Returns the <cite>state</cite> dict from <cite>forward</cite> unchanged for logging/inspection.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.module.Module.configure_optimizers">
 <span class="sig-name descname"><span class="pre">configure_optimizers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/module.html#Module.configure_optimizers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.module.Module.configure_optimizers" title="Link to this definition">#</a></dt>
-<dd><p>Choose what optimizers and learning-rate schedulers to use in your optimization. Normally you’d need one.
-But in the case of GANs or similar you might have multiple. Optimization with multiple optimizers only works in
-the manual optimization mode.</p>
+<dd><p>Configure optimizers and schedulers for manual optimization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p>Any of these 6 options.</p>
-<ul class="simple">
-<li><p><strong>Single optimizer</strong>.</p></li>
-<li><p><strong>List or Tuple</strong> of optimizers.</p></li>
-<li><p><strong>Two lists</strong> - The first list has multiple optimizers, and the second has multiple LR schedulers
-(or multiple <code class="docutils literal notranslate"><span class="pre">lr_scheduler_config</span></code>).</p></li>
-<li><p><strong>Dictionary</strong>, with an <code class="docutils literal notranslate"><span class="pre">&quot;optimizer&quot;</span></code> key, and (optionally) a <code class="docutils literal notranslate"><span class="pre">&quot;lr_scheduler&quot;</span></code>
-key whose value is a single LR scheduler or <code class="docutils literal notranslate"><span class="pre">lr_scheduler_config</span></code>.</p></li>
-<li><p><strong>None</strong> - Fit will run without any optimizer.</p></li>
-</ul>
-</p>
+<dd class="field-odd"><p>Optimizer configuration with optional learning rate scheduler.
+For single optimizer: Returns a dict with optimizer and lr_scheduler.
+For multiple optimizers: Returns a tuple of (optimizers, schedulers).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)">dict</a> or <a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#tuple" title="(in Python v3.4)">tuple</a></p>
 </dd>
 </dl>
-<p>The <code class="docutils literal notranslate"><span class="pre">lr_scheduler_config</span></code> is a dictionary which contains the scheduler and its associated configuration.
-The default configuration is shown below.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lr_scheduler_config</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="c1"># REQUIRED: The scheduler instance</span>
-    <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="n">lr_scheduler</span><span class="p">,</span>
-    <span class="c1"># The unit of the scheduler&#39;s step size, could also be &#39;step&#39;.</span>
-    <span class="c1"># &#39;epoch&#39; updates the scheduler on epoch end whereas &#39;step&#39;</span>
-    <span class="c1"># updates it after a optimizer update.</span>
-    <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="s2">&quot;epoch&quot;</span><span class="p">,</span>
-    <span class="c1"># How many epochs/steps should pass between calls to</span>
-    <span class="c1"># `scheduler.step()`. 1 corresponds to updating the learning</span>
-    <span class="c1"># rate after every epoch/step.</span>
-    <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="c1"># Metric to monitor for schedulers like `ReduceLROnPlateau`</span>
-    <span class="s2">&quot;monitor&quot;</span><span class="p">:</span> <span class="s2">&quot;val_loss&quot;</span><span class="p">,</span>
-    <span class="c1"># If set to `True`, will enforce that the value specified &#39;monitor&#39;</span>
-    <span class="c1"># is available when the scheduler is updated, thus stopping</span>
-    <span class="c1"># training if not found. If set to `False`, it will only produce a warning</span>
-    <span class="s2">&quot;strict&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="c1"># If using the `LearningRateMonitor` callback to monitor the</span>
-    <span class="c1"># learning rate progress, this keyword can be used to specify</span>
-    <span class="c1"># a custom logged name</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">}</span>
+<p class="rubric">Example</p>
+<p>Multi-optimizer configuration with module pattern matching and schedulers:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Simple single optimizer with scheduler</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="n">partial</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">,</span>  <span class="c1"># Uses smart defaults</span>
+<span class="gp">... </span>    <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="s2">&quot;step&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-<p>When there are schedulers in which the <code class="docutils literal notranslate"><span class="pre">.step()</span></code> method is conditioned on a value, such as the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">torch.optim.lr_scheduler.ReduceLROnPlateau</span></code> scheduler, Lightning requires that the
-<code class="docutils literal notranslate"><span class="pre">lr_scheduler_config</span></code> contains the keyword <code class="docutils literal notranslate"><span class="pre">&quot;monitor&quot;</span></code> set to the metric name that the scheduler
-should be conditioned on.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># The ReduceLROnPlateau scheduler requires a monitor</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">configure_optimizers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="n">optimizer</span><span class="p">,</span>
-        <span class="s2">&quot;lr_scheduler&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="n">ReduceLROnPlateau</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="o">...</span><span class="p">),</span>
-            <span class="s2">&quot;monitor&quot;</span><span class="p">:</span> <span class="s2">&quot;metric_to_track&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="s2">&quot;indicates how often the metric is updated&quot;</span><span class="p">,</span>
-            <span class="c1"># If &quot;monitor&quot; references validation metrics, then &quot;frequency&quot; should be set to a</span>
-            <span class="c1"># multiple of &quot;trainer.check_val_every_n_epoch&quot;.</span>
-        <span class="p">},</span>
-    <span class="p">}</span>
-
-
-<span class="c1"># In the case of two optimizers, only one using the ReduceLROnPlateau scheduler</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">configure_optimizers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="n">optimizer1</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-    <span class="n">optimizer2</span> <span class="o">=</span> <span class="n">SGD</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-    <span class="n">scheduler1</span> <span class="o">=</span> <span class="n">ReduceLROnPlateau</span><span class="p">(</span><span class="n">optimizer1</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-    <span class="n">scheduler2</span> <span class="o">=</span> <span class="n">LambdaLR</span><span class="p">(</span><span class="n">optimizer2</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="n">optimizer1</span><span class="p">,</span>
-            <span class="s2">&quot;lr_scheduler&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="n">scheduler1</span><span class="p">,</span>
-                <span class="s2">&quot;monitor&quot;</span><span class="p">:</span> <span class="s2">&quot;metric_to_track&quot;</span><span class="p">,</span>
-            <span class="p">},</span>
-        <span class="p">},</span>
-        <span class="p">{</span><span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="n">optimizer2</span><span class="p">,</span> <span class="s2">&quot;lr_scheduler&quot;</span><span class="p">:</span> <span class="n">scheduler2</span><span class="p">},</span>
-    <span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Multi-optimizer with custom scheduler configs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;encoder_opt&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;modules&quot;</span><span class="p">:</span> <span class="s2">&quot;encoder&quot;</span><span class="p">,</span>  <span class="c1"># Matches &#39;encoder&#39; and all children</span>
+<span class="gp">... </span>        <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;AdamW&quot;</span><span class="p">,</span> <span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;OneCycleLR&quot;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s2">&quot;max_lr&quot;</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s2">&quot;total_steps&quot;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="p">},</span>
+<span class="gp">... </span>        <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="s2">&quot;step&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span>    <span class="s2">&quot;head_opt&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;modules&quot;</span><span class="p">:</span> <span class="s2">&quot;.*head$&quot;</span><span class="p">,</span>  <span class="c1"># Matches modules ending with &#39;head&#39;</span>
+<span class="gp">... </span>        <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="s2">&quot;SGD&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;ReduceLROnPlateau&quot;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s2">&quot;patience&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="p">},</span>
+<span class="gp">... </span>        <span class="s2">&quot;monitor&quot;</span><span class="p">:</span> <span class="s2">&quot;val_accuracy&quot;</span><span class="p">,</span>  <span class="c1"># Required for ReduceLROnPlateau</span>
+<span class="gp">... </span>        <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="s2">&quot;epoch&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;frequency&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
-<p>Metrics can be made available to monitor by simply logging it using
-<code class="docutils literal notranslate"><span class="pre">self.log('metric_to_track',</span> <span class="pre">metric_val)</span></code> in your <code class="xref py py-class docutils literal notranslate"><span class="pre">LightningModule</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Some things to know:</p>
-<ul class="simple">
-<li><p>Lightning calls <code class="docutils literal notranslate"><span class="pre">.backward()</span></code> and <code class="docutils literal notranslate"><span class="pre">.step()</span></code> automatically in case of automatic optimization.</p></li>
-<li><p>If a learning rate scheduler is specified in <code class="docutils literal notranslate"><span class="pre">configure_optimizers()</span></code> with key
-<code class="docutils literal notranslate"><span class="pre">&quot;interval&quot;</span></code> (default “epoch”) in the scheduler configuration, Lightning will call
-the scheduler’s <code class="docutils literal notranslate"><span class="pre">.step()</span></code> method automatically in case of automatic optimization.</p></li>
-<li><p>If you use 16-bit precision (<code class="docutils literal notranslate"><span class="pre">precision=16</span></code>), Lightning will automatically handle the optimizer.</p></li>
-<li><p>If you use <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.optim.LBFGS</span></code>, Lightning handles the closure function automatically for you.</p></li>
-<li><p>If you use multiple optimizers, you will have to switch to ‘manual optimization’ mode and step them
-yourself.</p></li>
-<li><p>If you need to control how often the optimizer steps, override the <code class="xref py py-meth docutils literal notranslate"><span class="pre">optimizer_step()</span></code> hook.</p></li>
-</ul>
-</div>
+<p>With model structure:
+- encoder                 -&gt; encoder_opt (matches “encoder”)
+- encoder.layer1          -&gt; encoder_opt (inherits from parent)
+- encoder.layer1.conv     -&gt; encoder_opt (inherits from encoder.layer1)
+- classifier_head         -&gt; head_opt (matches “.*head$”)
+- classifier_head.linear  -&gt; head_opt (inherits from parent)
+- decoder                 -&gt; None (no match, no parameters collected)</p>
 </dd></dl>
 
 <dl class="py method">
@@ -526,6 +549,21 @@ yourself.</p></li>
 <dd class="field-even"><p>Your model’s output</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.module.Module.named_parameters">
+<span class="sig-name descname"><span class="pre">named_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/module.html#Module.named_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.module.Module.named_parameters" title="Link to this definition">#</a></dt>
+<dd><p>Override to globally exclude callback-related parameters.</p>
+<p>Excludes parameters that belong to <cite>self._callbacks_modules</cite> or <cite>self._callbacks_metrics</cite>.
+This prevents accidental optimization of callback/metric internals, even if external code
+calls <cite>self.parameters()</cite> or <cite>self.named_parameters()</cite> directly.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.module.Module.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/module.html#Module.parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.module.Module.parameters" title="Link to this definition">#</a></dt>
+<dd><p>Override to route through the filtered <cite>named_parameters</cite> implementation.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -644,62 +682,11 @@ to training mode and gradients are enabled.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.module.Module.training_step">
 <span class="sig-name descname"><span class="pre">training_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/module.html#Module.training_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.module.Module.training_step" title="Link to this definition">#</a></dt>
-<dd><p>Here you compute and return the training loss and some additional metrics for e.g. the progress bar or
-logger.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>batch</strong> – The output of your data iterable, normally a <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>.</p></li>
-<li><p><strong>batch_idx</strong> – The index of this batch.</p></li>
-<li><p><strong>dataloader_idx</strong> – The index of the dataloader that produced this batch.
-(only if multiple dataloaders used)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> - The loss tensor</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dict</span></code> - A dictionary which can include any keys, but must include the key <code class="docutils literal notranslate"><span class="pre">'loss'</span></code> in the case of
-automatic optimization.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> - In automatic optimization, this will skip to the next batch (but is not supported for
-multi-GPU, TPU, or DeepSpeed). For manual optimization, this has no special meaning, as returning
-the loss is not required.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-<p>In this step you’d normally do the forward pass and calculate the loss for a batch.
-You can also do fancier things like multiple forward passes or something model specific.</p>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">training_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">batch_idx</span><span class="p">):</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">batch</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">loss</span>
-</pre></div>
-</div>
-<p>To use multiple optimizers, you can switch to ‘manual optimization’ and control their stepping:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">automatic_optimization</span> <span class="o">=</span> <span class="kc">False</span>
-
-
-<span class="c1"># Multiple optimizers (e.g.: GANs)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">training_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">batch_idx</span><span class="p">):</span>
-    <span class="n">opt1</span><span class="p">,</span> <span class="n">opt2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="p">()</span>
-
-    <span class="c1"># do training_step with encoder</span>
-    <span class="o">...</span>
-    <span class="n">opt1</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-    <span class="c1"># do training_step with decoder</span>
-    <span class="o">...</span>
-    <span class="n">opt2</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When <code class="docutils literal notranslate"><span class="pre">accumulate_grad_batches</span></code> &gt; 1, the loss returned here will be automatically
-normalized by <code class="docutils literal notranslate"><span class="pre">accumulate_grad_batches</span></code> internally.</p>
-</div>
+<dd><p>Manual optimization training step with support for multiple optimizers.</p>
+<p>Expected output from forward during training (stage=”fit”):
+- state[“loss”]: torch.Tensor - Single joint loss for all optimizers</p>
+<p>When multiple optimizers are configured, the same loss is used for all of them.
+Each optimizer updates its assigned parameters based on gradients from this joint loss.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -828,6 +815,8 @@ the model goes back to training mode and gradients are enabled.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module"><code class="docutils literal notranslate"><span class="pre">Module</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.configure_optimizers"><code class="docutils literal notranslate"><span class="pre">Module.configure_optimizers()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.forward"><code class="docutils literal notranslate"><span class="pre">Module.forward()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.named_parameters"><code class="docutils literal notranslate"><span class="pre">Module.named_parameters()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.parameters"><code class="docutils literal notranslate"><span class="pre">Module.parameters()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.predict_step"><code class="docutils literal notranslate"><span class="pre">Module.predict_step()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.test_step"><code class="docutils literal notranslate"><span class="pre">Module.test_step()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.module.Module.training_step"><code class="docutils literal notranslate"><span class="pre">Module.training_step()</span></code></a></li>

@@ -35,7 +35,7 @@ Below are example scripts showing how to use the library in various scenarios.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to create a custom supervised model using the">
+    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to create a custom supervised model using the stable_ssl library.">
 
 .. only:: html
 
@@ -46,13 +46,13 @@ Below are example scripts showing how to use the library in various scenarios.
 
 .. raw:: html
 
-      <div class="sphx-glr-thumbnail-title">This example demonstrates how to create a custom supervised model using the</div>
+      <div class="sphx-glr-thumbnail-title">This example demonstrates how to create a custom supervised model using the stable_ssl library.</div>
     </div>
 
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to use stable-SSL to train a supervised model on CIFAR10">
+    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to use stable-SSL to train a supervised model on CIFAR10 with class imbalance.">
 
 .. only:: html
 
@@ -63,13 +63,13 @@ Below are example scripts showing how to use the library in various scenarios.
 
 .. raw:: html
 
-      <div class="sphx-glr-thumbnail-title">This example demonstrates how to use stable-SSL to train a supervised model on CIFAR10</div>
+      <div class="sphx-glr-thumbnail-title">This example demonstrates how to use stable-SSL to train a supervised model on CIFAR10 with class imbalance.</div>
     </div>
 
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This script demonstrates how to retrieve data from wandb using the stable-SSL library and create plots from it.">
+    <div class="sphx-glr-thumbcontainer" tooltip="To use, you should set the entity variable to your WandB entity and the project variable to the specific project within your WandB entity that you want to access runs from.">
 
 .. only:: html
 

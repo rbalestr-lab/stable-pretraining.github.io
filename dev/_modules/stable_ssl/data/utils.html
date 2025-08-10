@@ -191,7 +191,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.download.html">download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.bulk_download.html">bulk_download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.transforms.html">transforms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.data.dataset.html">dataset</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/losses.html">stable_ssl.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -670,8 +669,11 @@ document.write(`
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">transform</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_steps</span> <span class="o">=</span> <span class="n">num_steps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">episode_indices</span>
+
+        <span class="n">episode_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">episode_indices</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">episode_lengths</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">total_episodes</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">num_steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">total_steps</span> <span class="o">-</span> <span class="p">(</span><span class="n">num_steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">total_episodes</span>
         <span class="p">)</span>

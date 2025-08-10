@@ -17,11 +17,9 @@
 
 .. _sphx_glr_auto_examples_custom_supervised.py:
 
+This example demonstrates how to create a custom supervised model using the `stable_ssl` library.
 
-This example demonstrates how to create a custom supervised model using the
-`stable_ssl` library.
-
-.. GENERATED FROM PYTHON SOURCE LINES 5-79
+.. GENERATED FROM PYTHON SOURCE LINES 2-80
 
 .. code-block:: Python
 
@@ -38,6 +36,8 @@ This example demonstrates how to create a custom supervised model using the
 
 
     class MyCustomSupervised(Supervised):
+        """Custom supervised example model."""
+
         def initialize_train_loader(self):
             transform = transforms.Compose(
                 [
@@ -76,9 +76,11 @@ This example demonstrates how to create a custom supervised model using the
             return testloader
 
         def compute_loss(self):
-            """The computer loss is called during training on each mini-batch
-            stable-SSL automatically stores the output of the data loader as `self.data`
-            which you can access directly within that function"""
+            """The compute_loss method is called during training on each mini-batch.
+
+            stable-SSL automatically stores the output of the data loader as `self.data`,
+            which you can access directly within this function.
+            """
             preds = self.forward(self.data[0])
             return F.cross_entropy(preds, self.data[1])
 
