@@ -167,7 +167,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.from_timm.html">from_timm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.from_torchvision.html">from_torchvision</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.set_embedding_dim.html">set_embedding_dim</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentModule.html">TeacherStudentModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentWrapper.html">TeacherStudentWrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.EvalOnly.html">EvalOnly</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.mae.html">mae</a></li>
 </ul>
@@ -374,15 +374,29 @@ document.write(`
 
 
 
-<div class="viewcode-block" id="TeacherStudentModule">
-<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentModule.html#stable_ssl.backbone.TeacherStudentModule">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">TeacherStudentModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Student network and its teacher network updated as an EMA of the student network.</span>
+<div class="viewcode-block" id="TeacherStudentWrapper">
+<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentWrapper.html#stable_ssl.backbone.TeacherStudentWrapper">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TeacherStudentWrapper</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Backbone wrapper that implements teacher-student distillation via EMA.</span>
+
+<span class="sd">    This is a wrapper for backbones that creates a teacher model as an exponential moving average (EMA) of the student model.</span>
+<span class="sd">    It should be passed as the backbone to stable_ssl.Module and accessed via</span>
+<span class="sd">    forward_student() and forward_teacher() methods in your custom forward function.</span>
 
 <span class="sd">    The teacher model is updated by taking a running average of the student&#39;s</span>
 <span class="sd">    parameters and buffers. When `ema_coefficient == 0.0`, the teacher and student</span>
 <span class="sd">    are literally the same object, saving memory but forward passes through the teacher</span>
 <span class="sd">    will not produce any gradients.</span>
+
+<span class="sd">    Usage example:</span>
+<span class="sd">        backbone = ResNet18()</span>
+<span class="sd">        wrapped_backbone = TeacherStudentWrapper(backbone)</span>
+<span class="sd">        module = ssl.Module(</span>
+<span class="sd">            backbone=wrapped_backbone,</span>
+<span class="sd">            projector=projector,</span>
+<span class="sd">            forward=forward_with_teacher_student,</span>
+<span class="sd">            ...</span>
+<span class="sd">        )</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        student (torch.nn.Module): The student model whose parameters will be tracked.</span>
@@ -435,8 +449,8 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ema_coefficient</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_ema_coefficient</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
 
-<div class="viewcode-block" id="TeacherStudentModule.update_teacher">
-<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentModule.html#stable_ssl.backbone.TeacherStudentModule.update_teacher">[docs]</a>
+<div class="viewcode-block" id="TeacherStudentWrapper.update_teacher">
+<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentWrapper.html#stable_ssl.backbone.TeacherStudentWrapper.update_teacher">[docs]</a>
     <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_teacher</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform one EMA update step on the teacher’s parameters.</span>
@@ -465,8 +479,8 @@ document.write(`
                 <span class="n">t</span><span class="o">.</span><span class="n">add_</span><span class="p">((</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ema_coefficient</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">ty</span><span class="p">)</span> <span class="o">*</span> <span class="n">s</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="TeacherStudentModule.update_ema_coefficient">
-<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentModule.html#stable_ssl.backbone.TeacherStudentModule.update_ema_coefficient">[docs]</a>
+<div class="viewcode-block" id="TeacherStudentWrapper.update_ema_coefficient">
+<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentWrapper.html#stable_ssl.backbone.TeacherStudentWrapper.update_ema_coefficient">[docs]</a>
     <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_ema_coefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">total_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the EMA coefficient following a cosine schedule.</span>
@@ -485,15 +499,15 @@ document.write(`
         <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">epoch</span> <span class="o">/</span> <span class="n">total_epochs</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="TeacherStudentModule.forward_student">
-<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentModule.html#stable_ssl.backbone.TeacherStudentModule.forward_student">[docs]</a>
+<div class="viewcode-block" id="TeacherStudentWrapper.forward_student">
+<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentWrapper.html#stable_ssl.backbone.TeacherStudentWrapper.forward_student">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward_student</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass through the student network. Gradients will flow normally.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">student</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="TeacherStudentModule.forward_teacher">
-<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentModule.html#stable_ssl.backbone.TeacherStudentModule.forward_teacher">[docs]</a>
+<div class="viewcode-block" id="TeacherStudentWrapper.forward_teacher">
+<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentWrapper.html#stable_ssl.backbone.TeacherStudentWrapper.forward_teacher">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward_teacher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass through the teacher network.</span>
 
@@ -505,8 +519,8 @@ document.write(`
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">teacher</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="TeacherStudentModule.forward">
-<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentModule.html#stable_ssl.backbone.TeacherStudentModule.forward">[docs]</a>
+<div class="viewcode-block" id="TeacherStudentWrapper.forward">
+<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentWrapper.html#stable_ssl.backbone.TeacherStudentWrapper.forward">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass through either the student or teacher network.</span>
 

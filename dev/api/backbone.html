@@ -168,7 +168,7 @@
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.from_timm.html">from_timm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.from_torchvision.html">from_torchvision</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.set_embedding_dim.html">set_embedding_dim</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.TeacherStudentModule.html">TeacherStudentModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.TeacherStudentWrapper.html">TeacherStudentWrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.EvalOnly.html">EvalOnly</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_ssl.backbone.mae.html">mae</a></li>
 </ul>
@@ -436,8 +436,8 @@ document.write(`
 <h2>Specialized Modules<a class="headerlink" href="#specialized-modules" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.backbone.TeacherStudentModule.html#stable_ssl.backbone.TeacherStudentModule" title="stable_ssl.backbone.TeacherStudentModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TeacherStudentModule</span></code></a>(student[, warm_init, ...])</p></td>
-<td><p>Student network and its teacher network updated as an EMA of the student network.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.backbone.TeacherStudentWrapper.html#stable_ssl.backbone.TeacherStudentWrapper" title="stable_ssl.backbone.TeacherStudentWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TeacherStudentWrapper</span></code></a>(student[, warm_init, ...])</p></td>
+<td><p>Backbone wrapper that implements teacher-student distillation via EMA.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.backbone.EvalOnly.html#stable_ssl.backbone.EvalOnly" title="stable_ssl.backbone.EvalOnly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EvalOnly</span></code></a>(backbone)</p></td>
 <td><p>Wrapper that forces a module to remain in evaluation mode.</p></td>

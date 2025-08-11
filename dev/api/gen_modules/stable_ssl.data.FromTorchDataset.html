@@ -168,7 +168,7 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.from_timm.html">from_timm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.from_torchvision.html">from_torchvision</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.set_embedding_dim.html">set_embedding_dim</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.TeacherStudentModule.html">TeacherStudentModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.TeacherStudentWrapper.html">TeacherStudentWrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.EvalOnly.html">EvalOnly</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.mae.html">mae</a></li>
 </ul>
@@ -396,9 +396,19 @@ document.write(`
 <h1>FromTorchDataset<a class="headerlink" href="#fromtorchdataset" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="stable_ssl.data.FromTorchDataset">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.data.</span></span><span class="sig-name descname"><span class="pre">FromTorchDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/data/utils.html#FromTorchDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.data.FromTorchDataset" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.data.</span></span><span class="sig-name descname"><span class="pre">FromTorchDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_sample_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/data/utils.html#FromTorchDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.data.FromTorchDataset" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></p>
 <p>Wrapper for PyTorch datasets with custom column naming and transforms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> – PyTorch dataset to wrap</p></li>
+<li><p><strong>names</strong> – List of names for each element returned by the dataset</p></li>
+<li><p><strong>transform</strong> – Optional transform to apply to samples</p></li>
+<li><p><strong>add_sample_idx</strong> – If True, automatically adds ‘sample_idx’ field to each sample</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <span class="target" id="sphx-glr-backref-stable-ssl-data-fromtorchdataset"></span></section>

@@ -167,7 +167,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.from_timm.html">from_timm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.from_torchvision.html">from_torchvision</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.set_embedding_dim.html">set_embedding_dim</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.TeacherStudentModule.html">TeacherStudentModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.TeacherStudentWrapper.html">TeacherStudentWrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.EvalOnly.html">EvalOnly</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.mae.html">mae</a></li>
 </ul>
@@ -460,6 +460,31 @@ document.write(`
         <span class="k">return</span> <span class="o">-</span><span class="n">sim</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
 </div>
 
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BYOLLoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalized MSE objective used in BYOL :cite:`grill2020bootstrap`.</span>
+
+<span class="sd">    Computes the mean squared error between L2-normalized online predictions</span>
+<span class="sd">    and L2-normalized target projections.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">online_pred</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">target_proj</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute BYOL loss.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            online_pred: Predictions from the online network predictor.</span>
+<span class="sd">            target_proj: Projections from the target network (no gradient).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Scalar loss value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">online_pred</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">online_pred</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">target_proj</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">target_proj</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">online_pred</span> <span class="o">*</span> <span class="n">target_proj</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="VICRegLoss">

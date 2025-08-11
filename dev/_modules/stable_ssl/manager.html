@@ -167,7 +167,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.from_timm.html">from_timm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.from_torchvision.html">from_torchvision</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.set_embedding_dim.html">set_embedding_dim</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.TeacherStudentModule.html">TeacherStudentModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.TeacherStudentWrapper.html">TeacherStudentWrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.EvalOnly.html">EvalOnly</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/gen_modules/stable_ssl.backbone.mae.html">mae</a></li>
 </ul>
@@ -631,6 +631,22 @@ document.write(`
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">callbacks</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c1"># Auto-detect TeacherStudentWrapper and add callback if needed</span>
+            <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instantiated_module</span><span class="o">.</span><span class="n">modules</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;update_teacher&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;teacher&quot;</span><span class="p">):</span>
+                    <span class="c1"># Check if TeacherStudentCallback already exists</span>
+                    <span class="kn">from</span><span class="w"> </span><span class="nn">.callbacks.teacher_student</span><span class="w"> </span><span class="kn">import</span> <span class="n">TeacherStudentCallback</span>
+
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
+                        <span class="nb">isinstance</span><span class="p">(</span><span class="n">cb</span><span class="p">,</span> <span class="n">TeacherStudentCallback</span><span class="p">)</span> <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">callbacks</span>
+                    <span class="p">):</span>
+                        <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TeacherStudentCallback</span><span class="p">())</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● Auto-added TeacherStudentCallback for TeacherStudentWrapper ✅&quot;</span>
+                        <span class="p">)</span>
+                    <span class="k">break</span>
+
             <span class="c1"># we use the following partial to give our init callbacks manually since otherwise</span>
             <span class="c1"># hydra instantiate throws an error</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span>

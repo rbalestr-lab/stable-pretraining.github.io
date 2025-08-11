@@ -167,7 +167,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.from_timm.html">from_timm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.from_torchvision.html">from_torchvision</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.set_embedding_dim.html">set_embedding_dim</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentModule.html">TeacherStudentModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.TeacherStudentWrapper.html">TeacherStudentWrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.EvalOnly.html">EvalOnly</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_ssl.backbone.mae.html">mae</a></li>
 </ul>
@@ -337,6 +337,7 @@ document.write(`
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch.optim.lr_scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">CosineAnnealingLR</span><span class="p">,</span>
     <span class="n">LambdaLR</span><span class="p">,</span>
@@ -345,6 +346,143 @@ document.write(`
     <span class="n">SequentialLR</span><span class="p">,</span>
     <span class="n">_LRScheduler</span><span class="p">,</span>
 <span class="p">)</span>
+
+<span class="c1"># Default parameter factories for common schedulers (both torch and custom)</span>
+<span class="c1"># These callables receive the calling module (for trainer context) and optimizer</span>
+<span class="n">DEFAULT_SCHEDULER_FACTORIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># torch schedulers</span>
+    <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">module</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;T_max&quot;</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;estimated_stepping_batches&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;OneCycleLR&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">module</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;max_lr&quot;</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;lr&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;total_steps&quot;</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;estimated_stepping_batches&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">&quot;pct_start&quot;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="mi">10</span> <span class="o">/</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;max_epochs&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mf">0.01</span><span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;StepLR&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">module</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;step_size&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span>
+    <span class="s2">&quot;ExponentialLR&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">module</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">},</span>
+    <span class="s2">&quot;ReduceLROnPlateau&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">module</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;patience&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;LinearLR&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">module</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s2">&quot;ConstantLR&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">module</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="c1"># custom schedulers (defined below)</span>
+    <span class="s2">&quot;LinearWarmup&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">module</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;total_steps&quot;</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;estimated_stepping_batches&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">&quot;start_factor&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="s2">&quot;peak_step&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;estimated_stepping_batches&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;LinearWarmupCosineAnnealing&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">module</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;total_steps&quot;</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;estimated_stepping_batches&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">&quot;start_factor&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="s2">&quot;end_lr&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s2">&quot;peak_step&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;estimated_stepping_batches&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;LinearWarmupCyclicAnnealing&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">module</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;total_steps&quot;</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;estimated_stepping_batches&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">&quot;start_factor&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="s2">&quot;peak_step&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;estimated_stepping_batches&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;LinearWarmupThreeStepsAnnealing&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">module</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;total_steps&quot;</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;estimated_stepping_batches&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">&quot;start_factor&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+        <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span>
+        <span class="s2">&quot;peak_step&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.05</span> <span class="o">*</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;estimated_stepping_batches&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;LinearWarmupCosineAnnealingLR&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">module</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;warmup_steps&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;estimated_stepping_batches&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;max_steps&quot;</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;estimated_stepping_batches&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">&quot;warmup_start_lr&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s2">&quot;eta_min&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_resolve_scheduler_callable</span><span class="p">(</span><span class="n">name_or_class</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolve a scheduler by name from torch or this module.</span>
+
+<span class="sd">    Accepts a string name, class, or callable. Returns a callable to construct the scheduler.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name_or_class</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">name_or_class</span>
+
+    <span class="c1"># Try torch.optim.lr_scheduler first</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="p">,</span> <span class="n">name_or_class</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="p">,</span> <span class="n">name_or_class</span><span class="p">)</span>
+
+    <span class="c1"># Then try this module (custom functions/classes)</span>
+    <span class="k">if</span> <span class="n">name_or_class</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nb">globals</span><span class="p">()[</span><span class="n">name_or_class</span><span class="p">]</span>
+
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Scheduler &#39;</span><span class="si">{</span><span class="n">name_or_class</span><span class="si">}</span><span class="s2">&#39; not found in torch.optim.lr_scheduler or stable_ssl.optim.lr_scheduler.&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_build_default_params</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
+    <span class="n">factory</span> <span class="o">=</span> <span class="n">DEFAULT_SCHEDULER_FACTORIES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">factory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">factory</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
+    <span class="c1"># Remove None in case trainer context is missing</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_scheduler</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler_config</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a learning rate scheduler instance from a flexible config.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        optimizer: torch optimizer</span>
+<span class="sd">        scheduler_config: str | dict | partial | Class | callable</span>
+<span class="sd">        module: optional calling module for defaults (expects module.trainer)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Instantiated scheduler</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># partial -&gt; call directly</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scheduler_config</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span>
+        <span class="n">scheduler_config</span><span class="p">,</span> <span class="s2">&quot;func&quot;</span>
+    <span class="p">):</span>
+        <span class="c1"># It&#39;s a functools.partial (duck-typing), call with optimizer</span>
+        <span class="k">return</span> <span class="n">scheduler_config</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+
+    <span class="c1"># dict -&gt; pop type + params</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scheduler_config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">scheduler_config</span><span class="p">)</span>
+        <span class="n">scheduler_type</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">cfg</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">scheduler_type</span> <span class="o">=</span> <span class="n">scheduler_config</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">scheduler_ctor</span> <span class="o">=</span> <span class="n">_resolve_scheduler_callable</span><span class="p">(</span><span class="n">scheduler_type</span><span class="p">)</span>
+
+    <span class="c1"># If no params provided, use smart defaults if known</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">scheduler_ctor</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">scheduler_ctor</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">)</span>
+            <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">scheduler_ctor</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="n">_build_default_params</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Instantiate. Works for both torch classes and our function factories.</span>
+    <span class="k">return</span> <span class="n">scheduler_ctor</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="CosineDecayer">

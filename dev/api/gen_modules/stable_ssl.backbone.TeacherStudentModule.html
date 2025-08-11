@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>TeacherStudentModule &#8212; stable-SSL 0.0.1.dev0 documentation</title>
+    <title>TeacherStudentWrapper &#8212; stable-SSL 0.0.1.dev0 documentation</title>
   
   
   
@@ -47,8 +47,6 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/gen_modules/stable_ssl.backbone.TeacherStudentModule';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="EvalOnly" href="stable_ssl.backbone.EvalOnly.html" />
-    <link rel="prev" title="set_embedding_dim" href="stable_ssl.backbone.set_embedding_dim.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -111,6 +109,8 @@
       
       
       
+        
+      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -160,15 +160,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../../bibliography.html">Bibliography</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../backbone.html">stable_ssl.backbone</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../backbone.html">stable_ssl.backbone</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.MLP.html">MLP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.Resnet9.html">Resnet9</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.ConvMixer.html">ConvMixer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.from_timm.html">from_timm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.from_torchvision.html">from_torchvision</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.set_embedding_dim.html">set_embedding_dim</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">TeacherStudentModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.TeacherStudentWrapper.html">TeacherStudentWrapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.EvalOnly.html">EvalOnly</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_ssl.backbone.mae.html">mae</a></li>
 </ul>
@@ -370,7 +370,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>TeacherStudentModule</h1>
+    <h1>TeacherStudentWrapper</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -380,12 +380,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentModule"><code class="docutils literal notranslate"><span class="pre">TeacherStudentModule</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentModule.forward"><code class="docutils literal notranslate"><span class="pre">TeacherStudentModule.forward()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentModule.forward_student"><code class="docutils literal notranslate"><span class="pre">TeacherStudentModule.forward_student()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentModule.forward_teacher"><code class="docutils literal notranslate"><span class="pre">TeacherStudentModule.forward_teacher()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentModule.update_ema_coefficient"><code class="docutils literal notranslate"><span class="pre">TeacherStudentModule.update_ema_coefficient()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentModule.update_teacher"><code class="docutils literal notranslate"><span class="pre">TeacherStudentModule.update_teacher()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentWrapper"><code class="docutils literal notranslate"><span class="pre">TeacherStudentWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentWrapper.forward"><code class="docutils literal notranslate"><span class="pre">TeacherStudentWrapper.forward()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentWrapper.forward_student"><code class="docutils literal notranslate"><span class="pre">TeacherStudentWrapper.forward_student()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentWrapper.forward_teacher"><code class="docutils literal notranslate"><span class="pre">TeacherStudentWrapper.forward_teacher()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentWrapper.update_ema_coefficient"><code class="docutils literal notranslate"><span class="pre">TeacherStudentWrapper.update_ema_coefficient()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentWrapper.update_teacher"><code class="docutils literal notranslate"><span class="pre">TeacherStudentWrapper.update_teacher()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -399,17 +399,33 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="teacherstudentmodule">
-<h1>TeacherStudentModule<a class="headerlink" href="#teacherstudentmodule" title="Link to this heading">#</a></h1>
+  <section id="teacherstudentwrapper">
+<h1>TeacherStudentWrapper<a class="headerlink" href="#teacherstudentwrapper" title="Link to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="stable_ssl.backbone.TeacherStudentModule">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.backbone.</span></span><span class="sig-name descname"><span class="pre">TeacherStudentModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">student</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warm_init</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_ema_coefficient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.996</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_ema_coefficient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/backbone/utils.html#TeacherStudentModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.backbone.TeacherStudentModule" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="stable_ssl.backbone.TeacherStudentWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.backbone.</span></span><span class="sig-name descname"><span class="pre">TeacherStudentWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">student</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warm_init</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_ema_coefficient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.996</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_ema_coefficient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/backbone/utils.html#TeacherStudentWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.backbone.TeacherStudentWrapper" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
-<p>Student network and its teacher network updated as an EMA of the student network.</p>
+<p>Backbone wrapper that implements teacher-student distillation via EMA.</p>
+<p>This is a wrapper for backbones that creates a teacher model as an exponential moving average (EMA) of the student model.
+It should be passed as the backbone to stable_ssl.Module and accessed via
+forward_student() and forward_teacher() methods in your custom forward function.</p>
 <p>The teacher model is updated by taking a running average of the student’s
 parameters and buffers. When <cite>ema_coefficient == 0.0</cite>, the teacher and student
 are literally the same object, saving memory but forward passes through the teacher
 will not produce any gradients.</p>
+<dl>
+<dt>Usage example:</dt><dd><p>backbone = ResNet18()
+wrapped_backbone = TeacherStudentWrapper(backbone)
+module = ssl.Module(</p>
+<blockquote>
+<div><p>backbone=wrapped_backbone,
+projector=projector,
+forward=forward_with_teacher_student,
+…</p>
+</div></blockquote>
+<p>)</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -428,22 +444,22 @@ Default is 1.</p></li>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="stable_ssl.backbone.TeacherStudentModule.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/backbone/utils.html#TeacherStudentModule.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.backbone.TeacherStudentModule.forward" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="stable_ssl.backbone.TeacherStudentWrapper.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/backbone/utils.html#TeacherStudentWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.backbone.TeacherStudentWrapper.forward" title="Link to this definition">#</a></dt>
 <dd><p>Forward pass through either the student or teacher network.</p>
 <p>You can choose which model to run in the default forward.
 Commonly the teacher is evaluated, so we default to that.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="stable_ssl.backbone.TeacherStudentModule.forward_student">
-<span class="sig-name descname"><span class="pre">forward_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/backbone/utils.html#TeacherStudentModule.forward_student"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.backbone.TeacherStudentModule.forward_student" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="stable_ssl.backbone.TeacherStudentWrapper.forward_student">
+<span class="sig-name descname"><span class="pre">forward_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/backbone/utils.html#TeacherStudentWrapper.forward_student"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.backbone.TeacherStudentWrapper.forward_student" title="Link to this definition">#</a></dt>
 <dd><p>Forward pass through the student network. Gradients will flow normally.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="stable_ssl.backbone.TeacherStudentModule.forward_teacher">
-<span class="sig-name descname"><span class="pre">forward_teacher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/backbone/utils.html#TeacherStudentModule.forward_teacher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.backbone.TeacherStudentModule.forward_teacher" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="stable_ssl.backbone.TeacherStudentWrapper.forward_teacher">
+<span class="sig-name descname"><span class="pre">forward_teacher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/backbone/utils.html#TeacherStudentWrapper.forward_teacher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.backbone.TeacherStudentWrapper.forward_teacher" title="Link to this definition">#</a></dt>
 <dd><p>Forward pass through the teacher network.</p>
 <p>By default, the teacher network does not require grad.
 If ema_coefficient == 0, then teacher==student,
@@ -451,8 +467,8 @@ so we wrap in torch.no_grad() to ensure no gradients flow.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="stable_ssl.backbone.TeacherStudentModule.update_ema_coefficient">
-<span class="sig-name descname"><span class="pre">update_ema_coefficient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epoch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_epochs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/backbone/utils.html#TeacherStudentModule.update_ema_coefficient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.backbone.TeacherStudentModule.update_ema_coefficient" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="stable_ssl.backbone.TeacherStudentWrapper.update_ema_coefficient">
+<span class="sig-name descname"><span class="pre">update_ema_coefficient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epoch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_epochs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/backbone/utils.html#TeacherStudentWrapper.update_ema_coefficient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.backbone.TeacherStudentWrapper.update_ema_coefficient" title="Link to this definition">#</a></dt>
 <dd><p>Update the EMA coefficient following a cosine schedule.</p>
 <dl class="simple">
 <dt>The EMA coefficient is updated following a cosine schedule:</dt><dd><p>ema_coefficient = final_ema_coefficient -
@@ -471,8 +487,8 @@ so we wrap in torch.no_grad() to ensure no gradients flow.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="stable_ssl.backbone.TeacherStudentModule.update_teacher">
-<span class="sig-name descname"><span class="pre">update_teacher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/backbone/utils.html#TeacherStudentModule.update_teacher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.backbone.TeacherStudentModule.update_teacher" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="stable_ssl.backbone.TeacherStudentWrapper.update_teacher">
+<span class="sig-name descname"><span class="pre">update_teacher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/backbone/utils.html#TeacherStudentWrapper.update_teacher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.backbone.TeacherStudentWrapper.update_teacher" title="Link to this definition">#</a></dt>
 <dd><p>Perform one EMA update step on the teacher’s parameters.</p>
 <dl class="simple">
 <dt>The update rule is:</dt><dd><p>teacher_param = ema_coefficient * teacher_param
@@ -486,7 +502,7 @@ not accumulate gradients, but the student remains fully trainable.</p>
 
 </dd></dl>
 
-<span class="target" id="sphx-glr-backref-stable-ssl-backbone-teacherstudentmodule"></span></section>
+<span class="target" id="sphx-glr-backref-stable-ssl-backbone-teacherstudentwrapper"></span></section>
 
 
                 </article>
@@ -499,24 +515,6 @@ not accumulate gradients, but the student remains fully trainable.</p>
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="stable_ssl.backbone.set_embedding_dim.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">set_embedding_dim</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="stable_ssl.backbone.EvalOnly.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">EvalOnly</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
@@ -533,12 +531,12 @@ not accumulate gradients, but the student remains fully trainable.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentModule"><code class="docutils literal notranslate"><span class="pre">TeacherStudentModule</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentModule.forward"><code class="docutils literal notranslate"><span class="pre">TeacherStudentModule.forward()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentModule.forward_student"><code class="docutils literal notranslate"><span class="pre">TeacherStudentModule.forward_student()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentModule.forward_teacher"><code class="docutils literal notranslate"><span class="pre">TeacherStudentModule.forward_teacher()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentModule.update_ema_coefficient"><code class="docutils literal notranslate"><span class="pre">TeacherStudentModule.update_ema_coefficient()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentModule.update_teacher"><code class="docutils literal notranslate"><span class="pre">TeacherStudentModule.update_teacher()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentWrapper"><code class="docutils literal notranslate"><span class="pre">TeacherStudentWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentWrapper.forward"><code class="docutils literal notranslate"><span class="pre">TeacherStudentWrapper.forward()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentWrapper.forward_student"><code class="docutils literal notranslate"><span class="pre">TeacherStudentWrapper.forward_student()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentWrapper.forward_teacher"><code class="docutils literal notranslate"><span class="pre">TeacherStudentWrapper.forward_teacher()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentWrapper.update_ema_coefficient"><code class="docutils literal notranslate"><span class="pre">TeacherStudentWrapper.update_ema_coefficient()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.backbone.TeacherStudentWrapper.update_teacher"><code class="docutils literal notranslate"><span class="pre">TeacherStudentWrapper.update_teacher()</span></code></a></li>
 </ul>
 </li>
 </ul>
