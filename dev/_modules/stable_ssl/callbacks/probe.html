@@ -642,6 +642,11 @@ document.write(`
             <span class="n">trainer</span><span class="o">.</span><span class="n">should_stop</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># note: we do not include `verbose` here on purpose</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;OnlineProbe[name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">]&quot;</span>
+
 <div class="viewcode-block" id="OnlineProbe.state_dict">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineProbe.html#stable_ssl.callbacks.OnlineProbe.state_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">state_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
