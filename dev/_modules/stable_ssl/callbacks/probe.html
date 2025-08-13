@@ -334,7 +334,8 @@ document.write(`
                 <article class="bd-article">
                   
   <h1>Source code for stable_ssl.callbacks.probe</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torchmetrics</span>
@@ -342,6 +343,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">lightning.pytorch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callback</span><span class="p">,</span> <span class="n">LightningModule</span><span class="p">,</span> <span class="n">Trainer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">stable_ssl.optim.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_optimizer</span><span class="p">,</span> <span class="n">create_scheduler</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">stable_ssl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_data_from_batch_or_outputs</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..optim</span><span class="w"> </span><span class="kn">import</span> <span class="n">LARS</span>
@@ -375,10 +377,18 @@ document.write(`
 <span class="sd">        probe: The probe module to train. Can be a nn.Module instance, callable that</span>
 <span class="sd">            returns a module, or Hydra config to instantiate.</span>
 <span class="sd">        loss_fn: Loss function for probe training (e.g., nn.CrossEntropyLoss()).</span>
-<span class="sd">        optimizer: Optimizer configuration for the probe. Can be optimizer instance,</span>
-<span class="sd">            callable, or Hydra config. Defaults to LARS if not specified.</span>
-<span class="sd">        scheduler: Learning rate scheduler configuration. Can be scheduler instance,</span>
-<span class="sd">            callable, or Hydra config. Defaults to ConstantLR if not specified.</span>
+<span class="sd">        optimizer: Optimizer configuration for the probe. Can be:</span>
+<span class="sd">            - str: optimizer name (e.g., &quot;AdamW&quot;, &quot;SGD&quot;, &quot;LARS&quot;)</span>
+<span class="sd">            - dict: {&quot;type&quot;: &quot;AdamW&quot;, &quot;lr&quot;: 1e-3, ...}</span>
+<span class="sd">            - partial: pre-configured optimizer factory</span>
+<span class="sd">            - optimizer instance or callable</span>
+<span class="sd">            - None: inherits from main Module&#39;s optimizer config (default)</span>
+<span class="sd">        scheduler: Learning rate scheduler configuration. Can be:</span>
+<span class="sd">            - str: scheduler name (e.g., &quot;CosineAnnealingLR&quot;, &quot;StepLR&quot;)</span>
+<span class="sd">            - dict: {&quot;type&quot;: &quot;CosineAnnealingLR&quot;, &quot;T_max&quot;: 1000, ...}</span>
+<span class="sd">            - partial: pre-configured scheduler factory</span>
+<span class="sd">            - scheduler instance or callable</span>
+<span class="sd">            - None: inherits from main Module&#39;s scheduler config (default)</span>
 <span class="sd">        accumulate_grad_batches: Number of batches to accumulate gradients before</span>
 <span class="sd">            optimizer step. Default is 1 (no accumulation).</span>
 <span class="sd">        metrics: Metrics to track during training/validation. Can be dict, list, tuple,</span>
@@ -401,8 +411,10 @@ document.write(`
         <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">probe</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
         <span class="n">loss_fn</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span>
-        <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">scheduler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">LRScheduler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scheduler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">LRScheduler</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">accumulate_grad_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">metrics</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">torchmetrics</span><span class="o">.</span><span class="n">Metric</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">early_stopping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EarlyStopping</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -466,40 +478,111 @@ document.write(`
             <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_modules</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">probe_module</span>
 
-        <span class="c1"># Initialize optimizer using the stored module</span>
+        <span class="c1"># Initialize optimizer - inherit from main module if not specified</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: No optimizer given, using default LARS&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">LARS</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span>
-                <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-                <span class="n">clip_lr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">eta</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
-                <span class="n">exclude_bias_n_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">weight_decay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_config</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">instantiate</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_config</span><span class="p">,</span>
-                    <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span>
-                    <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
-                <span class="p">)</span>
+            <span class="c1"># Try to inherit from main module&#39;s optimizer config</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;optim&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">:</span>
+                <span class="c1"># Extract optimizer config from main module</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="c1"># Check if it&#39;s a single optimizer config</span>
+                    <span class="k">if</span> <span class="s2">&quot;optimizer&quot;</span> <span class="ow">in</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">:</span>
+                        <span class="n">main_opt_config</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">]</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Inheriting optimizer config from main module&quot;</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># It&#39;s a multi-optimizer config, use the first one or a default</span>
+                        <span class="n">first_opt_key</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                        <span class="n">main_opt_config</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">[</span><span class="n">first_opt_key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                            <span class="s2">&quot;optimizer&quot;</span><span class="p">,</span> <span class="s2">&quot;LARS&quot;</span>
+                        <span class="p">)</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Inheriting optimizer config from &#39;</span><span class="si">{</span><span class="n">first_opt_key</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                        <span class="p">)</span>
 
-        <span class="c1"># Initialize scheduler</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: No scheduler given, using ConstantLR&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">ConstantLR</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">1.0</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_config</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">)</span>
+                    <span class="c1"># Create optimizer with inherited config</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">create_optimizer</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">main_opt_config</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Fallback to LARS</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Main module optim format not recognized, using LARS&quot;</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">LARS</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span>
+                        <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                        <span class="n">clip_lr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">eta</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
+                        <span class="n">exclude_bias_n_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">weight_decay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">instantiate</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_config</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span>
+                <span class="c1"># No main module config, use default LARS</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: No main module optimizer config found, using default LARS&quot;</span>
                 <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">LARS</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span>
+                    <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                    <span class="n">clip_lr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">eta</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
+                    <span class="n">exclude_bias_n_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">weight_decay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use explicitly provided optimizer config</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">create_optimizer</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_config</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Initialize scheduler - inherit from main module if not specified</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Try to inherit from main module&#39;s scheduler config</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;optim&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="c1"># Check if it&#39;s a single optimizer config</span>
+                    <span class="k">if</span> <span class="s2">&quot;scheduler&quot;</span> <span class="ow">in</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">:</span>
+                        <span class="n">main_sched_config</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                            <span class="s2">&quot;scheduler&quot;</span><span class="p">,</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span>
+                        <span class="p">)</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Inheriting scheduler config from main module&quot;</span>
+                        <span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">create_scheduler</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">main_sched_config</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="n">pl_module</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># It&#39;s a multi-optimizer config, use the first one</span>
+                        <span class="n">first_opt_key</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                        <span class="n">main_sched_config</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">[</span><span class="n">first_opt_key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                            <span class="s2">&quot;scheduler&quot;</span><span class="p">,</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span>
+                        <span class="p">)</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Inheriting scheduler config from &#39;</span><span class="si">{</span><span class="n">first_opt_key</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                        <span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">create_scheduler</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">main_sched_config</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="n">pl_module</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Fallback to ConstantLR</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Using default ConstantLR scheduler&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">ConstantLR</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">1.0</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># No main module config, use default</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: No main module scheduler config found, using ConstantLR&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">ConstantLR</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">1.0</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use explicitly provided scheduler config</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">create_scheduler</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_config</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="n">pl_module</span>
+            <span class="p">)</span>
 
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Setting up metrics&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;_callbacks_metrics&quot;</span><span class="p">):</span>
