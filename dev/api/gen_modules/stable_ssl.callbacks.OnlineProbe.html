@@ -385,6 +385,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.on_train_batch_end"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.on_train_batch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.on_validation_batch_end"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.on_validation_batch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.on_validation_epoch_end"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.on_validation_epoch_end()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.probe_module"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.probe_module</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.setup"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.setup()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.state_dict"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.state_dict()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.state_key"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.state_key</span></code></a></li>
@@ -407,30 +408,58 @@ document.write(`
 <dt class="sig sig-object py" id="stable_ssl.callbacks.OnlineProbe">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.callbacks.</span></span><span class="sig-name descname"><span class="pre">OnlineProbe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">probe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optimizer</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LRScheduler</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accumulate_grad_batches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#tuple" title="(in Python v3.4)"><span class="pre">tuple</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Metric</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">early_stopping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stable_ssl.callbacks.EarlyStopping.html#stable_ssl.callbacks.EarlyStopping" title="stable_ssl.callbacks.utils.EarlyStopping"><span class="pre">EarlyStopping</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/probe.html#OnlineProbe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.OnlineProbe" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Callback</span></code></p>
-<p>Attaches a nn.Module for fine-tuning using the standard self-supervised protocol.</p>
-<p>This callback trains a probe (typically a linear classifier) on top of frozen
-features during the main training process. It manages its own optimizer and
-training loop without modifying the base model’s methods.</p>
+<p>Online probe for evaluating learned representations during self-supervised training.</p>
+<p>This callback implements the standard linear evaluation protocol by training a probe
+(typically a linear classifier) on top of frozen features from the main model. The probe
+is trained simultaneously with the main model but maintains its own optimizer, scheduler,
+and training loop. This allows monitoring representation quality throughout training
+without modifying the base model.</p>
+<p>Key features:
+- Automatic gradient detachment to prevent probe gradients affecting the main model
+- Independent optimizer and scheduler management
+- Support for gradient accumulation
+- Mixed precision training compatibility through automatic dtype conversion
+- Built-in early stopping support
+- Metric tracking and logging</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – Unique identifier for this probe instance</p></li>
-<li><p><strong>input</strong> – Key in batch dict containing input features</p></li>
-<li><p><strong>target</strong> – Key in batch dict containing target labels</p></li>
-<li><p><strong>probe</strong> – The probe module (e.g., linear classifier)</p></li>
-<li><p><strong>loss_fn</strong> – Loss function for probe training</p></li>
-<li><p><strong>optimizer</strong> – Optimizer configuration for the probe</p></li>
-<li><p><strong>scheduler</strong> – Learning rate scheduler configuration</p></li>
-<li><p><strong>accumulate_grad_batches</strong> – Number of batches to accumulate gradients</p></li>
-<li><p><strong>metrics</strong> – Metrics to track during training/validation</p></li>
-<li><p><strong>early_stopping</strong> – Early stopping configuration</p></li>
+<li><p><strong>name</strong> – Unique identifier for this probe instance. Used for logging and storing
+metrics/modules.</p></li>
+<li><p><strong>input</strong> – Key in batch dict or outputs dict containing input features to probe.</p></li>
+<li><p><strong>target</strong> – Key in batch dict containing ground truth target labels.</p></li>
+<li><p><strong>probe</strong> – The probe module to train. Can be a nn.Module instance, callable that
+returns a module, or Hydra config to instantiate.</p></li>
+<li><p><strong>loss_fn</strong> – Loss function for probe training (e.g., nn.CrossEntropyLoss()).</p></li>
+<li><p><strong>optimizer</strong> – Optimizer configuration for the probe. Can be optimizer instance,
+callable, or Hydra config. Defaults to LARS if not specified.</p></li>
+<li><p><strong>scheduler</strong> – Learning rate scheduler configuration. Can be scheduler instance,
+callable, or Hydra config. Defaults to ConstantLR if not specified.</p></li>
+<li><p><strong>accumulate_grad_batches</strong> – Number of batches to accumulate gradients before
+optimizer step. Default is 1 (no accumulation).</p></li>
+<li><p><strong>metrics</strong> – Metrics to track during training/validation. Can be dict, list, tuple,
+or single metric instance.</p></li>
+<li><p><strong>early_stopping</strong> – Early stopping configuration to halt training if validation
+metric stops improving.</p></li>
 </ul>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>The probe module is stored in pl_module._callbacks_modules[name]</p></li>
+<li><p>Metrics are stored in pl_module._callbacks_metrics[name]</p></li>
+<li><p>Predictions are stored in batch dict with key ‘{name}_preds’</p></li>
+<li><p>Loss is logged as ‘train/{name}_loss’</p></li>
+<li><p>Metrics are logged with prefix ‘train/{name}_’ and ‘eval/{name}_’</p></li>
+</ul>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.callbacks.OnlineProbe.load_state_dict">
 <span class="sig-name descname"><span class="pre">load_state_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/probe.html#OnlineProbe.load_state_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.OnlineProbe.load_state_dict" title="Link to this definition">#</a></dt>
-<dd><p>Load callback state including probe module and optimizer states.</p>
+<dd><p>Load callback state - only optimizer and scheduler states.</p>
+<p>The probe module itself is loaded via pl_module._callbacks_modules,
+so we don’t handle it here.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -451,6 +480,15 @@ training loop without modifying the base model’s methods.</p>
 <dd><p>Handle early stopping if configured.</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="stable_ssl.callbacks.OnlineProbe.probe_module">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">probe_module</span></span><a class="headerlink" href="#stable_ssl.callbacks.OnlineProbe.probe_module" title="Link to this definition">#</a></dt>
+<dd><p>Access probe module from pl_module._callbacks_modules.</p>
+<p>This property is only accessible after setup() has been called.
+The probe module is stored centrally in pl_module._callbacks_modules
+to avoid duplication in checkpoints.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.callbacks.OnlineProbe.setup">
 <span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LightningModule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/probe.html#OnlineProbe.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.OnlineProbe.setup" title="Link to this definition">#</a></dt>
@@ -460,7 +498,9 @@ training loop without modifying the base model’s methods.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.callbacks.OnlineProbe.state_dict">
 <span class="sig-name descname"><span class="pre">state_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/probe.html#OnlineProbe.state_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.OnlineProbe.state_dict" title="Link to this definition">#</a></dt>
-<dd><p>Save callback state including probe module and optimizer states.</p>
+<dd><p>Save callback state - only optimizer and scheduler states.</p>
+<p>The probe module itself is saved via pl_module._callbacks_modules,
+so we don’t duplicate it here.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -526,6 +566,7 @@ the callback has state and 2) it is desired to maintain the state of multiple in
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.on_train_batch_end"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.on_train_batch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.on_validation_batch_end"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.on_validation_batch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.on_validation_epoch_end"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.on_validation_epoch_end()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.probe_module"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.probe_module</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.setup"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.setup()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.state_dict"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.state_dict()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineProbe.state_key"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.state_key</span></code></a></li>

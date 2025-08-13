@@ -401,7 +401,17 @@ document.write(`
 <dt class="sig sig-object py" id="stable_ssl.callbacks.ModuleSummary">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.callbacks.</span></span><span class="sig-name descname"><span class="pre">ModuleSummary</span></span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/trainer_info.html#ModuleSummary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.ModuleSummary" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Callback</span></code></p>
-<p>Callback for logging module summaries in a formatted table.</p>
+<p>Logs detailed module parameter statistics in a formatted table.</p>
+<p>This callback provides a comprehensive overview of all modules in the model,
+showing the number of trainable, non-trainable, uninitialized parameters,
+and buffers for each module. This helps understand model architecture and
+parameter distribution.</p>
+<p>The summary is displayed during the setup phase and includes:
+- Module name and hierarchy
+- Trainable parameter count
+- Non-trainable (frozen) parameter count
+- Uninitialized parameter count (for lazy modules)
+- Buffer count (non-parameter persistent state)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.callbacks.ModuleSummary.setup">
 <span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/trainer_info.html#ModuleSummary.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.ModuleSummary.setup" title="Link to this definition">#</a></dt>

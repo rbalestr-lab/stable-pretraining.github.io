@@ -404,6 +404,23 @@ document.write(`
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.callbacks.</span></span><span class="sig-name descname"><span class="pre">SklearnCheckpoint</span></span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/checkpoint_sklearn.html#SklearnCheckpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.SklearnCheckpoint" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Callback</span></code></p>
 <p>Callback for saving and loading sklearn models in PyTorch Lightning checkpoints.</p>
+<p>This callback automatically detects sklearn models (Regressors and Classifiers)
+attached to the Lightning module and handles their serialization/deserialization
+during checkpoint save/load operations. This is necessary because sklearn models
+are not natively supported by PyTorch’s checkpoint system.</p>
+<p>The callback will:
+1. Automatically discover sklearn models attached to the Lightning module
+2. Save them to the checkpoint dictionary during checkpoint saving
+3. Restore them from the checkpoint during checkpoint loading
+4. Log information about discovered sklearn modules during setup</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Only attributes that are sklearn RegressorMixin or ClassifierMixin instances are saved</p></li>
+<li><p>Private attributes (starting with ‘_’) are ignored</p></li>
+<li><p>The callback will raise an error if a sklearn model name conflicts with existing checkpoint keys</p></li>
+</ul>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.callbacks.SklearnCheckpoint.on_load_checkpoint">
 <span class="sig-name descname"><span class="pre">on_load_checkpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/checkpoint_sklearn.html#SklearnCheckpoint.on_load_checkpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.SklearnCheckpoint.on_load_checkpoint" title="Link to this definition">#</a></dt>

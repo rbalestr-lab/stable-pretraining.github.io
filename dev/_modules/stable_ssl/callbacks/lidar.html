@@ -402,7 +402,32 @@ document.write(`
 <div class="viewcode-block" id="LiDAR">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.LiDAR.html#stable_ssl.callbacks.LiDAR">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LiDAR</span><span class="p">(</span><span class="n">OnlineQueue</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;LiDAR (Linear Discriminant Analysis Rank) monitor from :cite`thilak2023lidar`.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LiDAR (Linear Discriminant Analysis Rank) monitor for detecting dimensional collapse.</span>
+
+<span class="sd">    LiDAR measures the effective rank of learned representations using Linear Discriminant</span>
+<span class="sd">    Analysis (LDA). It computes the exponential of the entropy of the eigenvalue distribution</span>
+<span class="sd">    from the LDA transformation, providing a metric between 1 and the feature dimension that</span>
+<span class="sd">    indicates how many dimensions are effectively being used.</span>
+
+<span class="sd">    This implementation is based on Thilak et al. &quot;The Pitfalls of Next-Token Prediction&quot;</span>
+<span class="sd">    (arXiv:2403.06963).</span>
+
+<span class="sd">    The metric helps detect:</span>
+<span class="sd">    - Dimensional collapse in self-supervised learning</span>
+<span class="sd">    - Loss of representational capacity</span>
+<span class="sd">    - Over-regularization effects</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pl_module: The Lightning module to attach the callback to</span>
+<span class="sd">        name: Unique identifier for this callback instance</span>
+<span class="sd">        target: Key in batch dict containing the feature embeddings to monitor</span>
+<span class="sd">        queue_length: Size of the circular buffer for caching embeddings</span>
+<span class="sd">        target_shape: Shape of the target embeddings (e.g., 768 for 768-dim features)</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This callback extends OnlineQueue to maintain a buffer of embeddings and</span>
+<span class="sd">        computes LiDAR only on the first validation batch to avoid redundant computation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>

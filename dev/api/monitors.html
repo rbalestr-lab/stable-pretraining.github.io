@@ -403,19 +403,19 @@ document.write(`
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.OnlineProbe.html#stable_ssl.callbacks.OnlineProbe" title="stable_ssl.callbacks.OnlineProbe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnlineProbe</span></code></a>(name, input, target, probe, loss_fn)</p></td>
-<td><p>Attaches a nn.Module for fine-tuning using the standard self-supervised protocol.</p></td>
+<td><p>Online probe for evaluating learned representations during self-supervised training.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.OnlineKNN.html#stable_ssl.callbacks.OnlineKNN" title="stable_ssl.callbacks.OnlineKNN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnlineKNN</span></code></a>(name, input, target, queue_length, ...)</p></td>
-<td><p>Weighted KNN online evaluator using queue discovery.</p></td>
+<td><p>Weighted K-Nearest Neighbors online evaluator using queue discovery.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.OnlineWriter.html#stable_ssl.callbacks.OnlineWriter" title="stable_ssl.callbacks.OnlineWriter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnlineWriter</span></code></a>(names, path, during[, ...])</p></td>
-<td><p>Attaches an OnlineWriter callback.</p></td>
+<td><p>Writes specified batch data to disk during training and validation.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.RankMe.html#stable_ssl.callbacks.RankMe" title="stable_ssl.callbacks.RankMe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RankMe</span></code></a>(name, target, queue_length, target_shape)</p></td>
 <td><p>RankMe (effective rank) monitor using queue discovery.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.LiDAR.html#stable_ssl.callbacks.LiDAR" title="stable_ssl.callbacks.LiDAR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LiDAR</span></code></a>(pl_module, name, target, queue_length, ...)</p></td>
-<td><p>LiDAR (Linear Discriminant Analysis Rank) monitor from :cite`thilak2023lidar`.</p></td>
+<td><p>LiDAR (Linear Discriminant Analysis Rank) monitor for detecting dimensional collapse.</p></td>
 </tr>
 </tbody>
 </table>
@@ -426,16 +426,16 @@ document.write(`
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.EarlyStopping.html#stable_ssl.callbacks.EarlyStopping" title="stable_ssl.callbacks.EarlyStopping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EarlyStopping</span></code></a>([mode, milestones, ...])</p></td>
-<td><p>Early stopping module that can stop training based on metric milestones.</p></td>
+<td><p>Early stopping mechanism with support for metric milestones and patience.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.TrainerInfo.html#stable_ssl.callbacks.TrainerInfo" title="stable_ssl.callbacks.TrainerInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TrainerInfo</span></code></a>()</p></td>
-<td><p>Callback for linking trainer to DataModule and providing extra information.</p></td>
+<td><p>Links the trainer to the DataModule for enhanced functionality.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.LoggingCallback.html#stable_ssl.callbacks.LoggingCallback" title="stable_ssl.callbacks.LoggingCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LoggingCallback</span></code></a>()</p></td>
-<td><p>Callback for logging validation metrics in a formatted table.</p></td>
+<td><p>Displays validation metrics in a color-coded formatted table.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_ssl.callbacks.ModuleSummary.html#stable_ssl.callbacks.ModuleSummary" title="stable_ssl.callbacks.ModuleSummary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModuleSummary</span></code></a>()</p></td>
-<td><p>Callback for logging module summaries in a formatted table.</p></td>
+<td><p>Logs detailed module parameter statistics in a formatted table.</p></td>
 </tr>
 </tbody>
 </table>

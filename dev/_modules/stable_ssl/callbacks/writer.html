@@ -345,7 +345,29 @@ document.write(`
 <div class="viewcode-block" id="OnlineWriter">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineWriter.html#stable_ssl.callbacks.OnlineWriter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OnlineWriter</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Attaches an OnlineWriter callback.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Writes specified batch data to disk during training and validation.</span>
+
+<span class="sd">    This callback enables selective saving of batch data (e.g., features, predictions,</span>
+<span class="sd">    embeddings) to disk at specified intervals during training. It&#39;s useful for</span>
+<span class="sd">    debugging, visualization, and analysis of model behavior during training.</span>
+
+<span class="sd">    Features:</span>
+<span class="sd">    - Flexible saving schedule (every k epochs, last epoch, sanity check)</span>
+<span class="sd">    - Support for distributed training with optional all_gather</span>
+<span class="sd">    - Automatic directory creation</span>
+<span class="sd">    - Configurable for different training phases (train, val, test)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        names: Name(s) of the batch keys to save. Can be string or list of strings.</span>
+<span class="sd">        path: Directory path where files will be saved.</span>
+<span class="sd">        during: Training phase(s) when to save (&#39;train&#39;, &#39;val&#39;, &#39;test&#39;, or list).</span>
+<span class="sd">        every_k_epochs: Save every k epochs. -1 means every epoch.</span>
+<span class="sd">        save_last_epoch: Whether to save on the last training epoch.</span>
+<span class="sd">        save_sanity_check: Whether to save during sanity check phase.</span>
+<span class="sd">        all_gather: Whether to gather data across all distributed processes.</span>
+
+<span class="sd">    Files are saved with naming pattern: {phase}_{name}_epoch{epoch}_batch{batch}.pt</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -376,15 +398,12 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">during</span> <span class="o">=</span> <span class="n">during</span>
 
-        <span class="c1"># -- writing conditions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">every_k_epochs</span> <span class="o">=</span> <span class="n">every_k_epochs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_last_epoch</span> <span class="o">=</span> <span class="n">save_last_epoch</span>
 
-        <span class="c1"># -- writing in sanity check</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_sanity_check</span> <span class="o">=</span> <span class="n">save_sanity_check</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_sanity_check</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># -- writing device</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">all_gather</span> <span class="o">=</span> <span class="n">all_gather</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
@@ -410,7 +429,6 @@ document.write(`
         <span class="n">current_epoch</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">current_epoch</span>
         <span class="n">max_epochs</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">max_epochs</span>
 
-        <span class="c1"># -- writing conditions</span>
         <span class="n">save_every_epoch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">every_k_epochs</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span>
         <span class="n">save_k_epoch</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">current_epoch</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">every_k_epochs</span> <span class="o">==</span> <span class="mi">0</span>
@@ -418,7 +436,6 @@ document.write(`
             <span class="k">else</span> <span class="kc">False</span>
         <span class="p">)</span>
 
-        <span class="c1"># last epoch condition</span>
         <span class="n">is_last_epoch</span> <span class="o">=</span> <span class="n">current_epoch</span> <span class="o">==</span> <span class="n">max_epochs</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">save_last_epoch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_last_epoch</span> <span class="ow">and</span> <span class="n">is_last_epoch</span>
 
@@ -431,11 +448,9 @@ document.write(`
         <span class="n">outputs</span><span class="p">,</span>
         <span class="n">batch_idx</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="c1"># skip sanity check writing if necessary</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_sanity_check</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_sanity_check</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="c1"># check if we are writing at this phase</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_writing_epoch</span><span class="p">(</span><span class="n">pl_module</span><span class="p">)</span> <span class="ow">or</span> <span class="n">phase_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">during</span><span class="p">:</span>
             <span class="k">return</span>
 

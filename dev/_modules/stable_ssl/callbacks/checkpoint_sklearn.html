@@ -346,7 +346,24 @@ document.write(`
 <div class="viewcode-block" id="SklearnCheckpoint">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.SklearnCheckpoint.html#stable_ssl.callbacks.SklearnCheckpoint">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SklearnCheckpoint</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Callback for saving and loading sklearn models in PyTorch Lightning checkpoints.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Callback for saving and loading sklearn models in PyTorch Lightning checkpoints.</span>
+
+<span class="sd">    This callback automatically detects sklearn models (Regressors and Classifiers)</span>
+<span class="sd">    attached to the Lightning module and handles their serialization/deserialization</span>
+<span class="sd">    during checkpoint save/load operations. This is necessary because sklearn models</span>
+<span class="sd">    are not natively supported by PyTorch&#39;s checkpoint system.</span>
+
+<span class="sd">    The callback will:</span>
+<span class="sd">    1. Automatically discover sklearn models attached to the Lightning module</span>
+<span class="sd">    2. Save them to the checkpoint dictionary during checkpoint saving</span>
+<span class="sd">    3. Restore them from the checkpoint during checkpoint loading</span>
+<span class="sd">    4. Log information about discovered sklearn modules during setup</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        - Only attributes that are sklearn RegressorMixin or ClassifierMixin instances are saved</span>
+<span class="sd">        - Private attributes (starting with &#39;_&#39;) are ignored</span>
+<span class="sd">        - The callback will raise an error if a sklearn model name conflicts with existing checkpoint keys</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SklearnCheckpoint.setup">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.SklearnCheckpoint.html#stable_ssl.callbacks.SklearnCheckpoint.setup">[docs]</a>
@@ -365,8 +382,7 @@ document.write(`
 <div class="viewcode-block" id="SklearnCheckpoint.on_save_checkpoint">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.SklearnCheckpoint.html#stable_ssl.callbacks.SklearnCheckpoint.on_save_checkpoint">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">on_save_checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">,</span> <span class="n">checkpoint</span><span class="p">):</span>
-        <span class="c1"># Modify the checkpoint dictionary before saving</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Checking for non PyTorch modules to save... 🔧&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Checking for non PyTorch modules to save... 🔧&quot;</span><span class="p">)</span>
         <span class="n">modules</span> <span class="o">=</span> <span class="n">_get_sklearn_modules</span><span class="p">(</span><span class="n">pl_module</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">modules</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">checkpoint</span><span class="p">:</span>
@@ -374,18 +390,17 @@ document.write(`
                     <span class="sa">f</span><span class="s2">&quot;Can&#39;t pickle </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">, already present in checkpoint&quot;</span>
                 <span class="p">)</span>
             <span class="n">checkpoint</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">saving non PyTorch system: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> 🔧&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saving non PyTorch system: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> 🔧&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SklearnCheckpoint.on_load_checkpoint">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.SklearnCheckpoint.html#stable_ssl.callbacks.SklearnCheckpoint.on_load_checkpoint">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">on_load_checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">,</span> <span class="n">checkpoint</span><span class="p">):</span>
-        <span class="c1"># Access and use data from the loaded checkpoint</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Checking for non PyTorch modules to load... 🔧&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Checking for non PyTorch modules to load... 🔧&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">RegressorMixin</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">ClassifierMixin</span><span class="p">):</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">loading non PyTorch system: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> 🔧&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading non PyTorch system: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> 🔧&quot;</span><span class="p">)</span></div>
 </div>
 
 

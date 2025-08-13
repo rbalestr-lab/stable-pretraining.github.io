@@ -346,10 +346,11 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">lightning</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">submitit</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">wandb</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">lightning.pytorch.utilities.rank_zero</span><span class="w"> </span><span class="kn">import</span> <span class="n">rank_zero_only</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">omegaconf</span><span class="w"> </span><span class="kn">import</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">OmegaConf</span><span class="p">,</span> <span class="n">open_dict</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">wandb</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_required_fn_parameters</span>
 
@@ -631,21 +632,6 @@ document.write(`
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">callbacks</span> <span class="o">=</span> <span class="p">[]</span>
-
-            <span class="c1"># Auto-detect TeacherStudentWrapper and add callback if needed</span>
-            <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instantiated_module</span><span class="o">.</span><span class="n">modules</span><span class="p">():</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;update_teacher&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;teacher&quot;</span><span class="p">):</span>
-                    <span class="c1"># Check if TeacherStudentCallback already exists</span>
-                    <span class="kn">from</span><span class="w"> </span><span class="nn">.callbacks.teacher_student</span><span class="w"> </span><span class="kn">import</span> <span class="n">TeacherStudentCallback</span>
-
-                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
-                        <span class="nb">isinstance</span><span class="p">(</span><span class="n">cb</span><span class="p">,</span> <span class="n">TeacherStudentCallback</span><span class="p">)</span> <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">callbacks</span>
-                    <span class="p">):</span>
-                        <span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TeacherStudentCallback</span><span class="p">())</span>
-                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                            <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● Auto-added TeacherStudentCallback for TeacherStudentWrapper ✅&quot;</span>
-                        <span class="p">)</span>
-                    <span class="k">break</span>
 
             <span class="c1"># we use the following partial to give our init callbacks manually since otherwise</span>
             <span class="c1"># hydra instantiate throws an error</span>

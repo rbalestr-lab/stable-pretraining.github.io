@@ -401,7 +401,19 @@ document.write(`
 <dt class="sig sig-object py" id="stable_ssl.callbacks.TrainerInfo">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.callbacks.</span></span><span class="sig-name descname"><span class="pre">TrainerInfo</span></span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/trainer_info.html#TrainerInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.TrainerInfo" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Callback</span></code></p>
-<p>Callback for linking trainer to DataModule and providing extra information.</p>
+<p>Links the trainer to the DataModule for enhanced functionality.</p>
+<p>This callback establishes a bidirectional connection between the trainer
+and DataModule, enabling the DataModule to access trainer information
+such as device placement, distributed training state, and other runtime
+configurations.</p>
+<p>This is particularly useful for DataModules that need to adapt their
+behavior based on trainer configuration (e.g., device-aware data loading,
+distributed sampling adjustments).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only works with DataModule instances that have a set_pl_trainer method.
+A warning is logged if using a custom DataModule without this method.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.callbacks.TrainerInfo.setup">
 <span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/trainer_info.html#TrainerInfo.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.TrainerInfo.setup" title="Link to this definition">#</a></dt>

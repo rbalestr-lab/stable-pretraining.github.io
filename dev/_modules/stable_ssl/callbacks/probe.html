@@ -334,9 +334,7 @@ document.write(`
                 <article class="bd-article">
                   
   <h1>Source code for stable_ssl.callbacks.probe</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Online probe callback.&quot;&quot;&quot;</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torchmetrics</span>
@@ -353,23 +351,47 @@ document.write(`
 <div class="viewcode-block" id="OnlineProbe">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineProbe.html#stable_ssl.callbacks.OnlineProbe">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OnlineProbe</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Attaches a nn.Module for fine-tuning using the standard self-supervised protocol.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Online probe for evaluating learned representations during self-supervised training.</span>
 
-<span class="sd">    This callback trains a probe (typically a linear classifier) on top of frozen</span>
-<span class="sd">    features during the main training process. It manages its own optimizer and</span>
-<span class="sd">    training loop without modifying the base model&#39;s methods.</span>
+<span class="sd">    This callback implements the standard linear evaluation protocol by training a probe</span>
+<span class="sd">    (typically a linear classifier) on top of frozen features from the main model. The probe</span>
+<span class="sd">    is trained simultaneously with the main model but maintains its own optimizer, scheduler,</span>
+<span class="sd">    and training loop. This allows monitoring representation quality throughout training</span>
+<span class="sd">    without modifying the base model.</span>
+
+<span class="sd">    Key features:</span>
+<span class="sd">    - Automatic gradient detachment to prevent probe gradients affecting the main model</span>
+<span class="sd">    - Independent optimizer and scheduler management</span>
+<span class="sd">    - Support for gradient accumulation</span>
+<span class="sd">    - Mixed precision training compatibility through automatic dtype conversion</span>
+<span class="sd">    - Built-in early stopping support</span>
+<span class="sd">    - Metric tracking and logging</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        name: Unique identifier for this probe instance</span>
-<span class="sd">        input: Key in batch dict containing input features</span>
-<span class="sd">        target: Key in batch dict containing target labels</span>
-<span class="sd">        probe: The probe module (e.g., linear classifier)</span>
-<span class="sd">        loss_fn: Loss function for probe training</span>
-<span class="sd">        optimizer: Optimizer configuration for the probe</span>
-<span class="sd">        scheduler: Learning rate scheduler configuration</span>
-<span class="sd">        accumulate_grad_batches: Number of batches to accumulate gradients</span>
-<span class="sd">        metrics: Metrics to track during training/validation</span>
-<span class="sd">        early_stopping: Early stopping configuration</span>
+<span class="sd">        name: Unique identifier for this probe instance. Used for logging and storing</span>
+<span class="sd">            metrics/modules.</span>
+<span class="sd">        input: Key in batch dict or outputs dict containing input features to probe.</span>
+<span class="sd">        target: Key in batch dict containing ground truth target labels.</span>
+<span class="sd">        probe: The probe module to train. Can be a nn.Module instance, callable that</span>
+<span class="sd">            returns a module, or Hydra config to instantiate.</span>
+<span class="sd">        loss_fn: Loss function for probe training (e.g., nn.CrossEntropyLoss()).</span>
+<span class="sd">        optimizer: Optimizer configuration for the probe. Can be optimizer instance,</span>
+<span class="sd">            callable, or Hydra config. Defaults to LARS if not specified.</span>
+<span class="sd">        scheduler: Learning rate scheduler configuration. Can be scheduler instance,</span>
+<span class="sd">            callable, or Hydra config. Defaults to ConstantLR if not specified.</span>
+<span class="sd">        accumulate_grad_batches: Number of batches to accumulate gradients before</span>
+<span class="sd">            optimizer step. Default is 1 (no accumulation).</span>
+<span class="sd">        metrics: Metrics to track during training/validation. Can be dict, list, tuple,</span>
+<span class="sd">            or single metric instance.</span>
+<span class="sd">        early_stopping: Early stopping configuration to halt training if validation</span>
+<span class="sd">            metric stops improving.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        - The probe module is stored in pl_module._callbacks_modules[name]</span>
+<span class="sd">        - Metrics are stored in pl_module._callbacks_metrics[name]</span>
+<span class="sd">        - Predictions are stored in batch dict with key &#39;{name}_preds&#39;</span>
+<span class="sd">        - Loss is logged as &#39;train/{name}_loss&#39;</span>
+<span class="sd">        - Metrics are logged with prefix &#39;train/{name}_&#39; and &#39;eval/{name}_&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -394,13 +416,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">accumulate_grad_batches</span> <span class="o">=</span> <span class="n">accumulate_grad_batches</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">early_stopping</span> <span class="o">=</span> <span class="n">early_stopping</span>
 
-        <span class="c1"># Initialize probe module</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">probe</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span> <span class="o">=</span> <span class="n">probe</span>
-        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">probe</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span> <span class="o">=</span> <span class="n">probe</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span> <span class="o">=</span> <span class="n">instantiate</span><span class="p">(</span><span class="n">probe</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
+        <span class="c1"># Store probe configuration for later initialization</span>
+        <span class="c1"># The actual module will be stored in pl_module._callbacks_modules</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_probe_config</span> <span class="o">=</span> <span class="n">probe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pl_module</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Will be set in setup()</span>
 
         <span class="c1"># Store optimizer and scheduler configs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_config</span> <span class="o">=</span> <span class="n">optimizer</span>
@@ -427,10 +446,27 @@ document.write(`
         <span class="k">if</span> <span class="n">stage</span> <span class="o">!=</span> <span class="s2">&quot;fit&quot;</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="c1"># Move probe to correct device</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">pl_module</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="c1"># Store reference to pl_module for accessing _callbacks_modules</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pl_module</span> <span class="o">=</span> <span class="n">pl_module</span>
 
-        <span class="c1"># Initialize optimizer</span>
+        <span class="c1"># Initialize probe module if needed</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_probe_config</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+            <span class="n">probe_module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probe_config</span>
+        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_probe_config</span><span class="p">):</span>
+            <span class="n">probe_module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probe_config</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">probe_module</span> <span class="o">=</span> <span class="n">instantiate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_probe_config</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Move probe to correct device</span>
+        <span class="n">probe_module</span> <span class="o">=</span> <span class="n">probe_module</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">pl_module</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="c1"># Store probe module in pl_module._callbacks_modules (single source of truth)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Storing probe module in _callbacks_modules&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;_callbacks_modules&quot;</span><span class="p">):</span>
+            <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_modules</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">probe_module</span>
+
+        <span class="c1"># Initialize optimizer using the stored module</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: No optimizer given, using default LARS&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">LARS</span><span class="p">(</span>
@@ -465,13 +501,6 @@ document.write(`
                     <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_config</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span>
                 <span class="p">)</span>
 
-        <span class="c1"># Store probe module in pl_module for compatibility</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Storing probe module in _callbacks_modules&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;_callbacks_modules&quot;</span><span class="p">):</span>
-            <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_modules</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span>
-
-        <span class="c1"># Initialize metrics</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Setting up metrics&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;_callbacks_metrics&quot;</span><span class="p">):</span>
             <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span> <span class="o">=</span> <span class="p">{}</span>
@@ -479,11 +508,8 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">metrics_config</span>
         <span class="p">)</span>
 
-        <span class="c1"># Store references for easy access</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_train_metrics</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;_train&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_val_metrics</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;_val&quot;</span><span class="p">]</span>
-
-        <span class="c1"># Metrics will be automatically moved to correct device by Lightning</span>
 
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Setup complete&quot;</span><span class="p">)</span></div>
 
@@ -499,7 +525,6 @@ document.write(`
         <span class="n">batch_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform probe training step.&quot;&quot;&quot;</span>
-        <span class="c1"># Get input and target data</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">get_data_from_batch_or_outputs</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">caller_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="p">)</span>
@@ -510,38 +535,27 @@ document.write(`
         <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="c1"># Ensure probe is in training mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
 
-        <span class="c1"># Forward pass with gradient enabled</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">enable_grad</span><span class="p">():</span>
-            <span class="c1"># Detach input features to prevent gradients flowing to main model</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
 
-            <span class="c1"># Ensure input has same dtype as probe module</span>
-            <span class="c1"># This handles mixed precision training where features might be float16</span>
             <span class="n">probe_dtype</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">dtype</span>
             <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">probe_dtype</span><span class="p">:</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">probe_dtype</span><span class="p">)</span>
 
-            <span class="c1"># Forward through probe</span>
             <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
-            <span class="c1"># Compute loss</span>
             <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_fn</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
-            <span class="c1"># Scale loss for gradient accumulation</span>
             <span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">accumulate_grad_batches</span>
 
-            <span class="c1"># Backward pass</span>
             <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
 
-        <span class="c1"># Store predictions in batch (detached)</span>
         <span class="n">prediction_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_preds&quot;</span>
         <span class="k">if</span> <span class="n">prediction_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
             <span class="n">batch</span><span class="p">[</span><span class="n">prediction_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">preds</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
 
-        <span class="c1"># Update metrics and log</span>
         <span class="n">logs</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;train/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">accumulate_grad_batches</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span>
             <span class="s2">&quot;_train&quot;</span>
@@ -551,12 +565,10 @@ document.write(`
 
         <span class="n">pl_module</span><span class="o">.</span><span class="n">log_dict</span><span class="p">(</span><span class="n">logs</span><span class="p">,</span> <span class="n">on_step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="c1"># Optimizer step (respecting gradient accumulation)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">accumulate_grad_batches</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">(</span><span class="n">set_to_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-            <span class="c1"># Scheduler step (typically done per optimizer step, not per batch)</span>
             <span class="k">if</span> <span class="n">trainer</span><span class="o">.</span><span class="n">global_step</span> <span class="o">%</span> <span class="n">trainer</span><span class="o">.</span><span class="n">accumulate_grad_batches</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span></div>
 
@@ -643,16 +655,33 @@ document.write(`
 
 
     <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">probe_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access probe module from pl_module._callbacks_modules.</span>
+
+<span class="sd">        This property is only accessible after setup() has been called.</span>
+<span class="sd">        The probe module is stored centrally in pl_module._callbacks_modules</span>
+<span class="sd">        to avoid duplication in checkpoints.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pl_module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: probe_module not accessible before setup(). &quot;</span>
+                <span class="s2">&quot;The probe module is initialized during the setup phase.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pl_module</span><span class="o">.</span><span class="n">_callbacks_modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="c1"># note: we do not include `verbose` here on purpose</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;OnlineProbe[name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">]&quot;</span>
 
 <div class="viewcode-block" id="OnlineProbe.state_dict">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineProbe.html#stable_ssl.callbacks.OnlineProbe.state_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">state_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save callback state including probe module and optimizer states.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save callback state - only optimizer and scheduler states.</span>
+
+<span class="sd">        The probe module itself is saved via pl_module._callbacks_modules,</span>
+<span class="sd">        so we don&#39;t duplicate it here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;probe_module&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
             <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">}</span></div>
@@ -661,9 +690,11 @@ document.write(`
 <div class="viewcode-block" id="OnlineProbe.load_state_dict">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineProbe.html#stable_ssl.callbacks.OnlineProbe.load_state_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">load_state_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load callback state including probe module and optimizer states.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;probe_module&quot;</span> <span class="ow">in</span> <span class="n">state_dict</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;probe_module&quot;</span><span class="p">])</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load callback state - only optimizer and scheduler states.</span>
+
+<span class="sd">        The probe module itself is loaded via pl_module._callbacks_modules,</span>
+<span class="sd">        so we don&#39;t handle it here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;optimizer&quot;</span> <span class="ow">in</span> <span class="n">state_dict</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">])</span>
         <span class="k">if</span> <span class="s2">&quot;scheduler&quot;</span> <span class="ow">in</span> <span class="n">state_dict</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">:</span>

@@ -383,6 +383,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineKNN"><code class="docutils literal notranslate"><span class="pre">OnlineKNN</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineKNN.on_validation_batch_end"><code class="docutils literal notranslate"><span class="pre">OnlineKNN.on_validation_batch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineKNN.setup"><code class="docutils literal notranslate"><span class="pre">OnlineKNN.setup()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineKNN.state_key"><code class="docutils literal notranslate"><span class="pre">OnlineKNN.state_key</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -402,26 +403,52 @@ document.write(`
 <dt class="sig sig-object py" id="stable_ssl.callbacks.OnlineKNN">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.callbacks.</span></span><span class="sig-name descname"><span class="pre">OnlineKNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'euclidean'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'squared_euclidean'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'cosine'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'manhattan'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'euclidean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/knn.html#OnlineKNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.OnlineKNN" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Callback</span></code></p>
-<p>Weighted KNN online evaluator using queue discovery.</p>
-<p>This callback finds OnlineQueue callbacks that track the required features
-and labels, then uses that data for KNN evaluation during validation.</p>
+<p>Weighted K-Nearest Neighbors online evaluator using queue discovery.</p>
+<p>This callback implements a weighted KNN classifier that evaluates the quality of
+learned representations during training. It automatically discovers or creates
+OnlineQueue callbacks to maintain circular buffers of features and labels, then
+uses this cached data to compute KNN predictions during validation.</p>
+<p>The KNN evaluation is performed by:
+1. Finding k nearest neighbors in the feature space
+2. Weighting neighbors by inverse distance with temperature scaling
+3. Using weighted voting to produce class predictions
+4. Computing specified metrics on the predictions</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – Unique identifier for this callback instance</p></li>
-<li><p><strong>input</strong> – Key in batch dict containing input features</p></li>
-<li><p><strong>target</strong> – Key in batch dict containing target labels</p></li>
-<li><p><strong>queue_length</strong> – Required queue length for both input and target</p></li>
-<li><p><strong>metrics</strong> – Dictionary of metrics to compute during validation</p></li>
-<li><p><strong>input_dim</strong> – Dimensionality of input features (None to accept any)</p></li>
-<li><p><strong>target_dim</strong> – Dimensionality of targets (None to accept any)</p></li>
-<li><p><strong>k</strong> – Number of nearest neighbors to consider</p></li>
-<li><p><strong>temperature</strong> – Temperature parameter for distance weighting</p></li>
-<li><p><strong>chunk_size</strong> – Batch size for memory-efficient distance computation (-1 for no chunking)</p></li>
-<li><p><strong>distance_metric</strong> – Distance metric to use for KNN computation</p></li>
+<li><p><strong>name</strong> – Unique identifier for this callback instance. Used for logging and
+storing metrics.</p></li>
+<li><p><strong>input</strong> – Key in batch dict containing input features to evaluate.</p></li>
+<li><p><strong>target</strong> – Key in batch dict containing ground truth target labels.</p></li>
+<li><p><strong>queue_length</strong> – Size of the circular buffer for caching features and labels.
+Larger values provide more representative samples but use more memory.</p></li>
+<li><p><strong>metrics</strong> – Dictionary of metrics to compute during validation. Keys are metric
+names, values are metric instances (e.g., torchmetrics.Accuracy).</p></li>
+<li><p><strong>input_dim</strong> – Expected dimensionality of input features. Can be int, tuple/list
+(will be flattened to product), or None to accept any dimension.</p></li>
+<li><p><strong>target_dim</strong> – Expected dimensionality of targets. None accepts any dimension.</p></li>
+<li><p><strong>k</strong> – Number of nearest neighbors to consider for voting. Default is 5.</p></li>
+<li><p><strong>temperature</strong> – Temperature parameter for distance weighting. Lower values give
+more weight to closer neighbors. Default is 0.07.</p></li>
+<li><p><strong>chunk_size</strong> – Batch size for memory-efficient distance computation. Set to -1
+to compute all distances at once. Default is -1.</p></li>
+<li><p><strong>distance_metric</strong> – Distance metric for finding nearest neighbors. Options are
+‘euclidean’, ‘squared_euclidean’, ‘cosine’, ‘manhattan’. Default is ‘euclidean’.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.4/library/exceptions.html#ValueError" title="(in Python v3.4)"><strong>ValueError</strong></a> – If k &lt;= 0, temperature &lt;= 0, or chunk_size is invalid.</p>
+</dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>The callback automatically handles distributed training by gathering data</p></li>
+<li><p>Mixed precision is supported through automatic dtype conversion</p></li>
+<li><p>Predictions are stored in batch dict with key ‘{name}_preds’</p></li>
+<li><p>Metrics are logged with prefix ‘eval/{name}_’</p></li>
+</ul>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.callbacks.OnlineKNN.on_validation_batch_end">
 <span class="sig-name descname"><span class="pre">on_validation_batch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LightningModule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloader_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/knn.html#OnlineKNN.on_validation_batch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.OnlineKNN.on_validation_batch_end" title="Link to this definition">#</a></dt>
@@ -432,6 +459,12 @@ and labels, then uses that data for KNN evaluation during validation.</p>
 <dt class="sig sig-object py" id="stable_ssl.callbacks.OnlineKNN.setup">
 <span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LightningModule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/knn.html#OnlineKNN.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.OnlineKNN.setup" title="Link to this definition">#</a></dt>
 <dd><p>Find or create queue callbacks and setup metrics.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="stable_ssl.callbacks.OnlineKNN.state_key">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">state_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></em><a class="headerlink" href="#stable_ssl.callbacks.OnlineKNN.state_key" title="Link to this definition">#</a></dt>
+<dd><p>Unique identifier for this callback’s state during checkpointing.</p>
 </dd></dl>
 
 </dd></dl>
@@ -486,6 +519,7 @@ and labels, then uses that data for KNN evaluation during validation.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineKNN"><code class="docutils literal notranslate"><span class="pre">OnlineKNN</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineKNN.on_validation_batch_end"><code class="docutils literal notranslate"><span class="pre">OnlineKNN.on_validation_batch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineKNN.setup"><code class="docutils literal notranslate"><span class="pre">OnlineKNN.setup()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.OnlineKNN.state_key"><code class="docutils literal notranslate"><span class="pre">OnlineKNN.state_key</span></code></a></li>
 </ul>
 </li>
 </ul>

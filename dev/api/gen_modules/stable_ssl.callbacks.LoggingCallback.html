@@ -401,7 +401,14 @@ document.write(`
 <dt class="sig sig-object py" id="stable_ssl.callbacks.LoggingCallback">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.callbacks.</span></span><span class="sig-name descname"><span class="pre">LoggingCallback</span></span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/trainer_info.html#LoggingCallback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.LoggingCallback" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Callback</span></code></p>
-<p>Callback for logging validation metrics in a formatted table.</p>
+<p>Displays validation metrics in a color-coded formatted table.</p>
+<p>This callback creates a visually appealing table of all validation metrics
+at the end of each validation epoch. Metrics are color-coded for better
+readability in terminal outputs.</p>
+<p>Features:
+- Automatic sorting of metrics by name
+- Color coding: blue for metric names, green for values
+- Filters out internal metrics (log, progress_bar)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stable_ssl.callbacks.LoggingCallback.on_validation_end">
 <span class="sig-name descname"><span class="pre">on_validation_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LightningModule</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/trainer_info.html#LoggingCallback.on_validation_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.LoggingCallback.on_validation_end" title="Link to this definition">#</a></dt>

@@ -334,9 +334,7 @@ document.write(`
                 <article class="bd-article">
                   
   <h1>Source code for stable_ssl.callbacks.rankme</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;RankMe callback using the new queue discovery architecture.&quot;&quot;&quot;</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">lightning.pytorch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callback</span><span class="p">,</span> <span class="n">LightningModule</span><span class="p">,</span> <span class="n">Trainer</span>
@@ -370,7 +368,6 @@ document.write(`
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-        <span class="c1"># Convert shape to int if it&#39;s a single-element tuple/list</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target_shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">target_shape</span> <span class="o">=</span> <span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -382,22 +379,25 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">queue_length</span> <span class="o">=</span> <span class="n">queue_length</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_shape</span> <span class="o">=</span> <span class="n">target_shape</span>
 
-        <span class="c1"># Queue reference will be set in setup</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_target_queue</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unique identifier for this callback&#39;s state during checkpointing.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;RankMe[name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">]&quot;</span>
 
 <div class="viewcode-block" id="RankMe.setup">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.RankMe.html#stable_ssl.callbacks.RankMe.setup">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">:</span> <span class="n">Trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">:</span> <span class="n">LightningModule</span><span class="p">,</span> <span class="n">stage</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find or create the queue callback for target features.&quot;&quot;&quot;</span>
-        <span class="c1"># Setup is needed for all stages, not just fit</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_queue</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_target_queue</span> <span class="o">=</span> <span class="n">find_or_create_queue_callback</span><span class="p">(</span>
                 <span class="n">trainer</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">queue_length</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">target_shape</span><span class="p">,</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>  <span class="c1"># RankMe typically uses float features</span>
-                <span class="n">gather_distributed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># RankMe typically needs gathering</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                <span class="n">gather_distributed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">create_if_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Using queue for target &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span></div>
@@ -415,13 +415,11 @@ document.write(`
         <span class="n">dataloader_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute RankMe metric on the first validation batch only.&quot;&quot;&quot;</span>
-        <span class="c1"># Only compute on first batch</span>
         <span class="k">if</span> <span class="n">batch_idx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Computing RankMe on first validation batch&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Get cached features from queue</span>
         <span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_queue</span><span class="o">.</span><span class="n">data</span>
 
         <span class="k">if</span> <span class="n">embeddings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -436,22 +434,16 @@ document.write(`
             <span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="c1"># Compute RankMe on rank 0 only</span>
         <span class="k">if</span> <span class="n">trainer</span><span class="o">.</span><span class="n">global_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-                <span class="c1"># Compute singular values</span>
                 <span class="n">s</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svdvals</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
 
-                <span class="c1"># Normalize to get probability distribution</span>
                 <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="o">+</span> <span class="mf">1e-5</span>
 
-                <span class="c1"># Compute entropy</span>
                 <span class="n">entropy</span> <span class="o">=</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
 
-                <span class="c1"># RankMe = exp(entropy)</span>
                 <span class="n">rankme</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">entropy</span><span class="p">)</span>
 
-                <span class="c1"># Log the metric</span>
                 <span class="n">pl_module</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">rankme</span><span class="o">.</span><span class="n">item</span><span class="p">())</span></div>
 </div>
 

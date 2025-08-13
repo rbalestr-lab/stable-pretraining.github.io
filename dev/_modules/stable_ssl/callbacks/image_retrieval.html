@@ -452,6 +452,11 @@ document.write(`
         <span class="c1">#</span>
         <span class="n">pl_module</span><span class="o">.</span><span class="n">embeds</span> <span class="o">=</span> <span class="kc">None</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unique identifier for this callback&#39;s state during checkpointing.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;ImageRetrieval[name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">]&quot;</span>
+
 <div class="viewcode-block" id="ImageRetrieval.on_validation_epoch_start">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.ImageRetrieval.html#stable_ssl.callbacks.ImageRetrieval.on_validation_epoch_start">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">on_validation_epoch_start</span><span class="p">(</span>
