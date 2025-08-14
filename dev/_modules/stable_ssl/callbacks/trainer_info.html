@@ -340,7 +340,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">prettytable</span><span class="w"> </span><span class="kn">import</span> <span class="n">PrettyTable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pytorch_lightning.utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">rank_zero_only</span>
-
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..data.module</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataModule</span>
 
 
@@ -478,6 +478,42 @@ document.write(`
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">,</span> <span class="n">stage</span><span class="p">)</span></div>
 </div>
 
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SLURMInfo</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Links the trainer to the DataModule for enhanced functionality.</span>
+
+<span class="sd">    This callback establishes a bidirectional connection between the trainer</span>
+<span class="sd">    and DataModule, enabling the DataModule to access trainer information</span>
+<span class="sd">    such as device placement, distributed training state, and other runtime</span>
+<span class="sd">    configurations.</span>
+
+<span class="sd">    This is particularly useful for DataModules that need to adapt their</span>
+<span class="sd">    behavior based on trainer configuration (e.g., device-aware data loading,</span>
+<span class="sd">    distributed sampling adjustments).</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Only works with DataModule instances that have a set_pl_trainer method.</span>
+<span class="sd">        A warning is logged if using a custom DataModule without this method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;---- SLURM INFO ---- 🔧&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Job ID: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_env_var</span><span class="p">(</span><span class="s1">&#39;SLURM_JOB_ID&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Job Name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_env_var</span><span class="p">(</span><span class="s1">&#39;SLURM_JOB_NAME&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_env_var</span><span class="p">(</span><span class="s1">&#39;SLURM_JOB_NUM_NODES&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tasks: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_env_var</span><span class="p">(</span><span class="s1">&#39;SLURM_NTASKS&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CPUs per node: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_env_var</span><span class="p">(</span><span class="s1">&#39;SLURM_CPUS_ON_NODE&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CPUs per task: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_env_var</span><span class="p">(</span><span class="s1">&#39;SLURM_CPUS_PER_TASK&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Memory per node: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_env_var</span><span class="p">(</span><span class="s1">&#39;SLURM_MEM_PER_NODE&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Memory per CPU: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_env_var</span><span class="p">(</span><span class="s1">&#39;SLURM_MEM_PER_CPU&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Time limit: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_env_var</span><span class="p">(</span><span class="s1">&#39;SLURM_JOB_TIME&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Partition: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_env_var</span><span class="p">(</span><span class="s1">&#39;SLURM_JOB_PARTITION&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node List: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_env_var</span><span class="p">(</span><span class="s1">&#39;SLURM_JOB_NODELIST&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submit Directory: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_env_var</span><span class="p">(</span><span class="s1">&#39;SLURM_SUBMIT_DIR&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_env_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
 </pre></div>
 
                 </article>
