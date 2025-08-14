@@ -530,8 +530,8 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">repr_loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">)</span>
 
-        <span class="n">z_i</span> <span class="o">=</span> <span class="n">all_gather</span><span class="p">(</span><span class="n">z_i</span><span class="p">)</span>
-        <span class="n">z_j</span> <span class="o">=</span> <span class="n">all_gather</span><span class="p">(</span><span class="n">z_j</span><span class="p">)</span>
+        <span class="n">z_i</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">all_gather</span><span class="p">(</span><span class="n">z_i</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">z_j</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">all_gather</span><span class="p">(</span><span class="n">z_j</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="n">z_i</span> <span class="o">=</span> <span class="n">z_i</span> <span class="o">-</span> <span class="n">z_i</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">z_j</span> <span class="o">=</span> <span class="n">z_j</span> <span class="o">-</span> <span class="n">z_j</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
