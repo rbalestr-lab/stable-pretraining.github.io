@@ -455,6 +455,7 @@ document.write(`
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineProbe.html#stable_ssl.callbacks.OnlineProbe.setup">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">:</span> <span class="n">Trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">:</span> <span class="n">LightningModule</span><span class="p">,</span> <span class="n">stage</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize optimizer, scheduler, and metrics.&quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting up </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state_key</span><span class="si">}</span><span class="s2"> callback!&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">stage</span> <span class="o">!=</span> <span class="s2">&quot;fit&quot;</span><span class="p">:</span>
             <span class="k">return</span>
 
