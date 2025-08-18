@@ -340,19 +340,17 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torchmetrics</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hydra.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">instantiate</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">lightning.pytorch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callback</span><span class="p">,</span> <span class="n">LightningModule</span><span class="p">,</span> <span class="n">Trainer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lightning.pytorch</span><span class="w"> </span><span class="kn">import</span> <span class="n">LightningModule</span><span class="p">,</span> <span class="n">Trainer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">stable_ssl.optim.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_optimizer</span><span class="p">,</span> <span class="n">create_scheduler</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">stable_ssl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_data_from_batch_or_outputs</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..optim</span><span class="w"> </span><span class="kn">import</span> <span class="n">LARS</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">EarlyStopping</span><span class="p">,</span> <span class="n">format_metrics_as_dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">EarlyStopping</span><span class="p">,</span> <span class="n">OptimizedCallback</span><span class="p">,</span> <span class="n">format_metrics_as_dict</span>
 
 
 <div class="viewcode-block" id="OnlineProbe">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineProbe.html#stable_ssl.callbacks.OnlineProbe">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">OnlineProbe</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnlineProbe</span><span class="p">(</span><span class="n">OptimizedCallback</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Online probe for evaluating learned representations during self-supervised training.</span>
 
 <span class="sd">    This callback implements the standard linear evaluation protocol by training a probe</span>
@@ -419,27 +417,23 @@ document.write(`
         <span class="n">metrics</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">torchmetrics</span><span class="o">.</span><span class="n">Metric</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">early_stopping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EarlyStopping</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># Initialize base class</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+            <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">,</span>
+            <span class="n">accumulate_grad_batches</span><span class="o">=</span><span class="n">accumulate_grad_batches</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="nb">input</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">loss_fn</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">accumulate_grad_batches</span> <span class="o">=</span> <span class="n">accumulate_grad_batches</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">early_stopping</span> <span class="o">=</span> <span class="n">early_stopping</span>
 
         <span class="c1"># Store probe configuration for later initialization</span>
-        <span class="c1"># The actual module will be stored in pl_module._callbacks_modules</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_probe_config</span> <span class="o">=</span> <span class="n">probe</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pl_module</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Will be set in setup()</span>
-
-        <span class="c1"># Store optimizer and scheduler configs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_config</span> <span class="o">=</span> <span class="n">optimizer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_config</span> <span class="o">=</span> <span class="n">scheduler</span>
 
         <span class="c1"># These will be initialized in setup</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_train_metrics</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_val_metrics</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -451,18 +445,8 @@ document.write(`
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Target: </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Accumulate grad batches: </span><span class="si">{</span><span class="n">accumulate_grad_batches</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="OnlineProbe.setup">
-<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineProbe.html#stable_ssl.callbacks.OnlineProbe.setup">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">:</span> <span class="n">Trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">:</span> <span class="n">LightningModule</span><span class="p">,</span> <span class="n">stage</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize optimizer, scheduler, and metrics.&quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting up </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state_key</span><span class="si">}</span><span class="s2"> callback!&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">stage</span> <span class="o">!=</span> <span class="s2">&quot;fit&quot;</span><span class="p">:</span>
-            <span class="k">return</span>
-
-        <span class="c1"># Store reference to pl_module for accessing _callbacks_modules</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pl_module</span> <span class="o">=</span> <span class="n">pl_module</span>
-
-        <span class="c1"># Initialize probe module if needed</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">:</span> <span class="n">LightningModule</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the probe module from configuration.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_probe_config</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
             <span class="n">probe_module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_probe_config</span>
         <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_probe_config</span><span class="p">):</span>
@@ -470,121 +454,19 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="n">probe_module</span> <span class="o">=</span> <span class="n">instantiate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_probe_config</span><span class="p">,</span> <span class="n">_convert_</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Move probe to correct device</span>
-        <span class="n">probe_module</span> <span class="o">=</span> <span class="n">probe_module</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">pl_module</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">probe_module</span>
 
-        <span class="c1"># Store probe module in pl_module._callbacks_modules (single source of truth)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Storing probe module in _callbacks_modules&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;_callbacks_modules&quot;</span><span class="p">):</span>
-            <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_modules</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">probe_module</span>
+<div class="viewcode-block" id="OnlineProbe.setup">
+<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineProbe.html#stable_ssl.callbacks.OnlineProbe.setup">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">:</span> <span class="n">Trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">:</span> <span class="n">LightningModule</span><span class="p">,</span> <span class="n">stage</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize optimizer, scheduler, and metrics.&quot;&quot;&quot;</span>
+        <span class="c1"># Call parent setup for module/optimizer/scheduler</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">,</span> <span class="n">stage</span><span class="p">)</span>
 
-        <span class="c1"># Initialize optimizer - inherit from main module if not specified</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Try to inherit from main module&#39;s optimizer config</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;optim&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">:</span>
-                <span class="c1"># Extract optimizer config from main module</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                    <span class="c1"># Check if it&#39;s a single optimizer config</span>
-                    <span class="k">if</span> <span class="s2">&quot;optimizer&quot;</span> <span class="ow">in</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">:</span>
-                        <span class="n">main_opt_config</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">]</span>
-                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Inheriting optimizer config from main module&quot;</span>
-                        <span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="c1"># It&#39;s a multi-optimizer config, use the first one or a default</span>
-                        <span class="n">first_opt_key</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-                        <span class="n">main_opt_config</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">[</span><span class="n">first_opt_key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                            <span class="s2">&quot;optimizer&quot;</span><span class="p">,</span> <span class="s2">&quot;LARS&quot;</span>
-                        <span class="p">)</span>
-                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Inheriting optimizer config from &#39;</span><span class="si">{</span><span class="n">first_opt_key</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
-                        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">stage</span> <span class="o">!=</span> <span class="s2">&quot;fit&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
 
-                    <span class="c1"># Create optimizer with inherited config</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">create_optimizer</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">main_opt_config</span>
-                    <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># Fallback to LARS</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Main module optim format not recognized, using LARS&quot;</span>
-                    <span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">LARS</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span>
-                        <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-                        <span class="n">clip_lr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                        <span class="n">eta</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
-                        <span class="n">exclude_bias_n_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                        <span class="n">weight_decay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                    <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># No main module config, use default LARS</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: No main module optimizer config found, using default LARS&quot;</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">LARS</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span>
-                    <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-                    <span class="n">clip_lr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">eta</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
-                    <span class="n">exclude_bias_n_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">weight_decay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Use explicitly provided optimizer config</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">create_optimizer</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_config</span>
-            <span class="p">)</span>
-
-        <span class="c1"># Initialize scheduler - inherit from main module if not specified</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Try to inherit from main module&#39;s scheduler config</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;optim&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                    <span class="c1"># Check if it&#39;s a single optimizer config</span>
-                    <span class="k">if</span> <span class="s2">&quot;scheduler&quot;</span> <span class="ow">in</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">:</span>
-                        <span class="n">main_sched_config</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                            <span class="s2">&quot;scheduler&quot;</span><span class="p">,</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span>
-                        <span class="p">)</span>
-                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Inheriting scheduler config from main module&quot;</span>
-                        <span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">create_scheduler</span><span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">main_sched_config</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="n">pl_module</span>
-                        <span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="c1"># It&#39;s a multi-optimizer config, use the first one</span>
-                        <span class="n">first_opt_key</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-                        <span class="n">main_sched_config</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">optim</span><span class="p">[</span><span class="n">first_opt_key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                            <span class="s2">&quot;scheduler&quot;</span><span class="p">,</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span>
-                        <span class="p">)</span>
-                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Inheriting scheduler config from &#39;</span><span class="si">{</span><span class="n">first_opt_key</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
-                        <span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">create_scheduler</span><span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">main_sched_config</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="n">pl_module</span>
-                        <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># Fallback to ConstantLR</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Using default ConstantLR scheduler&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">ConstantLR</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">1.0</span>
-                    <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># No main module config, use default</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: No main module scheduler config found, using ConstantLR&quot;</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">ConstantLR</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">1.0</span>
-                <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Use explicitly provided scheduler config</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">create_scheduler</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_config</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="n">pl_module</span>
-            <span class="p">)</span>
-
+        <span class="c1"># Setup metrics</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Setting up metrics&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;_callbacks_metrics&quot;</span><span class="p">):</span>
             <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span> <span class="o">=</span> <span class="p">{}</span>
@@ -593,9 +475,7 @@ document.write(`
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_train_metrics</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;_train&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_val_metrics</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;_val&quot;</span><span class="p">]</span>
-
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Setup complete&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val_metrics</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;_val&quot;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="OnlineProbe.on_train_batch_end">
@@ -619,16 +499,16 @@ document.write(`
         <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
 
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">enable_grad</span><span class="p">():</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
 
-            <span class="n">probe_dtype</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="n">probe_dtype</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">dtype</span>
             <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">probe_dtype</span><span class="p">:</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">probe_dtype</span><span class="p">)</span>
 
-            <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
             <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_fn</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
@@ -649,12 +529,8 @@ document.write(`
 
         <span class="n">pl_module</span><span class="o">.</span><span class="n">log_dict</span><span class="p">(</span><span class="n">logs</span><span class="p">,</span> <span class="n">on_step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">accumulate_grad_batches</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">(</span><span class="n">set_to_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">trainer</span><span class="o">.</span><span class="n">global_step</span> <span class="o">%</span> <span class="n">trainer</span><span class="o">.</span><span class="n">accumulate_grad_batches</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span></div>
+        <span class="c1"># Optimizer step using parent class method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer_step</span><span class="p">(</span><span class="n">batch_idx</span><span class="p">,</span> <span class="n">trainer</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="OnlineProbe.on_validation_batch_end">
@@ -681,17 +557,17 @@ document.write(`
             <span class="k">return</span>
 
         <span class="c1"># Ensure probe is in eval mode</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 
         <span class="c1"># Forward pass without gradients</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="c1"># Ensure input has same dtype as probe module</span>
             <span class="c1"># This handles mixed precision training where features might be float16</span>
-            <span class="n">probe_dtype</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="n">probe_dtype</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">dtype</span>
             <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">probe_dtype</span><span class="p">:</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">probe_dtype</span><span class="p">)</span>
 
-            <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">probe_module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
         <span class="c1"># Store predictions in batch</span>
         <span class="n">prediction_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_preds&quot;</span>
@@ -740,50 +616,8 @@ document.write(`
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">probe_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access probe module from pl_module._callbacks_modules.</span>
-
-<span class="sd">        This property is only accessible after setup() has been called.</span>
-<span class="sd">        The probe module is stored centrally in pl_module._callbacks_modules</span>
-<span class="sd">        to avoid duplication in checkpoints.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pl_module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: probe_module not accessible before setup(). &quot;</span>
-                <span class="s2">&quot;The probe module is initialized during the setup phase.&quot;</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pl_module</span><span class="o">.</span><span class="n">_callbacks_modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;OnlineProbe[name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">]&quot;</span>
-
-<div class="viewcode-block" id="OnlineProbe.state_dict">
-<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineProbe.html#stable_ssl.callbacks.OnlineProbe.state_dict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">state_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save callback state - only optimizer and scheduler states.</span>
-
-<span class="sd">        The probe module itself is saved via pl_module._callbacks_modules,</span>
-<span class="sd">        so we don&#39;t duplicate it here.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="p">}</span></div>
-
-
-<div class="viewcode-block" id="OnlineProbe.load_state_dict">
-<a class="viewcode-back" href="../../../api/gen_modules/stable_ssl.callbacks.OnlineProbe.html#stable_ssl.callbacks.OnlineProbe.load_state_dict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">load_state_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load callback state - only optimizer and scheduler states.</span>
-
-<span class="sd">        The probe module itself is loaded via pl_module._callbacks_modules,</span>
-<span class="sd">        so we don&#39;t handle it here.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;optimizer&quot;</span> <span class="ow">in</span> <span class="n">state_dict</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;optimizer&quot;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s2">&quot;scheduler&quot;</span> <span class="ow">in</span> <span class="n">state_dict</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s2">&quot;scheduler&quot;</span><span class="p">])</span></div>
-</div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for self.module for backward compatibility.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span></div>
 
 </pre></div>
 
