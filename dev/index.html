@@ -383,10 +383,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doing-one-thing-but-doing-it-right-ours-is-self-supervised-learning">Doing One Thing, But Doing It Right… Ours is Self Supervised Learning</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how">How?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-log-log-monitor-monitor-monitor">Log log log, monitor monitor monitor!</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-structure">Core Structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#complete-example">Complete Example</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ways-you-can-contribute">Ways You Can Contribute:</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributors">Contributors</a></li>
@@ -413,24 +412,21 @@ document.write(`
 <a class="reference external" href="https://github.com/astral-sh/ruff"><img alt="Ruff" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" /></a>
 <a class="reference external" href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a>
 <a class="reference external" href="https://wandb.ai/site"><img alt="WandB" src="https://raw.githubusercontent.com/wandb/assets/main/wandb-github-badge-gradient.svg" /></a></p>
-<section id="doing-one-thing-but-doing-it-right-ours-is-self-supervised-learning">
-<h2>Doing One Thing, But Doing It Right… Ours is Self Supervised Learning<a class="headerlink" href="#doing-one-thing-but-doing-it-right-ours-is-self-supervised-learning" title="Link to this heading">#</a></h2>
-<p>Self Supervised Learning (SSL) is the last frontier of AI. But quick experimentation is not possible today as no library offers stable and modular key-in-hand solutions. Existing libraries are either static (lightly-ai, solo-learn) or not concerned with SSL–justifying our existence. <em>Our goal is to provide a flexible, full-fledge, optimized framework to conduct rapid SSL research and scale as needed.</em></p>
-</section>
+<p>AI is moving beyond labels. Today’s models learn through <strong>self-supervision</strong> and <strong>multimodal alignment</strong>, extracting knowledge from raw data to build general-purpose representations that work across tasks. These foundation models are then deployed at scale, often after finetuning, to solve tasks in zero or few shot.</p>
+<p><code class="docutils literal notranslate"><span class="pre">stable-ssl</span></code> is a PyTorch framework built on top of Lightning for this new paradigm. What sets us apart is <strong>real-time visibility into training quality</strong> through extensive logging and monitoring. Our callback ecosystem (<code class="docutils literal notranslate"><span class="pre">OnlineProbe</span></code>, <code class="docutils literal notranslate"><span class="pre">OnlineKNN</span></code>, <code class="docutils literal notranslate"><span class="pre">RankMe</span></code>, <code class="docutils literal notranslate"><span class="pre">LiDAR</span></code> and many more) provides insights into feature collapse, training dynamics, and downstream performance. Data flow as dictionaries through model components, metrics, and callbacks, making any intermediate value accessible and debuggable. With <code class="docutils literal notranslate"><span class="pre">stable-ssl</span></code>: track everything, debug faster, iterate sooner.</p>
 <section id="how">
 <h2>How?<a class="headerlink" href="#how" title="Link to this heading">#</a></h2>
-<p>To reach flexibility, scalability and stability, we rely on battle-tested third party libraries: <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code>, <code class="docutils literal notranslate"><span class="pre">Lightning</span></code>, <code class="docutils literal notranslate"><span class="pre">HuggingFace</span></code>, <code class="docutils literal notranslate"><span class="pre">TorchMetrics</span></code> amongst a few others. Those dependencies allow us to focus on one thing: assembling everything into a powerful SSL research framework. <code class="docutils literal notranslate"><span class="pre">stable-ssl</span></code> adopts a flexible and modular design for seamless integration of components from external libraries, including architectures, loss functions, evaluation metrics, and augmentations.</p>
-</section>
-<section id="log-log-log-monitor-monitor-monitor">
-<h2>Log log log, monitor monitor monitor!<a class="headerlink" href="#log-log-log-monitor-monitor-monitor" title="Link to this heading">#</a></h2>
-<p>The key to SSL research is to log and monitor everything. This is what we bring to a new level with <code class="docutils literal notranslate"><span class="pre">stable-ssl</span></code> by providing extremely rich logging and numerous callbacks that can be added and combined in any way you like within your trainer such as <code class="docutils literal notranslate"><span class="pre">stable_ssl.callbacks.OnlineProbe</span></code>, <code class="docutils literal notranslate"><span class="pre">stable_ssl.callbacks.OnlineKNN</span></code>, <code class="docutils literal notranslate"><span class="pre">stable_ssl.callbacks.RankMe</span></code>, <code class="docutils literal notranslate"><span class="pre">stable_ssl.callbacks.LiDAR</span></code>, <code class="docutils literal notranslate"><span class="pre">stable_ssl.callbacks.OnlineWriter</span></code>, and so on.</p>
+<p>To reach flexibility, scalability and stability, we rely on battle-tested third party libraries: <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code>, <code class="docutils literal notranslate"><span class="pre">Lightning</span></code>, <code class="docutils literal notranslate"><span class="pre">HuggingFace</span></code>, <code class="docutils literal notranslate"><span class="pre">TorchMetrics</span></code> amongst a few others. Those dependencies allow us to focus on assembling everything into a powerful ML framework. <code class="docutils literal notranslate"><span class="pre">stable-ssl</span></code> adopts a flexible and modular design for seamless integration of components from external libraries, including architectures, loss functions, evaluation metrics, and augmentations.</p>
 </section>
 <section id="core-structure">
 <h2>Core Structure<a class="headerlink" href="#core-structure" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">stable-ssl</span></code> only requires you to get familiar with 3 components:</p>
+<p><code class="docutils literal notranslate"><span class="pre">stable-ssl</span></code> simplifies complex ML workflows into 4 intuitive components:</p>
 <ol class="arabic">
-<li><p><strong>data</strong>: the dataset should be a huggingface dataset e.g.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">stable_ssl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ssl</span>
+<li><p><strong>data</strong>: Your dataset must follow a dictionary-structured format where each sample is a dictionary with named fields (e.g., <code class="docutils literal notranslate"><span class="pre">{&quot;image&quot;:</span> <span class="pre">...,</span> <span class="pre">&quot;label&quot;:</span> <span class="pre">...}</span></code>). This ensures consistent behavior across all components. You have multiple options for creating datasets:</p>
+<ul class="simple">
+<li><p><strong>HuggingFace datasets</strong> (if available on the Hub):</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">stable_ssl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ssl</span>
 <span class="n">train_dataset</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">HFDataset</span><span class="p">(</span>
     <span class="n">path</span><span class="o">=</span><span class="s2">&quot;frgfm/imagenette&quot;</span><span class="p">,</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;160px&quot;</span><span class="p">,</span>
@@ -439,40 +435,102 @@ document.write(`
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>if it already exists on the Hub, otherwise you can wrap your own dataset into a HF dataset. <strong>Why?</strong> Imposing that format ensures consistent behavior (each sample is a dictionary) and leverage powerful utilities from the <code class="docutils literal notranslate"><span class="pre">datasets</span></code> package. Once datasets (train et al.) are created, they can be used as-is with <code class="docutils literal notranslate"><span class="pre">torch.utils.data.DataLoader</span></code>. However we recommend putting them into our <code class="docutils literal notranslate"><span class="pre">DataModule</span></code> e.g.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">datamodule</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataModule</span><span class="p">(</span><span class="n">train</span><span class="o">=</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="n">val_dataset</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>to ensure precise logging and easy debugging.</p>
-</li>
-<li><p><strong>module, models, forward</strong>: the overall orchestration leverages <code class="docutils literal notranslate"><span class="pre">ssl.Module</span></code> which inherits from <code class="docutils literal notranslate"><span class="pre">lightning.LightningModule</span></code>. We provide all the basic required utilities (optimizer/scheduler creation etc). So the only required implementation for the user is the <code class="docutils literal notranslate"><span class="pre">forward</span></code> method, for example a supervised learning run would define</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
-    <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])[</span><span class="s2">&quot;logits&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
-        <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
-        <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">batch</span>
-</pre></div>
-</div>
-<p>the <code class="docutils literal notranslate"><span class="pre">forward</span></code> method takes in a dictionary (<code class="docutils literal notranslate"><span class="pre">batch</span></code> from the data loader) and should return a dictionary. If any module has to be trained, then a <code class="docutils literal notranslate"><span class="pre">loss</span></code> key must be present. Further customization can be done (see the <code class="docutils literal notranslate"><span class="pre">examples</span></code>) ensuring that any desired behavior can be achieved. The <code class="docutils literal notranslate"><span class="pre">self</span></code> is a LightningModule with any attribute passed during module creation:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="n">AutoConfig</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;microsoft/resnet-18&quot;</span><span class="p">)</span>
-<span class="n">backbone</span> <span class="o">=</span> <span class="n">ViT</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
-<span class="n">projector</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
-<span class="n">module</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">Module</span><span class="p">(</span>
-    <span class="n">backbone</span><span class="o">=</span><span class="n">backbone</span><span class="p">,</span>
-    <span class="n">projector</span><span class="o">=</span><span class="n">projector</span><span class="p">,</span>
-    <span class="n">forward</span><span class="o">=</span><span class="n">forward</span><span class="p">,</span>
-    <span class="n">simclr_loss</span><span class="o">=</span><span class="n">ssl</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">NTXEntLoss</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span>
+<ul class="simple">
+<li><p><strong>From PyTorch datasets</strong>:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_dataset</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">FromTorchDataset</span><span class="p">(</span>
+    <span class="n">torchvision_dataset</span><span class="p">,</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">],</span>  <span class="c1"># Map tuple outputs to dictionary keys</span>
+    <span class="n">transform</span><span class="o">=</span><span class="n">train_transform</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>any <code class="docutils literal notranslate"><span class="pre">kwarg</span></code> passed to <code class="docutils literal notranslate"><span class="pre">stable_ssl.Module</span></code> is automatically set, the only reserved <code class="docutils literal notranslate"><span class="pre">kwarg</span></code> is <code class="docutils literal notranslate"><span class="pre">forward</span></code></p>
+<ul class="simple">
+<li><p><strong>Custom datasets</strong>: Any dataset that returns dictionaries</p></li>
+</ul>
+<p>Once created, wrap your dataloaders in our <code class="docutils literal notranslate"><span class="pre">DataModule</span></code> for precise logging:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">datamodule</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataModule</span><span class="p">(</span><span class="n">train</span><span class="o">=</span><span class="n">train_dataloader</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="n">val_dataloader</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
-<li><p><strong>trainer</strong>: the final step is to describe how training will happen! This is done with the <code class="docutils literal notranslate"><span class="pre">lightning.Trainer</span></code> module, for example</p>
+<li><p><strong>module</strong>: The key differentiator from PyTorch Lightning - <strong>you only define the <code class="docutils literal notranslate"><span class="pre">forward</span></code> function</strong>, not <code class="docutils literal notranslate"><span class="pre">training_step</span></code>! This unique approach unifies loss computation and monitoring in one place:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+        <span class="c1"># Define your loss directly in forward</span>
+        <span class="n">proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
+        <span class="n">views</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simclr_loss</span><span class="p">(</span><span class="n">views</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">views</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">out</span>
+</pre></div>
+</div>
+<p><strong>Key points:</strong></p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">forward</span></code> method defines both the loss and any quantities to monitor</p></li>
+<li><p>No need to override <code class="docutils literal notranslate"><span class="pre">training_step</span></code>, <code class="docutils literal notranslate"><span class="pre">validation_step</span></code>, etc.</p></li>
+<li><p>Return a dictionary with a <code class="docutils literal notranslate"><span class="pre">&quot;loss&quot;</span></code> key for training</p></li>
+<li><p>All components are passed as kwargs to <code class="docutils literal notranslate"><span class="pre">ssl.Module</span></code>:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># First define your model components</span>
+<span class="n">backbone</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">from_torchvision</span><span class="p">(</span><span class="s2">&quot;resnet18&quot;</span><span class="p">)</span>
+<span class="n">projector</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+
+<span class="c1"># Then create the module with all components</span>
+<span class="n">module</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">Module</span><span class="p">(</span>
+    <span class="n">backbone</span><span class="o">=</span><span class="n">backbone</span><span class="p">,</span>
+    <span class="n">projector</span><span class="o">=</span><span class="n">projector</span><span class="p">,</span>
+    <span class="n">forward</span><span class="o">=</span><span class="n">forward</span><span class="p">,</span>  <span class="c1"># The forward function defined above</span>
+    <span class="n">simclr_loss</span><span class="o">=</span><span class="n">ssl</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">NTXEntLoss</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">optim</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Adam&quot;</span><span class="p">,</span> <span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">},</span>
+        <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;CosineAnnealing&quot;</span><span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>callbacks</strong>: Monitor and evaluate your models in real-time during training. Callbacks are the secret sauce of <code class="docutils literal notranslate"><span class="pre">stable-ssl</span></code>, providing rich insights without interrupting your training flow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Monitor SSL representations with a linear probe</span>
+<span class="n">linear_probe</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">OnlineProbe</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;linear_probe&quot;</span><span class="p">,</span>
+    <span class="nb">input</span><span class="o">=</span><span class="s2">&quot;embedding&quot;</span><span class="p">,</span>  <span class="c1"># Which output from forward to monitor</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span>      <span class="c1"># Ground truth from batch</span>
+    <span class="n">probe</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+    <span class="n">loss_fn</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(),</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;top1&quot;</span><span class="p">:</span> <span class="n">torchmetrics</span><span class="o">.</span><span class="n">classification</span><span class="o">.</span><span class="n">MulticlassAccuracy</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+        <span class="s2">&quot;top5&quot;</span><span class="p">:</span> <span class="n">torchmetrics</span><span class="o">.</span><span class="n">classification</span><span class="o">.</span><span class="n">MulticlassAccuracy</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="c1"># Track representation quality with KNN evaluation</span>
+<span class="n">knn_probe</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">OnlineKNN</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;knn_probe&quot;</span><span class="p">,</span>
+    <span class="nb">input</span><span class="o">=</span><span class="s2">&quot;embedding&quot;</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span>
+    <span class="n">queue_length</span><span class="o">=</span><span class="mi">20000</span><span class="p">,</span>
+    <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Other powerful callbacks:</span>
+<span class="c1"># - RankMe: Monitor feature collapse</span>
+<span class="c1"># - LiDAR: Track representation diversity</span>
+<span class="c1"># - OnlineWriter: Save embeddings during training</span>
+</pre></div>
+</div>
+<p><strong>Why callbacks matter:</strong></p>
+<ul class="simple">
+<li><p><strong>Real-time feedback</strong>: Know if your SSL method is learning useful representations.</p></li>
+<li><p><strong>Debugging made easy</strong>: Catch issues like representation collapse early.</p></li>
+<li><p><strong>Research insights</strong>: Track multiple metrics simultaneously for deeper understanding.</p></li>
+</ul>
+</li>
+<li><p><strong>trainer</strong>: Orchestrate everything together with PyTorch Lightning’s <code class="docutils literal notranslate"><span class="pre">Trainer</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span>
         <span class="n">max_epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
         <span class="n">num_sanity_val_steps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">linear_probe</span><span class="p">,</span> <span class="n">knn_probe</span><span class="p">,</span> <span class="n">rankme</span><span class="p">],</span>
+        <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">linear_probe</span><span class="p">,</span> <span class="n">knn_probe</span><span class="p">,</span> <span class="n">rankme</span><span class="p">],</span>  <span class="c1"># Your monitoring callbacks</span>
         <span class="n">precision</span><span class="o">=</span><span class="s2">&quot;16-mixed&quot;</span><span class="p">,</span>
         <span class="n">logger</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">enable_checkpointing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -481,115 +539,158 @@ document.write(`
 <span class="n">manager</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>once this is specified, simply pipe everything into our manager class that will connect everything and launch fitting! This extra wrapper is needed to produce as precise logging as possible.</p>
+<p>Once configured, the <code class="docutils literal notranslate"><span class="pre">Manager</span></code> connects all components and handles the training loop with precise logging and monitoring.</p>
 </li>
 </ol>
+</section>
+<section id="complete-example">
+<h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading">#</a></h2>
 <details>
-  <summary>Minimal Example : SimCLR INET10</summary>
-    ```
-    import stable_ssl as ssl
-    import torch
-    from transformers import AutoModelForImageClassification, AutoConfig
-    import lightning as pl
-    from stable_ssl.data import transforms
-    import torchmetrics
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># without transform
-mean = [0.485, 0.456, 0.406]
-std = [0.229, 0.224, 0.225]
-train_transform = transforms.Compose(
-    transforms.RGB(),
-    transforms.RandomResizedCrop((224, 224)),
-    transforms.RandomHorizontalFlip(p=0.5),
-    transforms.ColorJitter(
-        brightness=0.4, contrast=0.4, saturation=0.2, hue=0.1, p=0.8
-    ),
-    transforms.RandomGrayscale(p=0.2),
-    transforms.GaussianBlur(kernel_size=(5, 5), p=1.0),
-    transforms.ToImage(mean=mean, std=std),
-)
-train_dataset = ssl.data.HFDataset(
-    path=&quot;frgfm/imagenette&quot;,
-    name=&quot;160px&quot;,
-    split=&quot;train&quot;,
-    transform=train_transform,
-)
-train = torch.utils.data.DataLoader(
-    dataset=train_dataset,
-    sampler=ssl.data.sampler.RepeatedRandomSampler(train_dataset, n_views=2),
-    batch_size=64,
-    num_workers=20,
-    drop_last=True,
-)
-val_transform = transforms.Compose(
-    transforms.RGB(),
-    transforms.Resize((256, 256)),
-    transforms.CenterCrop((224, 224)),
-    transforms.ToImage(mean=mean, std=std),
-)
-val = torch.utils.data.DataLoader(
-    dataset=ssl.data.HFDataset(
-        path=&quot;frgfm/imagenette&quot;,
-        name=&quot;160px&quot;,
-        split=&quot;validation&quot;,
-        transform=val_transform,
-    ),
-    batch_size=128,
-    num_workers=10,
-)
-data = ssl.data.DataModule(train=train, val=val)
+<summary>SimCLR on CIFAR-10</summary>
+<p>This example demonstrates the key features of <code class="docutils literal notranslate"><span class="pre">stable-ssl</span></code>: dictionary-structured data, unified forward function, and rich monitoring through callbacks.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">lightning</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torchmetrics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torchvision</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lightning.pytorch.loggers</span><span class="w"> </span><span class="kn">import</span> <span class="n">WandbLogger</span>
 
-def forward(self, batch, stage):
-    batch[&quot;embedding&quot;] = self.backbone(batch[&quot;image&quot;])[&quot;logits&quot;]
-    if self.training:
-        proj = self.projector(batch[&quot;embedding&quot;])
-        views = ssl.data.fold_views(proj, batch[&quot;sample_idx&quot;])
-        batch[&quot;loss&quot;] = self.simclr_loss(views[0], views[1])
-    return batch
+<span class="kn">import</span><span class="w"> </span><span class="nn">stable_ssl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ssl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stable_ssl.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">transforms</span>
 
-config = AutoConfig.from_pretrained(&quot;microsoft/resnet-18&quot;)
-backbone = AutoModelForImageClassification.from_config(config)
-projector = torch.nn.Linear(512, 128)
-backbone.classifier[1] = torch.nn.Identity()
-module = ssl.Module(
-    backbone=backbone,
-    projector=projector,
-    forward=forward,
-    simclr_loss=ssl.losses.NTXEntLoss(temperature=0.1),
-)
-linear_probe = ssl.callbacks.OnlineProbe(
-    &quot;linear_probe&quot;,
-    module,
-    &quot;embedding&quot;,
-    &quot;label&quot;,
-    probe=torch.nn.Linear(512, 10),
-    loss_fn=torch.nn.CrossEntropyLoss(),
-    metrics={
-        &quot;top1&quot;: torchmetrics.classification.MulticlassAccuracy(10),
-        &quot;top5&quot;: torchmetrics.classification.MulticlassAccuracy(10, top_k=5),
-    },
-)
-knn_probe = ssl.callbacks.OnlineKNN(
-    module,
-    &quot;knn_probe&quot;,
-    &quot;embedding&quot;,
-    &quot;label&quot;,
-    20000,
-    metrics=torchmetrics.classification.MulticlassAccuracy(10),
-    k=10,
-    features_dim=512,
-)
+<span class="c1"># Define augmentations for SimCLR (creates 2 views of each image)</span>
+<span class="n">simclr_transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">MultiViewTransform</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">RGB</span><span class="p">(),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">RandomResizedCrop</span><span class="p">((</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">ColorJitter</span><span class="p">(</span><span class="n">brightness</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">contrast</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">saturation</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.8</span><span class="p">),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">RandomGrayscale</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.2</span><span class="p">),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">ToImage</span><span class="p">(</span><span class="o">**</span><span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">CIFAR10</span><span class="p">),</span>
+        <span class="p">),</span>
+        <span class="c1"># Second view with slightly different augmentations</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">RGB</span><span class="p">(),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">RandomResizedCrop</span><span class="p">((</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mf">0.08</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">ColorJitter</span><span class="p">(</span><span class="n">brightness</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">contrast</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">saturation</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.8</span><span class="p">),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">RandomGrayscale</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.2</span><span class="p">),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">RandomSolarize</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.2</span><span class="p">),</span>
+            <span class="n">transforms</span><span class="o">.</span><span class="n">ToImage</span><span class="p">(</span><span class="o">**</span><span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">CIFAR10</span><span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 
-trainer = pl.Trainer(
-    max_epochs=6,
-    num_sanity_val_steps=1,
-    callbacks=[linear_probe, knn_probe],
-    precision=&quot;16-mixed&quot;,
-    logger=False,
-    enable_checkpointing=False,
-)
-manager = ssl.Manager(trainer=trainer, module=module, data=data)
-manager()
-```
+<span class="c1"># Load CIFAR-10 and wrap in dictionary format</span>
+<span class="n">cifar_train</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">CIFAR10</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s2">&quot;./data&quot;</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cifar_val</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">CIFAR10</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s2">&quot;./data&quot;</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">train_dataset</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">FromTorchDataset</span><span class="p">(</span>
+    <span class="n">cifar_train</span><span class="p">,</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">],</span>  <span class="c1"># Convert tuple to dictionary</span>
+    <span class="n">transform</span><span class="o">=</span><span class="n">simclr_transform</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">val_dataset</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">FromTorchDataset</span><span class="p">(</span>
+    <span class="n">cifar_val</span><span class="p">,</span>
+    <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">],</span>
+    <span class="n">transform</span><span class="o">=</span><span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">RGB</span><span class="p">(),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">Resize</span><span class="p">((</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">)),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">ToImage</span><span class="p">(</span><span class="o">**</span><span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">CIFAR10</span><span class="p">),</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Create dataloaders with view sampling for contrastive learning</span>
+<span class="n">train_dataloader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="n">train_dataset</span><span class="p">,</span>
+    <span class="n">sampler</span><span class="o">=</span><span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">RepeatedRandomSampler</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">n_views</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">drop_last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">val_dataloader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="n">val_dataset</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataModule</span><span class="p">(</span><span class="n">train</span><span class="o">=</span><span class="n">train_dataloader</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="n">val_dataloader</span><span class="p">)</span>
+
+<span class="c1"># Define the forward function (replaces training_step in PyTorch Lightning)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+        <span class="c1"># Project embeddings and compute contrastive loss</span>
+        <span class="n">proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
+        <span class="n">views</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simclr_loss</span><span class="p">(</span><span class="n">views</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">views</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+<span class="c1"># Build model components</span>
+<span class="n">backbone</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">from_torchvision</span><span class="p">(</span><span class="s2">&quot;resnet18&quot;</span><span class="p">,</span> <span class="n">low_resolution</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">backbone</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">()</span>  <span class="c1"># Remove classification head</span>
+
+<span class="n">projector</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">2048</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="mi">2048</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2048</span><span class="p">,</span> <span class="mi">2048</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="mi">2048</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2048</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Create the module with all components</span>
+<span class="n">module</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">Module</span><span class="p">(</span>
+    <span class="n">backbone</span><span class="o">=</span><span class="n">backbone</span><span class="p">,</span>
+    <span class="n">projector</span><span class="o">=</span><span class="n">projector</span><span class="p">,</span>
+    <span class="n">forward</span><span class="o">=</span><span class="n">forward</span><span class="p">,</span>
+    <span class="n">simclr_loss</span><span class="o">=</span><span class="n">ssl</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">NTXEntLoss</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">optim</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;LARS&quot;</span><span class="p">,</span> <span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">},</span>
+        <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;LinearWarmupCosineAnnealing&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="s2">&quot;epoch&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="c1"># Add callbacks for monitoring performance during training</span>
+<span class="n">linear_probe</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">OnlineProbe</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;linear_probe&quot;</span><span class="p">,</span>
+    <span class="nb">input</span><span class="o">=</span><span class="s2">&quot;embedding&quot;</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span>
+    <span class="n">probe</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+    <span class="n">loss_fn</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(),</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;top1&quot;</span><span class="p">:</span> <span class="n">torchmetrics</span><span class="o">.</span><span class="n">classification</span><span class="o">.</span><span class="n">MulticlassAccuracy</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+        <span class="s2">&quot;top5&quot;</span><span class="p">:</span> <span class="n">torchmetrics</span><span class="o">.</span><span class="n">classification</span><span class="o">.</span><span class="n">MulticlassAccuracy</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">knn_probe</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">OnlineKNN</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;knn_probe&quot;</span><span class="p">,</span>
+    <span class="nb">input</span><span class="o">=</span><span class="s2">&quot;embedding&quot;</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span>
+    <span class="n">queue_length</span><span class="o">=</span><span class="mi">20000</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">torchmetrics</span><span class="o">.</span><span class="n">classification</span><span class="o">.</span><span class="n">MulticlassAccuracy</span><span class="p">(</span><span class="mi">10</span><span class="p">)},</span>
+    <span class="n">input_dim</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
+    <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Configure training</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span>
+    <span class="n">max_epochs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">knn_probe</span><span class="p">,</span> <span class="n">linear_probe</span><span class="p">],</span>  <span class="c1"># Monitor SSL quality in real-time</span>
+    <span class="n">precision</span><span class="o">=</span><span class="s2">&quot;16-mixed&quot;</span><span class="p">,</span>
+    <span class="n">logger</span><span class="o">=</span><span class="n">WandbLogger</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="s2">&quot;cifar10-simclr&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Launch training</span>
+<span class="n">manager</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">Manager</span><span class="p">(</span><span class="n">trainer</span><span class="o">=</span><span class="n">trainer</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+<span class="n">manager</span><span class="p">()</span>
 </pre></div>
 </div>
 </details>
@@ -731,7 +832,13 @@ manager()
 </section>
 <section id="contributors">
 <h2>Contributors<a class="headerlink" href="#contributors" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">stable-ssl</span></code> was started by <code class="docutils literal notranslate"><span class="pre">Randall</span> <span class="pre">Balestriero</span></code> circa 2020 for internal research projects. After numerous refactorings and simplifications, it became practical for external use circa 2024 at which point <code class="docutils literal notranslate"><span class="pre">Hugues</span> <span class="pre">Van</span> <span class="pre">Assel</span></code> and <code class="docutils literal notranslate"><span class="pre">Lucas</span> <span class="pre">Maes</span></code> joined as core contributors.</p>
+<p>Core contributors (in order of joining the project):</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/RandallBalestriero">Randall Balestriero</a></p></li>
+<li><p><a class="reference external" href="https://github.com/huguesva">Hugues Van Assel</a></p></li>
+<li><p><a class="reference external" href="https://github.com/sami-bg">Sami Bou Ghanem</a></p></li>
+<li><p><a class="reference external" href="https://github.com/lucas-maes">Lucas Maes</a></p></li>
+</ul>
 </section>
 </section>
 <div class="toctree-wrapper compound">
@@ -783,10 +890,9 @@ manager()
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#doing-one-thing-but-doing-it-right-ours-is-self-supervised-learning">Doing One Thing, But Doing It Right… Ours is Self Supervised Learning</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how">How?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#log-log-log-monitor-monitor-monitor">Log log log, monitor monitor monitor!</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-structure">Core Structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#complete-example">Complete Example</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ways-you-can-contribute">Ways You Can Contribute:</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributors">Contributors</a></li>
