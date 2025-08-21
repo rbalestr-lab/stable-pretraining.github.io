@@ -380,7 +380,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.LiDAR"><code class="docutils literal notranslate"><span class="pre">LiDAR</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.LiDAR"><code class="docutils literal notranslate"><span class="pre">LiDAR</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.LiDAR.on_validation_batch_end"><code class="docutils literal notranslate"><span class="pre">LiDAR.on_validation_batch_end()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.LiDAR.setup"><code class="docutils literal notranslate"><span class="pre">LiDAR.setup()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.LiDAR.state_key"><code class="docutils literal notranslate"><span class="pre">LiDAR.state_key</span></code></a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -396,35 +401,74 @@ document.write(`
 <h1>LiDAR<a class="headerlink" href="#lidar" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="stable_ssl.callbacks.LiDAR">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.callbacks.</span></span><span class="sig-name descname"><span class="pre">LiDAR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pl_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/lidar.html#LiDAR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.LiDAR" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">OnlineQueue</span></code></p>
-<p>LiDAR (Linear Discriminant Analysis Rank) monitor for detecting dimensional collapse.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_ssl.callbacks.</span></span><span class="sig-name descname"><span class="pre">LiDAR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_classes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples_per_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/lidar.html#LiDAR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.LiDAR" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Callback</span></code></p>
+<p>LiDAR (Linear Discriminant Analysis Rank) monitor using queue discovery.</p>
 <p>LiDAR measures the effective rank of learned representations using Linear Discriminant
 Analysis (LDA). It computes the exponential of the entropy of the eigenvalue distribution
-from the LDA transformation, providing a metric between 1 and the feature dimension that
-indicates how many dimensions are effectively being used.</p>
-<p>This implementation is based on Thilak et al. “The Pitfalls of Next-Token Prediction”
-(arXiv:2403.06963).</p>
+from the LDA transformation, providing a metric between 1 and min(d, n_classes - 1) where
+d is the feature dimension, indicating how many dimensions are effectively being used.</p>
+<p>This implementation is based on Thilak et al. “LiDAR: Sensing Linear Probing Performance
+in Joint Embedding SSL Architectures” (arXiv:2312.04000).</p>
+<section id="important-surrogate-class-formation-requirement">
+<h2>IMPORTANT: Surrogate Class Formation Requirement<a class="headerlink" href="#important-surrogate-class-formation-requirement" title="Link to this heading">#</a></h2>
+<p>The LiDAR paper requires that each “surrogate class” consists of q augmented views
+of the same clean sample. The current implementation chunks the queue sequentially
+into groups of size samples_per_class. For faithful reproduction of the paper:</p>
+<ul class="simple">
+<li><p>Ensure the upstream queue pushes q contiguous augmentations of each clean sample</p></li>
+<li><p>OR implement ID-based grouping to ensure each group contains views of the same sample</p></li>
+</ul>
+<p>Without proper grouping, the metric may not accurately reflect the paper’s methodology.</p>
 <p>The metric helps detect:
 - Dimensional collapse in self-supervised learning
 - Loss of representational capacity
 - Over-regularization effects</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pl_module</strong> – The Lightning module to attach the callback to</p></li>
-<li><p><strong>name</strong> – Unique identifier for this callback instance</p></li>
-<li><p><strong>target</strong> – Key in batch dict containing the feature embeddings to monitor</p></li>
-<li><p><strong>queue_length</strong> – Size of the circular buffer for caching embeddings</p></li>
-<li><p><strong>target_shape</strong> – Shape of the target embeddings (e.g., 768 for 768-dim features)</p></li>
-</ul>
+<dt class="field-odd">param name<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Unique identifier for this callback instance</p>
+</dd>
+<dt class="field-even">param target<span class="colon">:</span></dt>
+<dd class="field-even"><p>Key in batch dict containing the feature embeddings to monitor</p>
+</dd>
+<dt class="field-odd">param queue_length<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Size of the circular buffer for caching embeddings</p>
+</dd>
+<dt class="field-even">param target_shape<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shape of the target embeddings (e.g., 768 for 768-dim features)</p>
+</dd>
+<dt class="field-odd">param n_classes<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of surrogate classes (clean samples) for LDA computation</p>
+</dd>
+<dt class="field-even">param samples_per_class<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of augmented samples per class</p>
+</dd>
+<dt class="field-odd">param delta<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Regularization constant added to within-class covariance (default: 1e-4)</p>
+</dd>
+<dt class="field-even">param epsilon<span class="colon">:</span></dt>
+<dd class="field-even"><p>Small constant for numerical stability (default: 1e-8)</p>
 </dd>
 </dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This callback extends OnlineQueue to maintain a buffer of embeddings and
-computes LiDAR only on the first validation batch to avoid redundant computation.</p>
-</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.callbacks.LiDAR.on_validation_batch_end">
+<span class="sig-name descname"><span class="pre">on_validation_batch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LightningModule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloader_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/lidar.html#LiDAR.on_validation_batch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.LiDAR.on_validation_batch_end" title="Link to this definition">#</a></dt>
+<dd><p>Compute LiDAR metric on the first validation batch only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stable_ssl.callbacks.LiDAR.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LightningModule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.4/library/constants.html#None" title="(in Python v3.4)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/stable_ssl/callbacks/lidar.html#LiDAR.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_ssl.callbacks.LiDAR.setup" title="Link to this definition">#</a></dt>
+<dd><p>Find or create the queue callback for target features.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="stable_ssl.callbacks.LiDAR.state_key">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">state_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></em><a class="headerlink" href="#stable_ssl.callbacks.LiDAR.state_key" title="Link to this definition">#</a></dt>
+<dd><p>Unique identifier for this callback’s state during checkpointing.</p>
+</dd></dl>
+
+</section>
 </dd></dl>
 
 <span class="target" id="sphx-glr-backref-stable-ssl-callbacks-lidar"></span></section>
@@ -474,7 +518,12 @@ computes LiDAR only on the first validation batch to avoid redundant computation
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.LiDAR"><code class="docutils literal notranslate"><span class="pre">LiDAR</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.LiDAR"><code class="docutils literal notranslate"><span class="pre">LiDAR</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.LiDAR.on_validation_batch_end"><code class="docutils literal notranslate"><span class="pre">LiDAR.on_validation_batch_end()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.LiDAR.setup"><code class="docutils literal notranslate"><span class="pre">LiDAR.setup()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_ssl.callbacks.LiDAR.state_key"><code class="docutils literal notranslate"><span class="pre">LiDAR.state_key</span></code></a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
