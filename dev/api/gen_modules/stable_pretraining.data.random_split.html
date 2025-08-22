@@ -176,22 +176,29 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../data.html">stable_pretraining.data</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.DataModule.html">DataModule</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Collator.html">Collator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.GMM.html">GMM</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Dataset.html">Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.FromTorchDataset.html">FromTorchDataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.HFDataset.html">HFDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.GMM.html">GMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariEpisodeDataset.html">MinariEpisodeDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.swiss_roll.html">swiss_roll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.generate_perlin_noise_2d.html">generate_perlin_noise_2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.perlin_noise_3d.html">perlin_noise_3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Categorical.html">Categorical</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.ExponentialMixtureNoiseModel.html">ExponentialMixtureNoiseModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.ExponentialNormalNoiseModel.html">ExponentialNormalNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.fold_views.html">fold_views</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">random_split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.download.html">download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.bulk_download.html">bulk_download</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.transforms.html">transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.transforms.html">stable_pretraining.data.transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.dataset_stats.html">stable_pretraining.data.dataset_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.synthetic_data.html">stable_pretraining.data.synthetic_data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_pretraining.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -396,7 +403,7 @@ document.write(`
 <h1>random_split<a class="headerlink" href="#random-split" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="stable_pretraining.data.random_split">
-<span class="sig-prename descclassname"><span class="pre">stable_pretraining.data.</span></span><span class="sig-name descname"><span class="pre">random_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataset:</span> <span class="pre">~stable_pretraining.data.utils.Dataset,</span> <span class="pre">lengths:</span> <span class="pre">~collections.abc.Sequence[int</span> <span class="pre">|</span> <span class="pre">float],</span> <span class="pre">generator:</span> <span class="pre">~torch._C.Generator</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;torch._C.Generator</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="stable_pretraining.data.Subset.html#stable_pretraining.data.Subset" title="stable_pretraining.data.utils.Subset"><span class="pre">Subset</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/stable_pretraining/data/utils.html#random_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.data.random_split" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">stable_pretraining.data.</span></span><span class="sig-name descname"><span class="pre">random_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataset:</span> <span class="pre">~stable_pretraining.data.datasets.Dataset,</span> <span class="pre">lengths:</span> <span class="pre">~collections.abc.Sequence[int</span> <span class="pre">|</span> <span class="pre">float],</span> <span class="pre">generator:</span> <span class="pre">~torch._C.Generator</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;torch._C.Generator</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="stable_pretraining.data.Subset.html#stable_pretraining.data.Subset" title="stable_pretraining.data.datasets.Subset"><span class="pre">Subset</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/stable_pretraining/data/utils.html#random_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.data.random_split" title="Link to this definition">#</a></dt>
 <dd><p>Randomly split a dataset into non-overlapping new datasets of given lengths.</p>
 <p>If a list of fractions that sum up to 1 is given,
 the lengths will be computed automatically as
@@ -416,7 +423,7 @@ until there are no remainders left.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset</strong> (<em>Dataset</em>) – Dataset to be split</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="stable_pretraining.data.Dataset.html#stable_pretraining.data.Dataset" title="stable_pretraining.data.Dataset"><em>Dataset</em></a>) – Dataset to be split</p></li>
 <li><p><strong>lengths</strong> (<em>sequence</em>) – lengths or fractions of splits to be produced</p></li>
 <li><p><strong>generator</strong> (<em>Generator</em>) – Generator used for the random permutation.</p></li>
 </ul>

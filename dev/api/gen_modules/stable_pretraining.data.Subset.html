@@ -47,8 +47,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/gen_modules/stable_pretraining.data.Subset';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="FromTorchDataset" href="stable_pretraining.data.FromTorchDataset.html" />
-    <link rel="prev" title="GMM" href="stable_pretraining.data.GMM.html" />
+    <link rel="next" title="GMM" href="stable_pretraining.data.GMM.html" />
+    <link rel="prev" title="HFDataset" href="stable_pretraining.data.HFDataset.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -176,22 +176,29 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../data.html">stable_pretraining.data</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.DataModule.html">DataModule</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Collator.html">Collator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.GMM.html">GMM</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Dataset.html">Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.FromTorchDataset.html">FromTorchDataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.HFDataset.html">HFDataset</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.GMM.html">GMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariEpisodeDataset.html">MinariEpisodeDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.swiss_roll.html">swiss_roll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.generate_perlin_noise_2d.html">generate_perlin_noise_2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.perlin_noise_3d.html">perlin_noise_3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Categorical.html">Categorical</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.ExponentialMixtureNoiseModel.html">ExponentialMixtureNoiseModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.ExponentialNormalNoiseModel.html">ExponentialNormalNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.fold_views.html">fold_views</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.random_split.html">random_split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.download.html">download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.bulk_download.html">bulk_download</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.transforms.html">transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.transforms.html">stable_pretraining.data.transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.dataset_stats.html">stable_pretraining.data.dataset_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.synthetic_data.html">stable_pretraining.data.synthetic_data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_pretraining.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -396,13 +403,13 @@ document.write(`
 <h1>Subset<a class="headerlink" href="#subset" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="stable_pretraining.data.Subset">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_pretraining.data.</span></span><span class="sig-name descname"><span class="pre">Subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.4)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_pretraining/data/utils.html#Subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.data.Subset" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_pretraining.data.</span></span><span class="sig-name descname"><span class="pre">Subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stable_pretraining.data.Dataset.html#stable_pretraining.data.Dataset" title="stable_pretraining.data.datasets.Dataset"><span class="pre">Dataset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.4)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_pretraining/data/datasets.html#Subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.data.Subset" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="stable_pretraining.data.Dataset.html#stable_pretraining.data.Dataset" title="stable_pretraining.data.datasets.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
 <p>Subset of a dataset at specified indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset</strong> (<em>Dataset</em>) – The whole Dataset</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="stable_pretraining.data.Dataset.html#stable_pretraining.data.Dataset" title="stable_pretraining.data.Dataset"><em>Dataset</em></a>) – The whole Dataset</p></li>
 <li><p><strong>indices</strong> (<em>sequence</em>) – Indices in the whole set selected for subset</p></li>
 </ul>
 </dd>
@@ -423,20 +430,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="stable_pretraining.data.GMM.html"
+       href="stable_pretraining.data.HFDataset.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">GMM</p>
+        <p class="prev-next-title">HFDataset</p>
       </div>
     </a>
     <a class="right-next"
-       href="stable_pretraining.data.FromTorchDataset.html"
+       href="stable_pretraining.data.GMM.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">FromTorchDataset</p>
+        <p class="prev-next-title">GMM</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

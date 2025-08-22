@@ -47,7 +47,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/gen_modules/stable_pretraining.data.bulk_download';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="transforms" href="stable_pretraining.data.transforms.html" />
+    <link rel="next" title="stable_pretraining.data.transforms" href="stable_pretraining.data.transforms.html" />
     <link rel="prev" title="download" href="stable_pretraining.data.download.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -176,22 +176,29 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../data.html">stable_pretraining.data</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.DataModule.html">DataModule</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Collator.html">Collator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.GMM.html">GMM</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Dataset.html">Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.FromTorchDataset.html">FromTorchDataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.HFDataset.html">HFDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.GMM.html">GMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariEpisodeDataset.html">MinariEpisodeDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.swiss_roll.html">swiss_roll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.generate_perlin_noise_2d.html">generate_perlin_noise_2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.perlin_noise_3d.html">perlin_noise_3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Categorical.html">Categorical</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.ExponentialMixtureNoiseModel.html">ExponentialMixtureNoiseModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.ExponentialNormalNoiseModel.html">ExponentialNormalNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.fold_views.html">fold_views</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.random_split.html">random_split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.download.html">download</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">bulk_download</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.transforms.html">transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.transforms.html">stable_pretraining.data.transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.dataset_stats.html">stable_pretraining.data.dataset_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.synthetic_data.html">stable_pretraining.data.synthetic_data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_pretraining.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -396,11 +403,11 @@ document.write(`
 <h1>bulk_download<a class="headerlink" href="#bulk-download" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="stable_pretraining.data.bulk_download">
-<span class="sig-prename descclassname"><span class="pre">stable_pretraining.data.</span></span><span class="sig-name descname"><span class="pre">bulk_download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/pathlib.html#pathlib.Path" title="(in Python v3.4)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'filesystem'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'~/.stable_ssl/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_pretraining/data/utils.html#bulk_download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.data.bulk_download" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">stable_pretraining.data.</span></span><span class="sig-name descname"><span class="pre">bulk_download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.4/library/pathlib.html#pathlib.Path" title="(in Python v3.4)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'filesystem'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'~/.stable_pretraining/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_pretraining/data/download.html#bulk_download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.data.bulk_download" title="Link to this definition">#</a></dt>
 <dd><p>Download multiple files concurrently.</p>
 <p class="rubric">Example</p>
-<p>import stable_ssl
-stable_ssl.data.bulk_download([</p>
+<p>import stable_pretraining
+stable_pretraining.data.bulk_download([</p>
 <blockquote>
 <div><p>“<a class="reference external" href="https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz">https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz</a>”,
 “<a class="reference external" href="https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz">https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz</a>”,</p>
@@ -412,7 +419,7 @@ stable_ssl.data.bulk_download([</p>
 <li><p><strong>urls</strong> (<em>Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a><em>]</em>) – List of URLs to download</p></li>
 <li><p><strong>dest_folder</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a><em>, </em><em>Path</em><em>]</em>) – Destination folder for downloads</p></li>
 <li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a><em>, </em><em>optional</em>) – Storage backend type. Defaults to “filesystem”.</p></li>
-<li><p><strong>cache_dir</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a><em>, </em><em>optional</em>) – Cache directory path. Defaults to “~/.stable_ssl/”.</p></li>
+<li><p><strong>cache_dir</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a><em>, </em><em>optional</em>) – Cache directory path. Defaults to “~/.stable_pretraining/”.</p></li>
 </ul>
 </dd>
 </dl>
@@ -445,7 +452,7 @@ stable_ssl.data.bulk_download([</p>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">transforms</p>
+        <p class="prev-next-title">stable_pretraining.data.transforms</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

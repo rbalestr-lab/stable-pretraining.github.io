@@ -176,22 +176,29 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="data.html">stable_pretraining.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.DataModule.html">DataModule</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.Collator.html">Collator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.GMM.html">GMM</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.Dataset.html">Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.FromTorchDataset.html">FromTorchDataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.HFDataset.html">HFDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.GMM.html">GMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.MinariEpisodeDataset.html">MinariEpisodeDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.swiss_roll.html">swiss_roll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.generate_perlin_noise_2d.html">generate_perlin_noise_2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.perlin_noise_3d.html">perlin_noise_3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.Categorical.html">Categorical</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.ExponentialMixtureNoiseModel.html">ExponentialMixtureNoiseModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.ExponentialNormalNoiseModel.html">ExponentialNormalNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.fold_views.html">fold_views</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.random_split.html">random_split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.download.html">download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.bulk_download.html">bulk_download</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.transforms.html">transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.transforms.html">stable_pretraining.data.transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.dataset_stats.html">stable_pretraining.data.dataset_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.synthetic_data.html">stable_pretraining.data.synthetic_data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="losses.html">stable_pretraining.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -409,7 +416,7 @@ document.write(`
 </section>
 <section id="user-implementation">
 <h2>User Implementation<a class="headerlink" href="#user-implementation" title="Link to this heading">#</a></h2>
-<p>The key insight of <cite>stable-ssl</cite> is <strong>simplicity</strong>: you only need to implement the <cite>forward</cite> method. Everything else (optimizers, schedulers, training loops, logging) is handled automatically.</p>
+<p>The key insight of <cite>stable-pretraining</cite> is <strong>simplicity</strong>: you only need to implement the <cite>forward</cite> method. Everything else (optimizers, schedulers, training loops, logging) is handled automatically.</p>
 <p><strong>Required Implementation:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
     <span class="c1"># Your custom logic here</span>
@@ -418,18 +425,18 @@ document.write(`
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
         <span class="c1"># Training-specific logic</span>
         <span class="n">proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
-        <span class="n">views</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
+        <span class="n">views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
         <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simclr_loss</span><span class="p">(</span><span class="n">views</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">views</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">batch</span>
 </pre></div>
 </div>
 <p><strong>Module Creation:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">module</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">Module</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">module</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">Module</span><span class="p">(</span>
     <span class="n">backbone</span><span class="o">=</span><span class="n">backbone</span><span class="p">,</span>           <span class="c1"># Your model components</span>
     <span class="n">projector</span><span class="o">=</span><span class="n">projector</span><span class="p">,</span>         <span class="c1"># Any kwargs become self.attributes</span>
     <span class="n">forward</span><span class="o">=</span><span class="n">forward</span><span class="p">,</span>            <span class="c1"># Your forward function</span>
-    <span class="n">simclr_loss</span><span class="o">=</span><span class="n">ssl</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">NTXEntLoss</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span>
+    <span class="n">simclr_loss</span><span class="o">=</span><span class="n">spt</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">NTXEntLoss</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -439,7 +446,7 @@ document.write(`
 <li><p>✅ <strong>Training Loop</strong>: Automatic gradient accumulation, clipping, and stepping</p></li>
 <li><p>✅ <strong>Stage Management</strong>: Training/validation/test/predict stages</p></li>
 <li><p>✅ <strong>Metrics</strong>: Automatic metric logging and computation</p></li>
-<li><p>✅ <strong>Callbacks</strong>: Integration with all stable-ssl callbacks</p></li>
+<li><p>✅ <strong>Callbacks</strong>: Integration with all stable-pretraining callbacks</p></li>
 <li><p>✅ <strong>Logging</strong>: Rich logging and monitoring</p></li>
 </ul>
 <p><strong>Key Features:</strong></p>

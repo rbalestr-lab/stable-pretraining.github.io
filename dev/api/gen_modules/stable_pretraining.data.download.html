@@ -176,22 +176,29 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../data.html">stable_pretraining.data</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.DataModule.html">DataModule</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Collator.html">Collator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.GMM.html">GMM</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Dataset.html">Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.FromTorchDataset.html">FromTorchDataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.HFDataset.html">HFDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.GMM.html">GMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariEpisodeDataset.html">MinariEpisodeDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.swiss_roll.html">swiss_roll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.generate_perlin_noise_2d.html">generate_perlin_noise_2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.perlin_noise_3d.html">perlin_noise_3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Categorical.html">Categorical</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.ExponentialMixtureNoiseModel.html">ExponentialMixtureNoiseModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.ExponentialNormalNoiseModel.html">ExponentialNormalNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.fold_views.html">fold_views</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.random_split.html">random_split</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.bulk_download.html">bulk_download</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.transforms.html">transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.transforms.html">stable_pretraining.data.transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.dataset_stats.html">stable_pretraining.data.dataset_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.synthetic_data.html">stable_pretraining.data.synthetic_data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_pretraining.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -396,8 +403,25 @@ document.write(`
 <h1>download<a class="headerlink" href="#download" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="stable_pretraining.data.download">
-<span class="sig-prename descclassname"><span class="pre">stable_pretraining.data.</span></span><span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'filesystem'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'~/.stable_ssl/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_progress_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_task_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_pretraining/data/utils.html#download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.data.download" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">stable_pretraining.data.</span></span><span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'filesystem'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'~/.stable_pretraining/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_progress_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_task_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_pretraining/data/download.html#download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.data.download" title="Link to this definition">#</a></dt>
+<dd><p>Download a file from a URL with progress tracking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> – URL to download from</p></li>
+<li><p><strong>dest_folder</strong> – Destination folder for the download</p></li>
+<li><p><strong>backend</strong> – Storage backend type</p></li>
+<li><p><strong>cache_dir</strong> – Cache directory path</p></li>
+<li><p><strong>progress_bar</strong> – Whether to show progress bar</p></li>
+<li><p><strong>_progress_dict</strong> – Internal dictionary for progress tracking</p></li>
+<li><p><strong>_task_id</strong> – Internal task ID for bulk downloads</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Path to the downloaded file or None if download failed</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 

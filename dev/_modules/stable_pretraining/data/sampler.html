@@ -175,22 +175,29 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/data.html">stable_pretraining.data</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.DataModule.html">DataModule</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.Collator.html">Collator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.GMM.html">GMM</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.Dataset.html">Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.FromTorchDataset.html">FromTorchDataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.HFDataset.html">HFDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.GMM.html">GMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.MinariEpisodeDataset.html">MinariEpisodeDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.swiss_roll.html">swiss_roll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.generate_perlin_noise_2d.html">generate_perlin_noise_2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.perlin_noise_3d.html">perlin_noise_3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.Categorical.html">Categorical</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.ExponentialMixtureNoiseModel.html">ExponentialMixtureNoiseModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.ExponentialNormalNoiseModel.html">ExponentialNormalNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.fold_views.html">fold_views</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.random_split.html">random_split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.download.html">download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.bulk_download.html">bulk_download</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.transforms.html">transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.transforms.html">stable_pretraining.data.transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.dataset_stats.html">stable_pretraining.data.dataset_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.synthetic_data.html">stable_pretraining.data.synthetic_data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/losses.html">stable_pretraining.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -342,13 +349,6 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch.distributed</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dist</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_check_integer</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> should be a positive integer value, but got </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-
-
 <div class="viewcode-block" id="RepeatedRandomSampler">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_pretraining.data.RepeatedRandomSampler.html#stable_pretraining.data.RepeatedRandomSampler">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RepeatedRandomSampler</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DistributedSampler</span><span class="p">):</span>
@@ -408,10 +408,6 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_views</span>
 
-    <span class="c1"># @property</span>
-    <span class="c1"># def num_samples(self) -&gt; int:</span>
-    <span class="c1">#     return (len(self.data_source) * self.n_views) // self.num_replicas</span>
-
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_source_len</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span><span class="p">()</span>
@@ -436,45 +432,6 @@ document.write(`
             <span class="p">]</span>
             <span class="k">yield from</span> <span class="n">rank_slice</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_views</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
 
-
-
-<span class="c1"># class RepeatedSampler(torch.utils.data.BatchSampler):</span>
-<span class="c1">#     def __init__(</span>
-<span class="c1">#         self,</span>
-<span class="c1">#         num_samples_or_dataset: Union[torch.utils.data.Dataset, HFDataset, int],</span>
-<span class="c1">#         batch_size: Optional[int] = 1,</span>
-<span class="c1">#         n_views: Optional[int] = 1,</span>
-<span class="c1">#         shuffle: bool = True,</span>
-<span class="c1">#         replacement: bool = False,</span>
-<span class="c1">#         sampler=None,</span>
-<span class="c1">#         drop_last: bool = False,</span>
-<span class="c1">#     ) -&gt; None:</span>
-<span class="c1">#         # if hasattr(num_samples_or_dataset, &quot;__len__&quot;):</span>
-<span class="c1">#         #     num_samples_or_dataset = len(num_samples_or_dataset)</span>
-<span class="c1">#         if sampler is None and shuffle:</span>
-<span class="c1">#             sampler = torch.utils.data.RandomSampler(</span>
-<span class="c1">#                 num_samples_or_dataset, replacement=replacement</span>
-<span class="c1">#             )</span>
-<span class="c1">#         elif sampler is None and not shuffle:</span>
-<span class="c1">#             sampler = torch.utils.data.SequentialSampler(num_samples_or_dataset)</span>
-<span class="c1">#         super().__init__(sampler=sampler, batch_size=batch_size, drop_last=drop_last)</span>
-<span class="c1">#         _check_integer(n_views, &quot;n_views&quot;)</span>
-<span class="c1">#         self.batch_size = batch_size</span>
-<span class="c1">#         self.n_views = n_views</span>
-
-<span class="c1">#     def __iter__(self) -&gt; Iterator[List[int]]:</span>
-<span class="c1">#         # Create multiple references to the same iterator</span>
-<span class="c1">#         sampler_iter = iter(self.sampler)</span>
-<span class="c1">#         args = [sampler_iter] * (self.batch_size // self.n_views)</span>
-<span class="c1">#         for batch_droplast in zip(*args):</span>
-<span class="c1">#             indices = [*batch_droplast]</span>
-<span class="c1">#             yield [int(i) for i in np.repeat(indices, self.n_views)]</span>
-
-<span class="c1">#     def __len__(self) -&gt; int:</span>
-<span class="c1">#         # Can only be called if self.sampler has __len__ implemented</span>
-<span class="c1">#         # We cannot enforce this condition, so we turn off typechecking for the</span>
-<span class="c1">#         # implementation below.</span>
-<span class="c1">#         return len(self.sampler) // (self.batch_size // self.n_views)</span>
 
 
 <div class="viewcode-block" id="SupervisedBatchSampler">

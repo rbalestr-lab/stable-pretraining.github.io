@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>transforms &#8212; stable-pretraining 0.0.1.dev0 documentation</title>
+    <title>stable_pretraining.data.transforms &#8212; stable-pretraining 0.0.1.dev0 documentation</title>
   
   
   
@@ -47,7 +47,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/gen_modules/stable_pretraining.data.transforms';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="stable_pretraining.losses" href="../losses.html" />
+    <link rel="next" title="stable_pretraining.data.dataset_stats" href="stable_pretraining.data.dataset_stats.html" />
     <link rel="prev" title="bulk_download" href="stable_pretraining.data.bulk_download.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -176,22 +176,29 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../data.html">stable_pretraining.data</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.DataModule.html">DataModule</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Collator.html">Collator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.GMM.html">GMM</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Dataset.html">Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.FromTorchDataset.html">FromTorchDataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.HFDataset.html">HFDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.GMM.html">GMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.MinariEpisodeDataset.html">MinariEpisodeDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.swiss_roll.html">swiss_roll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.generate_perlin_noise_2d.html">generate_perlin_noise_2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.perlin_noise_3d.html">perlin_noise_3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.Categorical.html">Categorical</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.ExponentialMixtureNoiseModel.html">ExponentialMixtureNoiseModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.ExponentialNormalNoiseModel.html">ExponentialNormalNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.fold_views.html">fold_views</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.random_split.html">random_split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.download.html">download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.bulk_download.html">bulk_download</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">transforms</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">stable_pretraining.data.transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.dataset_stats.html">stable_pretraining.data.dataset_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.synthetic_data.html">stable_pretraining.data.synthetic_data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_pretraining.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -357,9 +364,7 @@ document.write(`
   </button>
 `);
 </script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</button>
+
 </div></div>
       
     </div>
@@ -370,19 +375,11 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>transforms</h1>
+    <h1>stable_pretraining.data.transforms</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> Contents </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.data.transforms"><code class="docutils literal notranslate"><span class="pre">transforms</span></code></a></li>
-</ul>
-            </nav>
         </div>
     </div>
 </div>
@@ -392,15 +389,96 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="transforms">
-<h1>transforms<a class="headerlink" href="#transforms" title="Link to this heading">#</a></h1>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="stable_pretraining.data.transforms">
-<span class="sig-prename descclassname"><span class="pre">stable_pretraining.data.</span></span><span class="sig-name descname"><span class="pre">transforms</span></span><a class="headerlink" href="#stable_pretraining.data.transforms" title="Link to this definition">#</a></dt>
-<dd><p>alias of &lt;module ‘stable_pretraining.data.transforms’ from ‘/home/circleci/.local/lib/python3.10/site-packages/stable_pretraining/data/transforms.py’&gt;</p>
-</dd></dl>
-
-<span class="target" id="sphx-glr-backref-stable-pretraining-data-transforms"></span></section>
+  <section id="module-stable_pretraining.data.transforms">
+<span id="stable-pretraining-data-transforms"></span><h1>stable_pretraining.data.transforms<a class="headerlink" href="#module-stable_pretraining.data.transforms" title="Link to this heading">#</a></h1>
+<p class="rubric">Functions</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_seed</span></code>(seed)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_seed</span></code>(seeds)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_image</span></code>(input)</p></td>
+<td><p>See <code class="xref py py-class docutils literal notranslate"><span class="pre">ToImage</span></code> for details.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Classes</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">AdditiveGaussian</span></code>(sigma[, p])</p></td>
+<td><p>Add Gaussian noise to input data.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">CenterCrop</span></code>(size[, source, target])</p></td>
+<td><p>Crop the center of an image to the given size.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ColorJitter</span></code>([brightness, contrast, ...])</p></td>
+<td><p>Randomly change brightness, contrast, saturation, and hue of an image.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Compose</span></code>(*args)</p></td>
+<td><p>Compose multiple transforms together in sequence.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Conditional</span></code>(transform, condition_key[, ...])</p></td>
+<td><p>Apply transform conditionally based on a data dictionary key.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ControlledTransform</span></code>(transform[, ...])</p></td>
+<td><p>Face Landmarks dataset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">GaussianBlur</span></code>(kernel_size[, sigma, p, ...])</p></td>
+<td><p>Apply Gaussian blur to image with random sigma values.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiViewTransform</span></code>(transforms)</p></td>
+<td><p>Apply different transforms to different views of the same sample.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PILGaussianBlur</span></code>([sigma, p, source, target])</p></td>
+<td><p>PIL-based Gaussian blur transform with random sigma sampling.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RGB</span></code>([source, target])</p></td>
+<td><p>Convert image to RGB format.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomChannelPermutation</span></code>([source, target])</p></td>
+<td><p>Randomly permute the channels of an image.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomContiguousTemporalSampler</span></code>(source, ...)</p></td>
+<td><p>Randomly sample contiguous frames from a video sequence.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomCrop</span></code>(size[, padding, pad_if_needed, ...])</p></td>
+<td><p>Crop a random portion of image and resize it to given size.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomGrayscale</span></code>([p, source, target])</p></td>
+<td><p>Randomly convert image to grayscale with given probability.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomHorizontalFlip</span></code>([p, source, target])</p></td>
+<td><p>Horizontally flip the given image randomly with a given probability.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomResizedCrop</span></code>(size[, scale, ratio, ...])</p></td>
+<td><p>Crop a random portion of image and resize it to given size.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomRotation</span></code>(degrees[, interpolation, ...])</p></td>
+<td><p>Rotate image by random angle within specified degrees range.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomSolarize</span></code>(threshold[, p, source, target])</p></td>
+<td><p>Randomly solarize image by inverting pixel values above threshold.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Resize</span></code>(size[, interpolation, max_size, ...])</p></td>
+<td><p>Resize image to specified size.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToImage</span></code>([dtype, scale, mean, std, source, ...])</p></td>
+<td><p>Convert input to image tensor with optional normalization.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Transform</span></code>()</p></td>
+<td><p>Base transform class extending torchvision v2.Transform with nested data handling.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">UniformTemporalSubsample</span></code>(num_samples[, ...])</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nn.Module</span></code> wrapper for <code class="docutils literal notranslate"><span class="pre">pytorchvideo.transforms.functional.uniform_temporal_subsample</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 
 
                 </article>
@@ -423,11 +501,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="../losses.html"
+       href="stable_pretraining.data.dataset_stats.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">stable_pretraining.losses</p>
+        <p class="prev-next-title">stable_pretraining.data.dataset_stats</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -437,21 +515,6 @@ document.write(`
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.data.transforms"><code class="docutils literal notranslate"><span class="pre">transforms</span></code></a></li>
-</ul>
-  </nav></div>
-
-</div></div>
               
             
           </div>

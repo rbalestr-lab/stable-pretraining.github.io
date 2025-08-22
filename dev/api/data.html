@@ -176,22 +176,29 @@
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">stable_pretraining.data</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.DataModule.html">DataModule</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.Collator.html">Collator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.GMM.html">GMM</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.Dataset.html">Dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.FromTorchDataset.html">FromTorchDataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.HFDataset.html">HFDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.Subset.html">Subset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.GMM.html">GMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.MinariStepsDataset.html">MinariStepsDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.MinariEpisodeDataset.html">MinariEpisodeDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.swiss_roll.html">swiss_roll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.generate_perlin_noise_2d.html">generate_perlin_noise_2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.perlin_noise_3d.html">perlin_noise_3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.Categorical.html">Categorical</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.ExponentialMixtureNoiseModel.html">ExponentialMixtureNoiseModel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.ExponentialNormalNoiseModel.html">ExponentialNormalNoiseModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.RepeatedRandomSampler.html">RepeatedRandomSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.SupervisedBatchSampler.html">SupervisedBatchSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.RandomBatchSampler.html">RandomBatchSampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.fold_views.html">fold_views</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.random_split.html">random_split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.download.html">download</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.bulk_download.html">bulk_download</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.transforms.html">transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.transforms.html">stable_pretraining.data.transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.dataset_stats.html">stable_pretraining.data.dataset_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gen_modules/stable_pretraining.data.synthetic_data.html">stable_pretraining.data.synthetic_data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="losses.html">stable_pretraining.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -381,9 +388,12 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-components">Core Components</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#samplers">Samplers</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-classes">Dataset Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#real-data-wrappers">Real Data Wrappers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-data-generators">Synthetic Data Generators</a><ul class="nav section-nav flex-column">
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#noise-models">Noise Models</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#samplers">Samplers</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#utility-functions">Utility Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modules">Modules</a></li>
 </ul>
@@ -410,45 +420,56 @@ document.write(`
 <tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.Collator.html#stable_pretraining.data.Collator" title="stable_pretraining.data.Collator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Collator</span></code></a>([G_from])</p></td>
 <td><p>Custom collate function that optionally builds an affinity (or “graph”) matrix based on a specified field.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.Dataset.html#stable_pretraining.data.Dataset" title="stable_pretraining.data.Dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Dataset</span></code></a>([transform])</p></td>
+<td><p>Base dataset class with transform support and PyTorch Lightning integration.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
 </section>
-<section id="samplers">
-<h2>Samplers<a class="headerlink" href="#samplers" title="Link to this heading">#</a></h2>
+<section id="real-data-wrappers">
+<h2>Real Data Wrappers<a class="headerlink" href="#real-data-wrappers" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.RepeatedRandomSampler.html#stable_pretraining.data.RepeatedRandomSampler" title="stable_pretraining.data.RepeatedRandomSampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RepeatedRandomSampler</span></code></a>(data_source_or_len[, ...])</p></td>
-<td><p>Samples elements randomly.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.FromTorchDataset.html#stable_pretraining.data.FromTorchDataset" title="stable_pretraining.data.FromTorchDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FromTorchDataset</span></code></a>(dataset, names[, ...])</p></td>
+<td><p>Wrapper for PyTorch datasets with custom column naming and transforms.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.SupervisedBatchSampler.html#stable_pretraining.data.SupervisedBatchSampler" title="stable_pretraining.data.SupervisedBatchSampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SupervisedBatchSampler</span></code></a>(batch_size, n_views, ...)</p></td>
-<td><p>Wraps another sampler to yield a mini-batch of indices.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.HFDataset.html#stable_pretraining.data.HFDataset" title="stable_pretraining.data.HFDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HFDataset</span></code></a>(*args[, transform, ...])</p></td>
+<td><p>Hugging Face dataset wrapper with transform and column manipulation support.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.RandomBatchSampler.html#stable_pretraining.data.RandomBatchSampler" title="stable_pretraining.data.RandomBatchSampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomBatchSampler</span></code></a>(batch_size, ...)</p></td>
-<td><p>Wraps another sampler to yield a mini-batch of indices.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.Subset.html#stable_pretraining.data.Subset" title="stable_pretraining.data.Subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subset</span></code></a>(dataset, indices)</p></td>
+<td><p>Subset of a dataset at specified indices.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </section>
-<section id="dataset-classes">
-<h2>Dataset Classes<a class="headerlink" href="#dataset-classes" title="Link to this heading">#</a></h2>
+<section id="synthetic-data-generators">
+<h2>Synthetic Data Generators<a class="headerlink" href="#synthetic-data-generators" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.GMM.html#stable_pretraining.data.GMM" title="stable_pretraining.data.GMM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GMM</span></code></a>([num_components, num_samples, dim])</p></td>
 <td><p>Gaussian Mixture Model dataset for synthetic data generation.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.Subset.html#stable_pretraining.data.Subset" title="stable_pretraining.data.Subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subset</span></code></a>(dataset, indices)</p></td>
-<td><p>Subset of a dataset at specified indices.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.FromTorchDataset.html#stable_pretraining.data.FromTorchDataset" title="stable_pretraining.data.FromTorchDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FromTorchDataset</span></code></a>(dataset, names[, ...])</p></td>
-<td><p>Wrapper for PyTorch datasets with custom column naming and transforms.</p></td>
-</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.MinariStepsDataset.html#stable_pretraining.data.MinariStepsDataset" title="stable_pretraining.data.MinariStepsDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MinariStepsDataset</span></code></a>(dataset[, num_steps, ...])</p></td>
 <td><p>Dataset for Minari reinforcement learning data with step-based access.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.HFDataset.html#stable_pretraining.data.HFDataset" title="stable_pretraining.data.HFDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HFDataset</span></code></a>(*args[, transform, ...])</p></td>
-<td><p>Hugging Face dataset wrapper with transform and column manipulation support.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.MinariEpisodeDataset.html#stable_pretraining.data.MinariEpisodeDataset" title="stable_pretraining.data.MinariEpisodeDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MinariEpisodeDataset</span></code></a>(dataset)</p></td>
+<td><p>Dataset for Minari reinforcement learning data with episode-based access.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.swiss_roll.html#stable_pretraining.data.swiss_roll" title="stable_pretraining.data.swiss_roll"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swiss_roll</span></code></a>(N[, margin, sampler_time, ...])</p></td>
+<td><p>Generate Swiss Roll dataset points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.generate_perlin_noise_2d.html#stable_pretraining.data.generate_perlin_noise_2d" title="stable_pretraining.data.generate_perlin_noise_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_perlin_noise_2d</span></code></a>(shape, res[, ...])</p></td>
+<td><p>Generate 2D Perlin noise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.perlin_noise_3d.html#stable_pretraining.data.perlin_noise_3d" title="stable_pretraining.data.perlin_noise_3d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">perlin_noise_3d</span></code></a>(x, y, z)</p></td>
+<td><p>Generate 3D Perlin noise at given coordinates.</p></td>
 </tr>
 </tbody>
 </table>
@@ -471,18 +492,35 @@ document.write(`
 </table>
 </div>
 </section>
+<section id="samplers">
+<h2>Samplers<a class="headerlink" href="#samplers" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.RepeatedRandomSampler.html#stable_pretraining.data.RepeatedRandomSampler" title="stable_pretraining.data.RepeatedRandomSampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RepeatedRandomSampler</span></code></a>(data_source_or_len[, ...])</p></td>
+<td><p>Samples elements randomly.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.SupervisedBatchSampler.html#stable_pretraining.data.SupervisedBatchSampler" title="stable_pretraining.data.SupervisedBatchSampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SupervisedBatchSampler</span></code></a>(batch_size, n_views, ...)</p></td>
+<td><p>Wraps another sampler to yield a mini-batch of indices.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.RandomBatchSampler.html#stable_pretraining.data.RandomBatchSampler" title="stable_pretraining.data.RandomBatchSampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomBatchSampler</span></code></a>(batch_size, ...)</p></td>
+<td><p>Wraps another sampler to yield a mini-batch of indices.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="utility-functions">
 <h2>Utility Functions<a class="headerlink" href="#utility-functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.fold_views.html#stable_pretraining.data.fold_views" title="stable_pretraining.data.fold_views"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fold_views</span></code></a>(tensor, idx)</p></td>
-<td><p></p></td>
+<td><p>Fold a tensor containing multiple views back into separate views.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.random_split.html#stable_pretraining.data.random_split" title="stable_pretraining.data.random_split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_split</span></code></a>(dataset, lengths[, generator])</p></td>
 <td><p>Randomly split a dataset into non-overlapping new datasets of given lengths.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.download.html#stable_pretraining.data.download" title="stable_pretraining.data.download"><code class="xref py py-obj docutils literal notranslate"><span class="pre">download</span></code></a>(url, dest_folder[, backend, ...])</p></td>
-<td><p></p></td>
+<td><p>Download a file from a URL with progress tracking.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.bulk_download.html#stable_pretraining.data.bulk_download" title="stable_pretraining.data.bulk_download"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bulk_download</span></code></a>(urls, dest_folder[, backend, ...])</p></td>
 <td><p>Download multiple files concurrently.</p></td>
@@ -495,8 +533,14 @@ document.write(`
 <h2>Modules<a class="headerlink" href="#modules" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.transforms.html#stable_pretraining.data.transforms" title="stable_pretraining.data.transforms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.transforms.html#module-stable_pretraining.data.transforms" title="stable_pretraining.data.transforms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transforms</span></code></a></p></td>
 <td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.dataset_stats.html#module-stable_pretraining.data.dataset_stats" title="stable_pretraining.data.dataset_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset_stats</span></code></a></p></td>
+<td><p>Dataset statistics for normalization.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="gen_modules/stable_pretraining.data.synthetic_data.html#module-stable_pretraining.data.synthetic_data" title="stable_pretraining.data.synthetic_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">synthetic_data</span></code></a></p></td>
+<td><p>Synthetic and simulated data generators.</p></td>
 </tr>
 </tbody>
 </table>
@@ -550,9 +594,12 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-components">Core Components</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#samplers">Samplers</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-classes">Dataset Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#real-data-wrappers">Real Data Wrappers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-data-generators">Synthetic Data Generators</a><ul class="nav section-nav flex-column">
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#noise-models">Noise Models</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#samplers">Samplers</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#utility-functions">Utility Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modules">Modules</a></li>
 </ul>
