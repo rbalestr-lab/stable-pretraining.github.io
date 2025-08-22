@@ -17,7 +17,7 @@
 
 .. _sphx_glr_auto_examples_custom_supervised.py:
 
-This example demonstrates how to create a custom supervised model using the `stable_ssl` library.
+This example demonstrates how to create a custom supervised model using the `stable_pretraining` library.
 
 .. GENERATED FROM PYTHON SOURCE LINES 2-80
 
@@ -31,8 +31,8 @@ This example demonstrates how to create a custom supervised model using the `sta
     from omegaconf import DictConfig
     from torchvision import transforms
 
-    import stable_ssl
-    from stable_ssl.supervised import Supervised
+    import stable_pretraining as spt
+    from stable_pretraining.supervised import Supervised
 
 
     class MyCustomSupervised(Supervised):
@@ -87,7 +87,7 @@ This example demonstrates how to create a custom supervised model using the `sta
 
     @hydra.main()
     def main(cfg: DictConfig):
-        args = stable_ssl.get_args(cfg)
+        args = spt.get_args(cfg)
 
         print("--- Arguments ---")
         print(args)
