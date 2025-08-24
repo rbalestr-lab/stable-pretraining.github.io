@@ -352,12 +352,12 @@ document.write(`
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_data_from_batch_or_outputs</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">EarlyStopping</span><span class="p">,</span> <span class="n">OptimizedCallback</span><span class="p">,</span> <span class="n">format_metrics_as_dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">EarlyStopping</span><span class="p">,</span> <span class="n">TrainableCallback</span><span class="p">,</span> <span class="n">format_metrics_as_dict</span>
 
 
 <div class="viewcode-block" id="OnlineProbe">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_pretraining.callbacks.OnlineProbe.html#stable_pretraining.callbacks.OnlineProbe">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">OnlineProbe</span><span class="p">(</span><span class="n">OptimizedCallback</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnlineProbe</span><span class="p">(</span><span class="n">TrainableCallback</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Online probe for evaluating learned representations during self-supervised training.</span>
 
 <span class="sd">    This callback implements the standard linear evaluation protocol by training a probe</span>
@@ -476,6 +476,9 @@ document.write(`
         <span class="c1"># Setup metrics</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Setting up metrics&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;_callbacks_metrics&quot;</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;attaching a `_callbacks_metrics` to your LightningModule for callbacks&quot;</span>
+            <span class="p">)</span>
             <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">format_metrics_as_dict</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">metrics_config</span>
@@ -561,13 +564,16 @@ document.write(`
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;OnlineProbe callback doesn&#39;t have access to its `x` or `y` tensor!&quot;</span>
+            <span class="p">)</span>
             <span class="k">return</span>
 
         <span class="c1"># Ensure probe is in eval mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 
         <span class="c1"># Forward pass without gradients</span>
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">inference_mode</span><span class="p">():</span>
             <span class="c1"># Ensure input has same dtype as probe module</span>
             <span class="c1"># This handles mixed precision training where features might be float16</span>
             <span class="n">probe_dtype</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">dtype</span>
@@ -600,7 +606,7 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle early stopping if configured.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">early_stopping</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
-
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> checking for early stopping condition&quot;</span><span class="p">)</span>
         <span class="c1"># Get the metric value for early stopping</span>
         <span class="n">metric_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;eval/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">early_stopping</span><span class="o">.</span><span class="n">monitor</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="n">metric_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">trainer</span><span class="o">.</span><span class="n">callback_metrics</span><span class="p">:</span>
@@ -616,7 +622,7 @@ document.write(`
 
         <span class="k">if</span> <span class="n">should_stop</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Early stopping triggered at epoch </span><span class="si">{</span><span class="n">trainer</span><span class="o">.</span><span class="n">current_epoch</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Early stopping triggered at epoch </span><span class="si">{</span><span class="n">trainer</span><span class="o">.</span><span class="n">current_epoch</span><span class="si">}</span><span class="s2"> by </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
             <span class="n">trainer</span><span class="o">.</span><span class="n">should_stop</span> <span class="o">=</span> <span class="kc">True</span></div>
 
