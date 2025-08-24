@@ -537,7 +537,7 @@ document.write(`
             <span class="n">metric</span><span class="p">(</span><span class="n">preds</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="n">y</span><span class="p">)</span>
             <span class="n">logs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;train/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">metric_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric</span>
 
-        <span class="n">pl_module</span><span class="o">.</span><span class="n">log_dict</span><span class="p">(</span><span class="n">logs</span><span class="p">,</span> <span class="n">on_step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pl_module</span><span class="o">.</span><span class="n">log_dict</span><span class="p">(</span><span class="n">logs</span><span class="p">,</span> <span class="n">on_step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sync_dist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Optimizer step using parent class method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer_step</span><span class="p">(</span><span class="n">batch_idx</span><span class="p">,</span> <span class="n">trainer</span><span class="p">)</span></div>
@@ -595,7 +595,7 @@ document.write(`
             <span class="n">metric</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
             <span class="n">logs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;eval/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">metric_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric</span>
 
-        <span class="n">pl_module</span><span class="o">.</span><span class="n">log_dict</span><span class="p">(</span><span class="n">logs</span><span class="p">,</span> <span class="n">on_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">on_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="n">pl_module</span><span class="o">.</span><span class="n">log_dict</span><span class="p">(</span><span class="n">logs</span><span class="p">,</span> <span class="n">on_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">on_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sync_dist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="OnlineProbe.on_validation_epoch_end">
