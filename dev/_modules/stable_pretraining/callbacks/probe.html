@@ -492,8 +492,14 @@ document.write(`
 
 <div class="viewcode-block" id="OnlineProbe.forward_hook_fn">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_pretraining.callbacks.OnlineProbe.html#stable_pretraining.callbacks.OnlineProbe.forward_hook_fn">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">forward_hook_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_hook_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform probe training step.&quot;&quot;&quot;</span>
+        <span class="c1"># Extract batch from args tuple (it&#39;s the first argument to forward)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="n">args</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
+
         <span class="n">x</span> <span class="o">=</span> <span class="n">get_data_from_batch_or_outputs</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">caller_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="p">)</span>

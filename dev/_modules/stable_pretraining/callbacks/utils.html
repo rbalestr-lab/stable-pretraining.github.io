@@ -542,16 +542,9 @@ document.write(`
         <span class="k">if</span> <span class="n">stage</span> <span class="o">!=</span> <span class="s2">&quot;fit&quot;</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="c1"># Store reference to pl_module</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pl_module</span> <span class="o">=</span> <span class="n">pl_module</span>
-
-        <span class="c1"># Setup module</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setup_module</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">)</span>
-
-        <span class="c1"># Setup optimizer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setup_optimizer</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">)</span>
-
-        <span class="c1"># Setup scheduler</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setup_scheduler</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">)</span>
 
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Setup complete&quot;</span><span class="p">)</span>
