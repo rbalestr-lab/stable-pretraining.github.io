@@ -486,7 +486,8 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_train_metrics</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;_train&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_val_metrics</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;_val&quot;</span><span class="p">]</span>
-        <span class="n">pl_module</span><span class="o">.</span><span class="n">register_forward_hook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_hook_fn</span><span class="p">)</span></div>
+        <span class="n">pl_module</span><span class="o">.</span><span class="n">register_forward_hook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_hook_fn</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Main module forward hooks: </span><span class="si">{</span><span class="n">pl_module</span><span class="o">.</span><span class="n">_forward_hooks</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="OnlineProbe.forward_hook_fn">
@@ -537,7 +538,8 @@ document.write(`
             <span class="n">metric</span><span class="p">(</span><span class="n">preds</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="n">y</span><span class="p">)</span>
             <span class="n">logs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;train/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">metric_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric</span>
 
-        <span class="n">pl_module</span><span class="o">.</span><span class="n">log_dict</span><span class="p">(</span><span class="n">logs</span><span class="p">,</span> <span class="n">on_step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sync_dist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="n">pl_module</span><span class="o">.</span><span class="n">log_dict</span><span class="p">(</span><span class="n">logs</span><span class="p">,</span> <span class="n">on_step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sync_dist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">outputs</span></div>
 
 
 <div class="viewcode-block" id="OnlineProbe.on_train_batch_end">
