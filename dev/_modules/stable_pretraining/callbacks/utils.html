@@ -200,6 +200,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.data.synthetic_data.html">stable_pretraining.data.synthetic_data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/forward.html">stable_pretraining.forward</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/losses.html">stable_pretraining.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.losses.NTXEntLoss.html">NTXEntLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/gen_modules/stable_pretraining.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
@@ -672,6 +673,14 @@ document.write(`
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: If metrics format is invalid or contains non-torchmetric objects.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Handle OmegaConf types</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">omegaconf</span><span class="w"> </span><span class="kn">import</span> <span class="n">ListConfig</span><span class="p">,</span> <span class="n">DictConfig</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="p">(</span><span class="n">ListConfig</span><span class="p">,</span> <span class="n">DictConfig</span><span class="p">)):</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">omegaconf</span>
+
+        <span class="n">metrics</span> <span class="o">=</span> <span class="n">omegaconf</span><span class="o">.</span><span class="n">OmegaConf</span><span class="o">.</span><span class="n">to_container</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">resolve</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">metrics</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">train</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="nb">eval</span> <span class="o">=</span> <span class="p">{}</span>
@@ -694,7 +703,7 @@ document.write(`
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;metric </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2"> is no a torchmetric&quot;</span><span class="p">)</span>
                 <span class="nb">eval</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">eval</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">&quot;eval&quot;</span><span class="p">]</span>
+            <span class="nb">eval</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">&quot;val&quot;</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="n">train</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -703,10 +712,11 @@ document.write(`
         <span class="nb">eval</span> <span class="o">=</span> <span class="n">metrics</span>
     <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]:</span>
         <span class="n">train</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="nb">eval</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">torchmetrics</span><span class="o">.</span><span class="n">Metric</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;metric </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2"> is no a torchmetric&quot;</span><span class="p">)</span>
-        <span class="nb">eval</span> <span class="o">=</span> <span class="p">{</span><span class="n">m</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">}</span>
+            <span class="nb">eval</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;metrics can only be a torchmetric of list/tuple of torchmetrics&quot;</span>

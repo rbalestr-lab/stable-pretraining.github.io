@@ -32,10 +32,10 @@ Computation times
    * - Example
      - Time
      - Mem (MB)
-   * - :ref:`sphx_glr_auto_examples_custom_supervised.py` (``custom_supervised.py``)
+   * - :ref:`sphx_glr_auto_examples_imbalance_supervised_learning.py` (``imbalance_supervised_learning.py``)
      - 00:00.000
      - 0.0
-   * - :ref:`sphx_glr_auto_examples_imbalance_supervised_learning.py` (``imbalance_supervised_learning.py``)
+   * - :ref:`sphx_glr_auto_examples_supervised_learning.py` (``supervised_learning.py``)
      - 00:00.000
      - 0.0
    * - :ref:`sphx_glr_auto_examples_wandb_figures.py` (``wandb_figures.py``)

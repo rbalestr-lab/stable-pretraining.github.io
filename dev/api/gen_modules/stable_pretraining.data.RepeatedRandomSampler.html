@@ -201,6 +201,7 @@
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.data.synthetic_data.html">stable_pretraining.data.synthetic_data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1"><a class="reference internal" href="../forward.html">stable_pretraining.forward</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../losses.html">stable_pretraining.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.losses.NTXEntLoss.html">NTXEntLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pretraining.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
@@ -388,6 +389,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.data.RepeatedRandomSampler"><code class="docutils literal notranslate"><span class="pre">RepeatedRandomSampler</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples-using-repeatedrandomsampler">Examples using <code class="docutils literal notranslate"><span class="pre">RepeatedRandomSampler</span></code>:</a></li>
 </ul>
             </nav>
         </div>
@@ -403,24 +405,30 @@ document.write(`
 <h1>RepeatedRandomSampler<a class="headerlink" href="#repeatedrandomsampler" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="stable_pretraining.data.RepeatedRandomSampler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_pretraining.data.</span></span><span class="sig-name descname"><span class="pre">RepeatedRandomSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_source_or_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_views</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replacement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_pretraining/data/sampler.html#RepeatedRandomSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.data.RepeatedRandomSampler" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DistributedSampler</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stable_pretraining.data.</span></span><span class="sig-name descname"><span class="pre">RepeatedRandomSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_source_or_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.13)"><span class="pre">Iterable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_views</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replacement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_pretraining/data/sampler.html#RepeatedRandomSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.data.RepeatedRandomSampler" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pytorch.org/docs/stable/data.html#torch.utils.data.distributed.DistributedSampler" title="(in PyTorch v2.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DistributedSampler</span></code></a></p>
 <p>Samples elements randomly. If without replacement, then sample from a shuffled dataset.</p>
 <p>If with replacement, then user can specify <code class="xref py py-attr docutils literal notranslate"><span class="pre">num_samples</span></code> to draw.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_source</strong> (<a class="reference internal" href="stable_pretraining.data.Dataset.html#stable_pretraining.data.Dataset" title="stable_pretraining.data.Dataset"><em>Dataset</em></a>) – dataset to sample from</p></li>
-<li><p><strong>n_views</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) – number of views to repeat each sample, default=1</p></li>
-<li><p><strong>replacement</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – samples are drawn on-demand with replacement if <code class="docutils literal notranslate"><span class="pre">True</span></code>, default=``False``</p></li>
-<li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) – number of samples to draw, default=`len(dataset)`.</p></li>
+<li><p><strong>n_views</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of views to repeat each sample, default=1</p></li>
+<li><p><strong>replacement</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – samples are drawn on-demand with replacement if <code class="docutils literal notranslate"><span class="pre">True</span></code>, default=``False``</p></li>
+<li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of samples to draw, default=`len(dataset)`.</p></li>
 <li><p><strong>generator</strong> (<em>Generator</em>) – Generator used in sampling.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
-<span class="target" id="sphx-glr-backref-stable-pretraining-data-repeatedrandomsampler"></span></section>
+<section id="examples-using-repeatedrandomsampler">
+<span id="sphx-glr-backref-stable-pretraining-data-repeatedrandomsampler"></span><h2>Examples using <code class="docutils literal notranslate"><span class="pre">RepeatedRandomSampler</span></code>:<a class="headerlink" href="#examples-using-repeatedrandomsampler" title="Link to this heading">#</a></h2>
+<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to train models using supervised learning with stable-pretraining, including support for various datasets like ImageNet-10, ImageNet-100, and ImageNet-1k."><img alt="" src="../../_images/sphx_glr_supervised_learning_thumb.png" />
+<p><a class="reference internal" href="../../auto_examples/supervised_learning.html#sphx-glr-auto-examples-supervised-learning-py"><span class="std std-ref">Supervised Learning Example</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Supervised Learning Example</div>
+</div></div></section>
+</section>
 
 
                 </article>
@@ -468,6 +476,7 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.data.RepeatedRandomSampler"><code class="docutils literal notranslate"><span class="pre">RepeatedRandomSampler</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples-using-repeatedrandomsampler">Examples using <code class="docutils literal notranslate"><span class="pre">RepeatedRandomSampler</span></code>:</a></li>
 </ul>
   </nav></div>
 

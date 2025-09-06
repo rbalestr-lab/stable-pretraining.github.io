@@ -6,7 +6,6 @@ Gallery
 =======
 
 This is the example gallery for stable-SSL.
-Below are example scripts showing how to use the library in various scenarios.
 
 
 
@@ -30,23 +29,6 @@ Below are example scripts showing how to use the library in various scenarios.
 .. raw:: html
 
       <div class="sphx-glr-thumbnail-title">This script demonstrates how to retrieve data from wandb using the stable_pretraining library.</div>
-    </div>
-
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to create a custom supervised model using the stable_pretraining library.">
-
-.. only:: html
-
-  .. image:: /auto_examples/images/thumb/sphx_glr_custom_supervised_thumb.png
-    :alt:
-
-  :ref:`sphx_glr_auto_examples_custom_supervised.py`
-
-.. raw:: html
-
-      <div class="sphx-glr-thumbnail-title">This example demonstrates how to create a custom supervised model using the stable_pretraining library.</div>
     </div>
 
 
@@ -84,6 +66,23 @@ Below are example scripts showing how to use the library in various scenarios.
     </div>
 
 
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to train models using supervised learning with stable-pretraining, including support for various datasets like ImageNet-10, ImageNet-100, and ImageNet-1k.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_supervised_learning_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_auto_examples_supervised_learning.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Supervised Learning Example</div>
+    </div>
+
+
 .. thumbnail-parent-div-close
 
 .. raw:: html
@@ -95,9 +94,9 @@ Below are example scripts showing how to use the library in various scenarios.
    :hidden:
 
    /auto_examples/wandb_reader
-   /auto_examples/custom_supervised
    /auto_examples/imbalance_supervised_learning
    /auto_examples/wandb_figures
+   /auto_examples/supervised_learning
 
 
 .. only:: html

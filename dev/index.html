@@ -204,6 +204,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_pretraining.data.synthetic_data.html">stable_pretraining.data.synthetic_data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l1"><a class="reference internal" href="api/forward.html">stable_pretraining.forward</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/losses.html">stable_pretraining.losses</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_pretraining.losses.NTXEntLoss.html">NTXEntLoss</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/gen_modules/stable_pretraining.losses.NegativeCosineSimilarity.html">NegativeCosineSimilarity</a></li>
@@ -421,6 +422,7 @@ document.write(`
 <a class="reference external" href="https://wandb.ai/site"><img alt="WandB" src="https://raw.githubusercontent.com/wandb/assets/main/wandb-github-badge-gradient.svg" /></a></p>
 <p>AI is moving beyond labels. Today’s models learn through <strong>self-supervision</strong> and <strong>multimodal alignment</strong>, extracting knowledge from raw data to build general-purpose representations that work across tasks. These foundation models are then deployed at scale, often after finetuning, to solve tasks in zero or few shot.</p>
 <p><code class="docutils literal notranslate"><span class="pre">stable-pretraining</span></code> is a PyTorch framework built on top of Lightning for this new paradigm. What sets us apart is <strong>real-time visibility into training quality</strong> through extensive logging and monitoring. Our callback ecosystem (<code class="docutils literal notranslate"><span class="pre">OnlineProbe</span></code>, <code class="docutils literal notranslate"><span class="pre">OnlineKNN</span></code>, <code class="docutils literal notranslate"><span class="pre">RankMe</span></code>, and many more) provides insights into feature collapse, training dynamics, and downstream performance. Data flow as dictionaries through model components, metrics, and callbacks, making any intermediate value accessible and debuggable. With <code class="docutils literal notranslate"><span class="pre">stable-pretraining</span></code>: track everything, debug faster, iterate sooner.</p>
+<p>Join our Discord: <a class="reference external" href="https://discord.gg/adzpqWKM25">https://discord.gg/8M6hT39X</a></p>
 <section id="how">
 <h2>How?<a class="headerlink" href="#how" title="Link to this heading">#</a></h2>
 <p>To reach flexibility, scalability and stability, we rely on battle-tested third party libraries: <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code>, <code class="docutils literal notranslate"><span class="pre">Lightning</span></code>, <code class="docutils literal notranslate"><span class="pre">HuggingFace</span></code>, <code class="docutils literal notranslate"><span class="pre">TorchMetrics</span></code> amongst a few others. Those dependencies allow us to focus on assembling everything into a powerful ML framework. <code class="docutils literal notranslate"><span class="pre">stable-pretraining</span></code> adopts a flexible and modular design for seamless integration of components from external libraries, including architectures, loss functions, evaluation metrics, and augmentations.</p>
@@ -849,6 +851,7 @@ document.write(`
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/backbone.html">stable_pretraining.backbone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/data.html">stable_pretraining.data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/forward.html">stable_pretraining.forward</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/losses.html">stable_pretraining.losses</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/manager.html">stable_pretraining.manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/module.html">stable_pretraining.module</a></li>
