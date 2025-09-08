@@ -83,6 +83,23 @@ This is the example gallery for stable-SSL.
     </div>
 
 
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Multi-layer probe for vision models.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_multi_layer_probe_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_auto_examples_multi_layer_probe.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Multi-layer probe for vision models.</div>
+    </div>
+
+
 .. thumbnail-parent-div-close
 
 .. raw:: html
@@ -97,6 +114,7 @@ This is the example gallery for stable-SSL.
    /auto_examples/imbalance_supervised_learning
    /auto_examples/wandb_figures
    /auto_examples/supervised_learning
+   /auto_examples/multi_layer_probe
 
 
 .. only:: html
