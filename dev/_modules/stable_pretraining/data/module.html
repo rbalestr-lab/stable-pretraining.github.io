@@ -398,14 +398,14 @@ document.write(`
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;They can&#39;t all be none&quot;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting up DataModule&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">train</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warninging</span><span class="p">(</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;⚠️⚠️⚠️ train was not passed to DataModule, it is required&quot;</span>
                 <span class="s2">&quot;unless you only validate ⚠️⚠️⚠️&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_data_conf</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="s2">&quot;train&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_data_conf</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warninging</span><span class="p">(</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;⚠️⚠️⚠️ val was not passed to DataModule, it is required&quot;</span>
                 <span class="s2">&quot;unless you set `num_sanity_val_steps=0` and `val_check_interval=0` ⚠️⚠️⚠️&quot;</span>
             <span class="p">)</span>
