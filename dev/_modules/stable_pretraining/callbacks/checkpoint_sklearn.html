@@ -471,20 +471,33 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">on_load_checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">,</span> <span class="n">checkpoint</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Checking for Wandb init params... 🔧&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="s2">&quot;wandb&quot;</span> <span class="ow">in</span> <span class="n">checkpoint</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Wandb info in checkpoint!!! Restoring same run... 🔧&quot;</span><span class="p">)</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trainer</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="n">WandbLogger</span><span class="p">)</span>
             <span class="kn">import</span><span class="w"> </span><span class="nn">wandb</span>
 
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Deleting current run </span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">entity</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">project</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">... 🔧&quot;</span>
+            <span class="p">)</span>
+            <span class="n">api</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">Api</span><span class="p">()</span>
+            <span class="n">run</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">entity</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">project</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">wandb</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+            <span class="n">run</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
             <span class="n">trainer</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">_experiment</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">wandb_id</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+            <span class="n">trainer</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">_wandb_init</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wandb_id</span>
+            <span class="n">trainer</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">wandb_id</span>
+            <span class="c1"># to reset the run</span>
+            <span class="n">trainer</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">experiment</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;New run </span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">entity</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">project</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">... 🔧&quot;</span>
+            <span class="p">)</span>
+
             <span class="c1"># trainer.logger._wandb_init = wandb_init</span>
             <span class="c1"># trainer.logger._project = trainer.logger._wandb_init.get(&quot;project&quot;)</span>
             <span class="c1"># trainer.logger._save_dir = trainer.logger._wandb_init.get(&quot;dir&quot;)</span>
             <span class="c1"># trainer.logger._name = trainer.logger._wandb_init.get(&quot;name&quot;)</span>
-            <span class="n">trainer</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">_wandb_init</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wandb_id</span>
-            <span class="n">trainer</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">wandb_id</span>
             <span class="c1"># trainer.logger._checkpoint_name = checkpoint[&quot;wandb_checkpoint_name&quot;]</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Updated Wandb parameters: &quot;</span><span class="p">)</span>
+            <span class="c1"># logging.info(&quot;Updated Wandb parameters: &quot;)</span>
             <span class="c1"># logging.info(f&quot;\t- project={trainer.logger._project}&quot;)</span>
             <span class="c1"># logging.info(f&quot;\t- _save_dir={trainer.logger._save_dir}&quot;)</span>
             <span class="c1"># logging.info(f&quot;\t- name={trainer.logger._name}&quot;)</span>

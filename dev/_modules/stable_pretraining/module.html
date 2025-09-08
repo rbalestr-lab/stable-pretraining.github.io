@@ -814,6 +814,8 @@ document.write(`
                 <span class="s2">&quot;Using default optimization setup: AdamW optimizer with CosineAnnealingLR scheduler.&quot;</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optim</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">,</span> <span class="n">partial</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optim</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">)</span>
 
         <span class="c1"># Single optimizer case</span>
         <span class="n">optimizer_cfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;optimizer&quot;</span><span class="p">)</span>
@@ -826,7 +828,10 @@ document.write(`
             <span class="n">opt</span> <span class="o">=</span> <span class="n">create_optimizer</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">optimizer_cfg</span> <span class="ow">or</span> <span class="s2">&quot;AdamW&quot;</span><span class="p">)</span>
 
             <span class="c1"># Create scheduler</span>
-            <span class="n">sched_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler&quot;</span><span class="p">,</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">)</span>
+            <span class="n">default</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">,</span> <span class="n">T_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">estimated_stepping_batches</span>
+            <span class="p">)</span>
+            <span class="n">sched_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scheduler&quot;</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
             <span class="n">sched</span> <span class="o">=</span> <span class="n">create_scheduler</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">sched_config</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
             <span class="n">sched_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scheduler_name</span><span class="p">(</span><span class="n">sched_config</span><span class="p">,</span> <span class="n">sched</span><span class="p">)</span>
 

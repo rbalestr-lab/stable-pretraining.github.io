@@ -482,7 +482,15 @@ document.write(`
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trainer</span><span class="o">.</span><span class="n">datamodule</span><span class="p">,</span> <span class="n">DataModule</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Using a custom DataModule, won&#39;t have extra info!&quot;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="n">trainer</span><span class="o">.</span><span class="n">datamodule</span><span class="o">.</span><span class="n">set_pl_trainer</span><span class="p">(</span><span class="n">trainer</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">trainer</span><span class="o">.</span><span class="n">datamodule</span><span class="o">.</span><span class="n">set_pl_trainer</span><span class="p">(</span><span class="n">trainer</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;trainer&#39;s datamodule is of type&quot;</span>
+                <span class="s2">&quot;stable_pretraining.data.DataModule but does&quot;</span>
+                <span class="s2">&quot;not have a method `set_pl_trainer`...&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">,</span> <span class="n">stage</span><span class="p">)</span></div>
 </div>
 
