@@ -367,6 +367,88 @@ document.write(`
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">stable_pretraining</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.callbacks.queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_or_create_queue_callback</span><span class="p">,</span> <span class="n">OnlineQueue</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_find_nearest_neighbors</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">support_set</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the nearest neighbor for each query embedding in the support set.&quot;&quot;&quot;</span>
+    <span class="n">query_norm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">support_norm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">support_set</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">similarity</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">query_norm</span><span class="p">,</span> <span class="n">support_norm</span><span class="o">.</span><span class="n">t</span><span class="p">())</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">similarity</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">support_set</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="nnclr_forward">
+<a class="viewcode-back" href="../../api/forward.html#stable_pretraining.forward.nnclr_forward">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">nnclr_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for NNCLR (Nearest-Neighbor Contrastive Learning).</span>
+
+<span class="sd">    NNCLR learns representations by using the nearest neighbor of an augmented</span>
+<span class="sd">    view from a support set of past embeddings as a positive pair. This encourages</span>
+<span class="sd">    the model to learn representations that are similar for semantically similar</span>
+<span class="sd">    instances, not just for different augmentations of the same instance.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        self: Module instance (automatically bound) with required attributes:</span>
+<span class="sd">            - backbone: Feature extraction network</span>
+<span class="sd">            - projector: Projection head for embedding transformation</span>
+<span class="sd">            - predictor: Prediction head used for the online view</span>
+<span class="sd">            - nnclr_loss: NTXent contrastive loss function</span>
+<span class="sd">        batch: Input batch dictionary containing:</span>
+<span class="sd">            - &#39;image&#39;: Tensor of augmented images [N*views, C, H, W]</span>
+<span class="sd">            - &#39;sample_idx&#39;: Indices to identify views of same image</span>
+<span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary containing:</span>
+<span class="sd">            - &#39;embedding&#39;: Feature representations from backbone</span>
+<span class="sd">            - &#39;loss&#39;: NTXent contrastive loss (during training only)</span>
+<span class="sd">            - &#39;nnclr_support_set&#39;: Projections to be added to the support set queue</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Introduced in the NNCLR paper :cite:`dwibedi2021little`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_nnclr_queue_callback&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nnclr_queue_callback</span> <span class="o">=</span> <span class="n">find_or_create_queue_callback</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;nnclr_support_set&quot;</span><span class="p">,</span>
+                <span class="n">queue_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hparams</span><span class="o">.</span><span class="n">support_set_size</span><span class="p">,</span>
+                <span class="n">dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hparams</span><span class="o">.</span><span class="n">projection_dim</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">queue_callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nnclr_queue_callback</span>
+
+        <span class="n">proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
+        <span class="n">views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
+
+        <span class="n">proj_q</span><span class="p">,</span> <span class="n">proj_k</span> <span class="o">=</span> <span class="n">views</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">views</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">support_set</span> <span class="o">=</span> <span class="n">OnlineQueue</span><span class="o">.</span><span class="n">_shared_queues</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">queue_callback</span><span class="o">.</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">support_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">support_set</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pred_q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">proj_q</span><span class="p">)</span>
+            <span class="n">pred_k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">proj_k</span><span class="p">)</span>
+
+            <span class="n">nn_k</span> <span class="o">=</span> <span class="n">_find_nearest_neighbors</span><span class="p">(</span><span class="n">proj_k</span><span class="p">,</span> <span class="n">support_set</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+            <span class="n">nn_q</span> <span class="o">=</span> <span class="n">_find_nearest_neighbors</span><span class="p">(</span><span class="n">proj_q</span><span class="p">,</span> <span class="n">support_set</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+
+            <span class="n">loss_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nnclr_loss</span><span class="p">(</span><span class="n">pred_q</span><span class="p">,</span> <span class="n">nn_k</span><span class="p">)</span>
+            <span class="n">loss_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nnclr_loss</span><span class="p">(</span><span class="n">pred_k</span><span class="p">,</span> <span class="n">nn_q</span><span class="p">)</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">loss_a</span> <span class="o">+</span> <span class="n">loss_b</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Fallback to SimCLR style loss if queue is empty</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nnclr_loss</span><span class="p">(</span><span class="n">proj_q</span><span class="p">,</span> <span class="n">proj_k</span><span class="p">)</span>
+
+        <span class="c1"># The key here must match the `key` argument of the `OnlineQueue` callback</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;nnclr_support_set&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">views</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out</span></div>
+
 
 
 <div class="viewcode-block" id="simclr_forward">

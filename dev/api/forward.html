@@ -395,6 +395,10 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.forward.simclr_forward"><code class="docutils literal notranslate"><span class="pre">simclr_forward()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nnclr">NNCLR</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.forward.nnclr_forward"><code class="docutils literal notranslate"><span class="pre">nnclr_forward()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#byol">BYOL</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.forward.byol_forward"><code class="docutils literal notranslate"><span class="pre">byol_forward()</span></code></a></li>
 </ul>
@@ -533,6 +537,106 @@ augmented views of the same image via a contrastive loss in the latent space.</p
 </pre></div>
 </div>
 </section>
+<section id="nnclr">
+<h3>NNCLR<a class="headerlink" href="#nnclr" title="Link to this heading">#</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="stable_pretraining.forward.nnclr_forward">
+<span class="sig-prename descclassname"><span class="pre">stable_pretraining.forward.</span></span><span class="sig-name descname"><span class="pre">nnclr_forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stable_pretraining/forward.html#nnclr_forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.forward.nnclr_forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward function for NNCLR (Nearest-Neighbor Contrastive Learning).</p>
+<p>NNCLR learns representations by using the nearest neighbor of an augmented
+view from a support set of past embeddings as a positive pair. This encourages
+the model to learn representations that are similar for semantically similar
+instances, not just for different augmentations of the same instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – Module instance (automatically bound) with required attributes:
+- backbone: Feature extraction network
+- projector: Projection head for embedding transformation
+- predictor: Prediction head used for the online view
+- nnclr_loss: NTXent contrastive loss function</p></li>
+<li><p><strong>batch</strong> – Input batch dictionary containing:
+- ‘image’: Tensor of augmented images [N*views, C, H, W]
+- ‘sample_idx’: Indices to identify views of same image</p></li>
+<li><p><strong>stage</strong> – Training stage (‘train’, ‘val’, or ‘test’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>‘embedding’: Feature representations from backbone</p></li>
+<li><p>’loss’: NTXent contrastive loss (during training only)</p></li>
+<li><p>’nnclr_support_set’: Projections to be added to the support set queue</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Introduced in the NNCLR paper <span id="id2">[<a class="reference internal" href="../bibliography.html#id12" title="Debidatta Dwibedi, Yusuf Aytar, Jonathan Tompson, Pierre Sermanet, and Andrew Zisserman. With a little help from my friends: nearest-neighbor contrastive learning of visual representations. In Proceedings of the IEEE/CVF international conference on computer vision, 9588–9597. 2021.">Dwibedi <em>et al.</em>, 2021</a>]</span>.</p>
+</div>
+</dd></dl>
+
+<p><strong>Required Module Attributes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">backbone</span></code>: Feature extraction network</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">projector</span></code>: Projection head for embedding transformation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">predictor</span></code>: Prediction head for the online network</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nnclr_loss</span></code>: NTXent contrastive loss function</p></li>
+</ul>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li><p>Uses a support set of past embeddings to find nearest-neighbor positives.</p></li>
+<li><p>Encourages semantic similarity, going beyond instance-level discrimination.</p></li>
+<li><p>Requires an <code class="docutils literal notranslate"><span class="pre">OnlineQueue</span></code> callback with a matching <code class="docutils literal notranslate"><span class="pre">key</span></code>.</p></li>
+</ul>
+<p><strong>Example Config:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">module</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">forward</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_pretraining.forward.nnclr_forward</span>
+<span class="w">  </span><span class="nt">backbone</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_pretraining.backbone.from_torchvision</span>
+<span class="w">    </span><span class="nt">model_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">resnet18</span>
+<span class="w">  </span><span class="nt">projector</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Sequential</span>
+<span class="w">    </span><span class="nt">_args_</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Linear</span>
+<span class="w">        </span><span class="nt">in_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512</span>
+<span class="w">        </span><span class="nt">out_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2048</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.BatchNorm1d</span>
+<span class="w">        </span><span class="nt">num_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2048</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.ReLU</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Linear</span>
+<span class="w">        </span><span class="nt">in_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2048</span>
+<span class="w">        </span><span class="nt">out_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
+<span class="w">  </span><span class="nt">predictor</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Sequential</span>
+<span class="w">    </span><span class="nt">_args_</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Linear</span>
+<span class="w">        </span><span class="nt">in_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
+<span class="w">        </span><span class="nt">out_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4096</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.BatchNorm1d</span>
+<span class="w">        </span><span class="nt">num_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4096</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.ReLU</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.nn.Linear</span>
+<span class="w">        </span><span class="nt">in_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4096</span>
+<span class="w">        </span><span class="nt">out_features</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
+<span class="w">  </span><span class="nt">nnclr_loss</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_pretraining.losses.NTXEntLoss</span>
+<span class="w">    </span><span class="nt">temperature</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<span class="w">  </span><span class="nt">hparams</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">support_set_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16384</span>
+<span class="w">    </span><span class="nt">projection_dim</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
+
+<span class="nt">callbacks</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stable_pretraining.callbacks.OnlineQueue</span>
+<span class="w">    </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nnclr_support_set</span>
+<span class="w">    </span><span class="nt">queue_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${module.hparams.support_set_size}</span>
+<span class="w">    </span><span class="nt">dim</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${module.hparams.projection_dim}</span>
+</pre></div>
+</div>
+</section>
 <section id="byol">
 <h3>BYOL<a class="headerlink" href="#byol" title="Link to this heading">#</a></h3>
 <dl class="py function">
@@ -569,7 +673,7 @@ target network and predicting target projections from online projections.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Introduced in the BYOL paper <span id="id2">[<a class="reference internal" href="../bibliography.html#id3" title="Jean-Bastien Grill, Florian Strub, Florent Altché, Corentin Tallec, Pierre Richemond, Elena Buchatskaya, Carl Doersch, Bernardo Avila Pires, Zhaohan Guo, Mohammad Gheshlaghi Azar, and others. Bootstrap your own latent-a new approach to self-supervised learning. Advances in neural information processing systems, 33:21271–21284, 2020.">Grill <em>et al.</em>, 2020</a>]</span>.</p>
+<p>Introduced in the BYOL paper <span id="id3">[<a class="reference internal" href="../bibliography.html#id3" title="Jean-Bastien Grill, Florian Strub, Florent Altché, Corentin Tallec, Pierre Richemond, Elena Buchatskaya, Carl Doersch, Bernardo Avila Pires, Zhaohan Guo, Mohammad Gheshlaghi Azar, and others. Bootstrap your own latent-a new approach to self-supervised learning. Advances in neural information processing systems, 33:21271–21284, 2020.">Grill <em>et al.</em>, 2020</a>]</span>.</p>
 </div>
 </dd></dl>
 
@@ -642,7 +746,7 @@ features).</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Introduced in the VICReg paper <span id="id3">[]</span>.</p>
+<p>Introduced in the VICReg paper <span id="id4">[]</span>.</p>
 </div>
 </dd></dl>
 
@@ -706,7 +810,7 @@ possible, reducing redundancy while maintaining invariance.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Introduced in the Barlow Twins paper <span id="id4">[<a class="reference internal" href="../bibliography.html#id4" title="Jure Zbontar, Li Jing, Ishan Misra, Yann LeCun, and Stéphane Deny. Barlow twins: self-supervised learning via redundancy reduction. In International conference on machine learning, 12310–12320. PMLR, 2021.">Zbontar <em>et al.</em>, 2021</a>]</span>.</p>
+<p>Introduced in the Barlow Twins paper <span id="id5">[<a class="reference internal" href="../bibliography.html#id4" title="Jure Zbontar, Li Jing, Ishan Misra, Yann LeCun, and Stéphane Deny. Barlow twins: self-supervised learning via redundancy reduction. In International conference on machine learning, 12310–12320. PMLR, 2021.">Zbontar <em>et al.</em>, 2021</a>]</span>.</p>
 </div>
 </dd></dl>
 
@@ -934,6 +1038,10 @@ and is primarily used for evaluation or supervised baselines.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-forward-functions">Available Forward Functions</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simclr">SimCLR</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.forward.simclr_forward"><code class="docutils literal notranslate"><span class="pre">simclr_forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nnclr">NNCLR</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.forward.nnclr_forward"><code class="docutils literal notranslate"><span class="pre">nnclr_forward()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#byol">BYOL</a><ul class="nav section-nav flex-column">
