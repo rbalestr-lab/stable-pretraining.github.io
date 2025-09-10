@@ -720,12 +720,18 @@ document.write(`
   </details>
 <ol class="arabic" start="2">
 <li><p>Pytorch and our library (we recommend using <code class="docutils literal notranslate"><span class="pre">uv</span></code> for quicker package management):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">uv</span>
-<span class="n">uv</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">torch</span> <span class="n">torchvision</span> <span class="n">torchaudio</span>
-<span class="n">uv</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3<span class="w"> </span>install<span class="w"> </span>uv
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>torch<span class="w"> </span>torchvision<span class="w"> </span>torchaudio
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="w">  </span><span class="c1"># Core dependencies only</span>
 </pre></div>
 </div>
-<p>if you do not want to use uv, simply remove it from the above commands.</p>
+<p>For optional features (vision models, experiment tracking, cluster support, etc.):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[vision,tracking]&quot;</span><span class="w">  </span><span class="c1"># Example: add vision models and wandb</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[all]&quot;</span><span class="w">  </span><span class="c1"># Or install all optional dependencies</span>
+</pre></div>
+</div>
+<p>See <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> for available dependency groups (<code class="docutils literal notranslate"><span class="pre">vision</span></code>, <code class="docutils literal notranslate"><span class="pre">tracking</span></code>, <code class="docutils literal notranslate"><span class="pre">cluster</span></code>, <code class="docutils literal notranslate"><span class="pre">visualization</span></code>, <code class="docutils literal notranslate"><span class="pre">datasets</span></code>, <code class="docutils literal notranslate"><span class="pre">extras</span></code>, <code class="docutils literal notranslate"><span class="pre">dev</span></code>, <code class="docutils literal notranslate"><span class="pre">doc</span></code>).</p>
+<p>If you do not want to use uv, simply remove it from the above commands.</p>
 </li>
 <li><p>API login (optional)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wandb</span> <span class="n">login</span>

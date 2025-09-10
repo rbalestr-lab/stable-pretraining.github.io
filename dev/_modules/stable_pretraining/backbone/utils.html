@@ -349,9 +349,21 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torchvision</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">timm.layers.classifier</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassifierHead</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimmWrapperModel</span>
+
+<span class="c1"># Try to import optional dependencies</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">timm.layers.classifier</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassifierHead</span>
+
+    <span class="n">_TIMM_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">ClassifierHead</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">_TIMM_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimmWrapperModel</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">TimmWrapperModel</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="EvalOnly">
@@ -668,7 +680,9 @@ document.write(`
         <span class="n">in_features</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">in_features</span>
         <span class="n">module</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">embedder</span><span class="p">(</span><span class="n">in_features</span><span class="p">)</span>
     <span class="c1"># For modules like Swin Transformer.</span>
-    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;head&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">head</span><span class="p">,</span> <span class="n">ClassifierHead</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;head&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+        <span class="n">ClassifierHead</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">head</span><span class="p">,</span> <span class="n">ClassifierHead</span><span class="p">)</span>
+    <span class="p">):</span>
         <span class="n">in_features</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">in_features</span>
         <span class="n">module</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">embedder</span><span class="p">(</span><span class="n">in_features</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>

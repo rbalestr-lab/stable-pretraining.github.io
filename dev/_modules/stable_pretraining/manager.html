@@ -358,7 +358,12 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">omegaconf</span><span class="w"> </span><span class="kn">import</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">OmegaConf</span><span class="p">,</span> <span class="n">open_dict</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">wandb</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">WANDB_AVAILABLE</span>
+
+<span class="k">if</span> <span class="n">WANDB_AVAILABLE</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">wandb</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">wandb</span> <span class="o">=</span> <span class="kc">None</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_required_fn_parameters</span>
 
@@ -521,7 +526,7 @@ document.write(`
             <span class="c1"># at most last_config has an extra `ckpt_path`</span>
             <span class="n">exp</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">last_config</span><span class="p">)</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">reloaded!&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">wandb</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="k">elif</span> <span class="n">WANDB_AVAILABLE</span> <span class="ow">and</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">wandb</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">a Wandb™ config is provided, not uploading Hydra&#39;s:&quot;</span><span class="p">)</span>
             <span class="c1"># TODO: make Wandb parameters the trainer one</span>
             <span class="c1"># for key, value in wandb.config.items():</span>
@@ -574,7 +579,8 @@ document.write(`
                 <span class="k">if</span> <span class="n">valid</span><span class="p">:</span>
                     <span class="k">break</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Final Hydra&#39;s config has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="si">}</span><span class="s2"> items) 📤&quot;</span><span class="p">)</span>
-            <span class="n">wandb</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">WANDB_AVAILABLE</span> <span class="ow">and</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="p">:</span>
+                <span class="n">wandb</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
             <span class="c1"># TODO: should we updated the config to the DictConfig too for next run to check?</span>
             <span class="c1"># with open_dict(self.logger):</span>
             <span class="c1">#     self.trainer.logger.config = config</span>
@@ -787,7 +793,7 @@ document.write(`
 
     <span class="nd">@rank_zero_only</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_dump_wandb_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">offline</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">WANDB_AVAILABLE</span> <span class="ow">or</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">offline</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="c1"># Print the summary</span>
@@ -808,6 +814,8 @@ document.write(`
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● Saved config at </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2"> ✅&quot;</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_wandb_previous_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">WANDB_AVAILABLE</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
         <span class="c1"># to remove the /files</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">dir</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">● fetching previous Wandb runs from </span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="si">}</span><span class="s2"> ✅&quot;</span><span class="p">)</span>
@@ -849,7 +857,7 @@ document.write(`
         <span class="c1">#     ckpt_path = Path(wandb.run.dir) / &quot;checkpoint.ckpt&quot;</span>
         <span class="c1">#     print(f&quot;\t● `ckpt_path` set to {ckpt_path}!&quot;, flush=True)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">offline</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">WANDB_AVAILABLE</span> <span class="ow">and</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">offline</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● Wandb used and online:&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">artifact</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">Artifact</span><span class="p">(</span><span class="s2">&quot;requeue_checkpoint&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">)</span>
             <span class="n">artifact</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ckpt_path</span><span class="p">))</span>
@@ -861,7 +869,8 @@ document.write(`
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">● local checkpoint deleted ✅&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● Wandb used and offline:&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;ckpt_path&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">())})</span>
+            <span class="k">if</span> <span class="n">WANDB_AVAILABLE</span> <span class="ow">and</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="p">:</span>
+                <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;ckpt_path&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">())})</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● `ckpt_path` added to Wandb config ✅&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># for offline case</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dump_wandb_data</span><span class="p">()</span>

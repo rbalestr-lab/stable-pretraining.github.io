@@ -347,9 +347,16 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">lightning.pytorch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callback</span><span class="p">,</span> <span class="n">LightningModule</span><span class="p">,</span> <span class="n">Trainer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassifierMixin</span><span class="p">,</span> <span class="n">RegressorMixin</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tabulate</span><span class="w"> </span><span class="kn">import</span> <span class="n">tabulate</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">lightning.pytorch.loggers</span><span class="w"> </span><span class="kn">import</span> <span class="n">WandbLogger</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">SKLEARN_AVAILABLE</span>
+
+<span class="k">if</span> <span class="n">SKLEARN_AVAILABLE</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassifierMixin</span><span class="p">,</span> <span class="n">RegressorMixin</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">ClassifierMixin</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">RegressorMixin</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="SklearnCheckpoint">
@@ -407,6 +414,8 @@ document.write(`
 <a class="viewcode-back" href="../../../api/gen_modules/stable_pretraining.callbacks.SklearnCheckpoint.html#stable_pretraining.callbacks.SklearnCheckpoint.on_load_checkpoint">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">on_load_checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">,</span> <span class="n">checkpoint</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Checking for non PyTorch modules to load... 🔧&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">SKLEARN_AVAILABLE</span><span class="p">:</span>
+            <span class="k">return</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">RegressorMixin</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">ClassifierMixin</span><span class="p">):</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
@@ -416,6 +425,8 @@ document.write(`
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_contains_sklearn_module</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">SKLEARN_AVAILABLE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">RegressorMixin</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">ClassifierMixin</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
