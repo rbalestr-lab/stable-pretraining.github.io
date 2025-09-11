@@ -21,6 +21,7 @@
       ColorJitter
       Compose
       Conditional
+      ContextTargetsMultiBlockMask
       ControlledTransform
       GaussianBlur
       MultiViewTransform
@@ -31,6 +32,7 @@
       RandomCrop
       RandomGrayscale
       RandomHorizontalFlip
+      RandomMask
       RandomResizedCrop
       RandomRotation
       RandomSolarize

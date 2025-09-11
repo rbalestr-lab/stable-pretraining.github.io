@@ -448,6 +448,57 @@ document.write(`
         <span class="k">for</span> <span class="n">offset</span><span class="p">,</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="n">lengths</span><span class="p">),</span> <span class="n">lengths</span><span class="p">)</span>
     <span class="p">]</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_masks</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">*</span><span class="n">masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply one or more masks to a batch of patched images.</span>
+
+<span class="sd">    This function is generalized to accept any number of mask tensors.</span>
+<span class="sd">    If a single mask is provided, the output shape is `[B, K, D]`. If `M`</span>
+<span class="sd">    masks are provided, the function creates `M` masked views</span>
+<span class="sd">    and concatenates them along the batch dimension, resulting in an</span>
+<span class="sd">    output of shape `[B*M, K, D]`.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; # xdoctest: +SKIP</span>
+<span class="sd">        &gt;&gt;&gt; x = torch.randn(4, 196, 128)</span>
+<span class="sd">        &gt;&gt;&gt; mask1 = torch.randint(0, 196, (4, 50))</span>
+<span class="sd">        &gt;&gt;&gt; mask2 = torch.randint(0, 196, (4, 50))</span>
+<span class="sd">        &gt;&gt;&gt; # Single mask case</span>
+<span class="sd">        &gt;&gt;&gt; single_view = apply_masks(x, mask1)</span>
+<span class="sd">        &gt;&gt;&gt; single_view.shape</span>
+<span class="sd">        torch.Size([4, 50, 128])</span>
+<span class="sd">        &gt;&gt;&gt; # Multi-mask case</span>
+<span class="sd">        &gt;&gt;&gt; multi_view = apply_masks(x, mask1, mask2)</span>
+<span class="sd">        &gt;&gt;&gt; multi_view.shape</span>
+<span class="sd">        torch.Size([8, 50, 128])</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (torch.Tensor): Input tensor of patches with shape `[B, N, D]`.</span>
+<span class="sd">        *masks (torch.Tensor): A variable number of mask tensors, each a</span>
+<span class="sd">            tensor of indices with shape `[B, K]`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        torch.Tensor: The tensor of selected patches. The shape will be</span>
+<span class="sd">            `[B, K, D]` for a single mask, or `[B*M, K, D]` for `M` masks.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If no masks are provided.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">masks</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one mask tensor must be provided.&quot;</span><span class="p">)</span>
+
+    <span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">m</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">masks</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">x_expanded</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">idx_expanded</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">x_expanded</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">idx_expanded</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span> <span class="o">*</span> <span class="n">M</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
 </pre></div>
 
                 </article>
