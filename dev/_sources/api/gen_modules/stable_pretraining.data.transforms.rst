@@ -24,6 +24,7 @@
       ContextTargetsMultiBlockMask
       ControlledTransform
       GaussianBlur
+      Lambda
       MultiViewTransform
       PILGaussianBlur
       RGB

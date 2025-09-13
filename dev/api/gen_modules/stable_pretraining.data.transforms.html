@@ -434,52 +434,55 @@ document.write(`
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">GaussianBlur</span></code>(kernel_size[, sigma, p, ...])</p></td>
 <td><p>Apply Gaussian blur to image with random sigma values.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiViewTransform</span></code>(transforms)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lambda</span></code>(lambd[, source, target])</p></td>
+<td><p>Applies a lambda callable to target key and store it in source.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiViewTransform</span></code>(transforms)</p></td>
 <td><p>Apply different transforms to different views of the same sample.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PILGaussianBlur</span></code>([sigma, p, source, target])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PILGaussianBlur</span></code>([sigma, p, source, target])</p></td>
 <td><p>PIL-based Gaussian blur transform with random sigma sampling.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RGB</span></code>([source, target])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RGB</span></code>([source, target])</p></td>
 <td><p>Convert image to RGB format.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomChannelPermutation</span></code>([source, target])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomChannelPermutation</span></code>([source, target])</p></td>
 <td><p>Randomly permute the channels of an image.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomContiguousTemporalSampler</span></code>(source, ...)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomContiguousTemporalSampler</span></code>(source, ...)</p></td>
 <td><p>Randomly sample contiguous frames from a video sequence.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomCrop</span></code>(size[, padding, pad_if_needed, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomCrop</span></code>(size[, padding, pad_if_needed, ...])</p></td>
 <td><p>Crop a random portion of image and resize it to given size.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomGrayscale</span></code>([p, source, target])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomGrayscale</span></code>([p, source, target])</p></td>
 <td><p>Randomly convert image to grayscale with given probability.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomHorizontalFlip</span></code>([p, source, target])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomHorizontalFlip</span></code>([p, source, target])</p></td>
 <td><p>Horizontally flip the given image randomly with a given probability.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomMask</span></code>([patch_size, mask_ratio, source, ...])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomMask</span></code>([patch_size, mask_ratio, source, ...])</p></td>
 <td><p>Creates a random MAE-style mask for an image.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomResizedCrop</span></code>(size[, scale, ratio, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomResizedCrop</span></code>(size[, scale, ratio, ...])</p></td>
 <td><p>Crop a random portion of image and resize it to given size.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomRotation</span></code>(degrees[, interpolation, ...])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomRotation</span></code>(degrees[, interpolation, ...])</p></td>
 <td><p>Rotate image by random angle within specified degrees range.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomSolarize</span></code>(threshold[, p, source, target])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomSolarize</span></code>(threshold[, p, source, target])</p></td>
 <td><p>Randomly solarize image by inverting pixel values above threshold.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Resize</span></code>(size[, interpolation, max_size, ...])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Resize</span></code>(size[, interpolation, max_size, ...])</p></td>
 <td><p>Resize image to specified size.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToImage</span></code>([dtype, scale, mean, std, source, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToImage</span></code>([dtype, scale, mean, std, source, ...])</p></td>
 <td><p>Convert input to image tensor with optional normalization.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Transform</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Transform</span></code>()</p></td>
 <td><p>Base transform class extending torchvision v2.Transform with nested data handling.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">UniformTemporalSubsample</span></code>(num_samples[, ...])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">UniformTemporalSubsample</span></code>(num_samples[, ...])</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">nn.Module</span></code> wrapper for <code class="docutils literal notranslate"><span class="pre">pytorchvideo.transforms.functional.uniform_temporal_subsample</span></code>.</p></td>
 </tr>
 </tbody>
