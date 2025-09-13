@@ -41,4 +41,5 @@
       ToImage
       Transform
       UniformTemporalSubsample
+      WrapTorchTransform
    
