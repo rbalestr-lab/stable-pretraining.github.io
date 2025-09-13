@@ -511,15 +511,8 @@ document.write(`
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Callback </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> missing x or y&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">enable_grad</span><span class="p">():</span>
+        <span class="k">with</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">precision_plugin</span><span class="o">.</span><span class="n">forward_context</span><span class="p">():</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
-
-            <span class="n">probe_dtype</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">dtype</span>
-            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">probe_dtype</span><span class="p">:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">probe_dtype</span><span class="p">)</span>
-
             <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
                 <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_fn</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
@@ -588,17 +581,7 @@ document.write(`
             <span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="c1"># Ensure probe is in eval mode</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
-
-        <span class="c1"># Forward pass without gradients</span>
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">inference_mode</span><span class="p">():</span>
-            <span class="c1"># Ensure input has same dtype as probe module</span>
-            <span class="c1"># This handles mixed precision training where features might be float16</span>
-            <span class="n">probe_dtype</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">dtype</span>
-            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">probe_dtype</span><span class="p">:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">probe_dtype</span><span class="p">)</span>
-
+        <span class="k">with</span> <span class="n">trainer</span><span class="o">.</span><span class="n">precision_plugin</span><span class="o">.</span><span class="n">forward_context</span><span class="p">():</span>
             <span class="n">preds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
         <span class="c1"># Store predictions in batch</span>
