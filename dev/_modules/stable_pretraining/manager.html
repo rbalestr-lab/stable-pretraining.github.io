@@ -357,7 +357,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">lightning.pytorch.utilities.rank_zero</span><span class="w"> </span><span class="kn">import</span> <span class="n">rank_zero_only</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">omegaconf</span><span class="w"> </span><span class="kn">import</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">OmegaConf</span><span class="p">,</span> <span class="n">open_dict</span>
-
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">WANDB_AVAILABLE</span>
 
 <span class="k">if</span> <span class="n">WANDB_AVAILABLE</span><span class="p">:</span>
@@ -378,7 +378,7 @@ document.write(`
 <span class="sd">        module (Union[dict, DictConfig, pl.LightningModule]): Lightning module configuration or instance.</span>
 <span class="sd">        data (Union[dict, DictConfig, pl.LightningDataModule]): Data module configuration or instance.</span>
 <span class="sd">        seed (int, optional): Random seed for reproducibility. Defaults to None.</span>
-<span class="sd">        ckpt_path (str, optional): Path to checkpoint for resuming training. Defaults to None.</span>
+<span class="sd">        ckpt_path (str, optional): Path to checkpoint for resuming training. Defaults to &quot;last.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -387,7 +387,7 @@ document.write(`
         <span class="n">module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">LightningModule</span><span class="p">],</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">LightningDataModule</span><span class="p">],</span>
         <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">ckpt_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;last&quot;</span><span class="p">,</span>
+        <span class="n">ckpt_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="c1"># This is the state that will be saved by `checkpoint`</span>
         <span class="c1"># we do deepcopy in case the user changes things after</span>
@@ -437,7 +437,7 @@ document.write(`
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span> <span class="o">=</span> <span class="n">ckpt_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">ckpt_path</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.ckpt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
         <span class="c1"># self.slurm_requeue_signal = slurm_requeue_signal</span>
 
     <span class="nd">@rank_zero_only</span>
@@ -665,18 +665,55 @@ document.write(`
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">- SIGCONT: `</span><span class="si">{</span><span class="n">signal</span><span class="o">.</span><span class="n">getsignal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGCONT</span><span class="p">)</span><span class="si">}</span><span class="s2">`&quot;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">- SIGTERM: `</span><span class="si">{</span><span class="n">signal</span><span class="o">.</span><span class="n">getsignal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">)</span><span class="si">}</span><span class="s2">`&quot;</span><span class="p">)</span>
 
-        <span class="c1"># when using submitit launcher, Hydra uses its own checkpoint method</span>
-        <span class="c1"># https://github.com/facebookresearch/hydra/blob/main/plugins/hydra_submitit_launcher/hydra_plugins/hydra_submitit_launcher/submitit_launcher.py#L78</span>
-        <span class="c1"># we replace it with ours</span>
-        <span class="c1"># https://github.com/facebookresearch/hydra/issues/2042</span>
-        <span class="c1"># https://github.com/facebookincubator/submitit/blob/main/submitit/core/job_environment.py#L212</span>
-        <span class="n">fn</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">getsignal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGUSR2</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;__self__&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_hydra_self</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="n">_delayed</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">checkpoint</span><span class="o">.</span><span class="vm">__self__</span>
-            <span class="n">fn</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="n">_delayed</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">checkpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● 📞📞📞 CALLBACKS 📞📞📞&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - we found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">callbacks</span><span class="p">)</span><span class="si">}</span><span class="s2"> callbacks&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;SLURM_JOB_ID&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Using SLURM but no ckpt_path, if requeued it will start from scratch&quot;</span>
+            <span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Consider passing a value to the Manager&#39;s `ckpt_path` &quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_hydra_self</span> <span class="o">=</span> <span class="bp">self</span>
+            <span class="n">checkpointing</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">pytorch</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ModelCheckpoint</span><span class="p">):</span>
+                    <span class="n">saving_names</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="n">callback</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span>
+                            <span class="s2">&quot;ckpt&quot;</span>
+                        <span class="p">)</span>
+                    <span class="p">]</span>
+                    <span class="k">if</span> <span class="n">callback</span><span class="o">.</span><span class="n">save_last</span><span class="p">:</span>
+                        <span class="n">saving_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;last&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;ckpt&quot;</span><span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - we found a Checkpoint callback with name(s) </span><span class="si">{</span><span class="n">saving_names</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span> <span class="ow">in</span> <span class="n">saving_names</span><span class="p">:</span>
+                        <span class="n">checkpointing</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">checkpointing</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - we are in a SLURM job but no checkpoint callback&quot;</span>
+                <span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">   found with `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="si">}</span><span class="s2">` saving name (user&#39;s `ckpt_path`)&quot;</span>
+                <span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - we are adding a ModelCheckpoint callback with&quot;</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - dirpath=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">parent</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - filename=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="n">saver</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">pytorch</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ModelCheckpoint</span><span class="p">(</span>
+                    <span class="n">dirpath</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">parent</span><span class="p">),</span>
+                    <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">save_last</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">save_on_train_epoch_end</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">enable_version_counter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">saver</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - Done!&quot;</span><span class="p">)</span>
 
         <span class="c1"># logging.info(f&quot;\t● Searching for checkpoint to warm restart...&quot;)</span>
         <span class="c1"># ckpt_path = None</span>
@@ -740,20 +777,11 @@ document.write(`
         <span class="c1">#             ckpt_path = None</span>
         <span class="c1"># if ckpt_path is None:</span>
         <span class="c1">#     logging.error(f&quot;\t\t● No checkpoint found! ❌&quot;)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● 📞📞📞 CALLBACKS 📞📞📞&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">checkpoint_callbacks</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">early_stopping_callbacks</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;requeue_checkpoint.ckpt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;We are overring user given </span><span class="si">{self.ckpt_path}</span><span class="s2">&quot;</span>
-                    <span class="s2">&quot; to `requeue_checkpoint.ckpt`&quot;</span>
-                <span class="p">)</span>
-            <span class="n">ckpt_path</span> <span class="o">=</span> <span class="s2">&quot;requeue_checkpoint.ckpt&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="si">}</span><span class="s2"> does not exist, using None for now!&quot;</span><span class="p">)</span>
+            <span class="n">ckpt_path</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ckpt_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span>
+            <span class="n">ckpt_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📣📣📣 CALLING trainer.fit with </span><span class="si">{</span><span class="n">ckpt_path</span><span class="si">=}</span><span class="s2"> 📣📣📣&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">instantiated_module</span><span class="p">,</span>
@@ -761,9 +789,6 @@ document.write(`
             <span class="n">ckpt_path</span><span class="o">=</span><span class="n">ckpt_path</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dump_wandb_data</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;requeue_checkpoint.ckpt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cleaning up requeue checkpoint&quot;</span><span class="p">)</span>
-            <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;requeue_checkpoint.ckpt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;📣📣📣 CALLING trainer.validate 📣📣📣&quot;</span><span class="p">)</span>
@@ -831,19 +856,25 @@ document.write(`
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">runs</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">save_checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">upload_wandb</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_checkpoint</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">upload_wandb</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">):</span>
         <span class="c1"># TODO: figure out how to flush logging in subprocess</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Entering checkpoint method&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Entering checkpoint method&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="p">(</span><span class="n">Path</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;checkpoint.ckpt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● saving checkpoint to local path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> ⏳&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● saving checkpoint to local path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> ⏳&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
                 <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● saving checkpoint to user&#39;s path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> ⏳&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● saving checkpoint to user&#39;s path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> ⏳&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">save_checkpoint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● checkpoint saved ✅&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● checkpoint saved ✅&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">upload_wandb</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_upload_checkpoint_for_requeue</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
@@ -873,49 +904,8 @@ document.write(`
                 <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;ckpt_path&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">())})</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● `ckpt_path` added to Wandb config ✅&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># for offline case</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dump_wandb_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dump_wandb_data</span><span class="p">()</span></div>
 
-    <span class="c1"># @rank_zero_only</span>
-    <span class="c1"># def requeue(self, *args, **kwargs):</span>
-
-    <span class="c1">#     print(f&quot;\t● requeing! 🔥&quot;, flush=True)</span>
-    <span class="c1">#     print(args, kwargs)</span>
-    <span class="c1">#     self.submitit_signal(*args, **kwargs)</span>
-
-<div class="viewcode-block" id="Manager.checkpoint">
-<a class="viewcode-back" href="../../api/gen_modules/stable_pretraining.manager.Manager.html#stable_pretraining.manager.Manager.checkpoint">[docs]</a>
-    <span class="nd">@rank_zero_only</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span>
-            <span class="s2">&quot;⚠️⚠️⚠️ only SLURM should use this function,&quot;</span>
-            <span class="s2">&quot;users should use `save_checkpoint` ⚠️⚠️⚠️&quot;</span><span class="p">,</span>
-            <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
-        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">list</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Original Hydra&#39;s overrides: &quot;</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="c1"># TODO add a check to make sure we don&#39;t double override anything</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Adding our overrides: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">override</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">override</span><span class="p">)</span>
-        <span class="n">inst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydra_self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_hydra_self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
-        <span class="n">inst</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydra_self</span><span class="o">.</span><span class="n">config</span>
-        <span class="n">inst</span><span class="o">.</span><span class="n">hydra_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydra_self</span><span class="o">.</span><span class="n">hydra_context</span>
-        <span class="n">inst</span><span class="o">.</span><span class="n">task_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydra_self</span><span class="o">.</span><span class="n">task_function</span>
-        <span class="c1"># print(self._hydra_checkpoint, flush=True)</span>
-        <span class="c1"># return self._hydra_checkpoint(*args, **kwargs)</span>
-        <span class="c1"># child = self.__class__(</span>
-        <span class="c1">#     self.trainer, self.module, self.data, self.seed, self.ckpt_path</span>
-        <span class="c1"># )</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saving checkpoint to `requeue_checkpoint.ckpt`&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_checkpoint</span><span class="p">(</span><span class="s2">&quot;requeue_checkpoint.ckpt&quot;</span><span class="p">,</span> <span class="n">upload_wandb</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Requeing with: &quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">submitit</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">DelayedSubmission</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-</div>
-
-
-    <span class="c1"># def checkpoint_and_requeue(self, *args, **kwargs):</span>
-    <span class="c1">#     self.save_checkpoint()</span>
-    <span class="c1">#     self.requeue(*args, **kwargs)</span>
 </pre></div>
 
                 </article>

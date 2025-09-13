@@ -478,14 +478,29 @@ document.write(`
             <span class="n">checkpoint</span><span class="p">[</span><span class="s2">&quot;wandb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">trainer</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">version</span><span class="p">}</span>
             <span class="c1"># checkpoint[&quot;wandb_checkpoint_name&quot;] = trainer.logger._checkpoint_name</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saving Wandb params </span><span class="si">{</span><span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;wandb&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Checking for Wandb params to save... Done!&quot;</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">on_load_checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">,</span> <span class="n">checkpoint</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Checking for Wandb init params... 🔧&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="s2">&quot;wandb&quot;</span> <span class="ow">in</span> <span class="n">checkpoint</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Wandb info in checkpoint!!! Restoring same run... 🔧&quot;</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trainer</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="n">WandbLogger</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;logger&quot;</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Expected Trainer to have a logger, leaving...&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trainer</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="n">WandbLogger</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Expected WandbLogger, got </span><span class="si">{</span><span class="n">trainer</span><span class="o">.</span><span class="n">logger</span><span class="si">}</span><span class="s2">, leaving...&quot;</span>
+                <span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Trainer has a WandbLogger!&quot;</span><span class="p">)</span>
             <span class="kn">import</span><span class="w"> </span><span class="nn">wandb</span>
 
+            <span class="k">if</span> <span class="n">wandb</span><span class="o">.</span><span class="n">run</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">trainer</span><span class="o">.</span><span class="n">global_rank</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Run not initialized yet, skipping since this is a slave process!&quot;</span>
+                <span class="p">)</span>
+                <span class="k">return</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Deleting current run </span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">entity</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">project</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">... 🔧&quot;</span>
             <span class="p">)</span>
