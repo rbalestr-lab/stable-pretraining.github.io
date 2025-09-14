@@ -680,13 +680,15 @@ document.write(`
             <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">pytorch</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ModelCheckpoint</span><span class="p">):</span>
                     <span class="n">saving_names</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="n">callback</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span>
-                            <span class="s2">&quot;ckpt&quot;</span>
-                        <span class="p">)</span>
+                        <span class="p">(</span>
+                            <span class="n">Path</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">dirpath</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="n">callback</span><span class="o">.</span><span class="n">filename</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;ckpt&quot;</span><span class="p">)</span>
                     <span class="p">]</span>
                     <span class="k">if</span> <span class="n">callback</span><span class="o">.</span><span class="n">save_last</span><span class="p">:</span>
                         <span class="n">saving_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                            <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;last&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;ckpt&quot;</span><span class="p">)</span>
+                            <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">dirpath</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;last&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span>
+                                <span class="s2">&quot;ckpt&quot;</span>
+                            <span class="p">)</span>
                         <span class="p">)</span>
                     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - we found a Checkpoint callback with name(s) </span><span class="si">{</span><span class="n">saving_names</span><span class="si">}</span><span class="s2">&quot;</span>
