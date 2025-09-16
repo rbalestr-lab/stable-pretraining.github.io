@@ -344,6 +344,7 @@ document.write(`
   <h1>Source code for stable_pretraining.losses</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;SSL losses.&quot;&quot;&quot;</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
@@ -380,60 +381,6 @@ document.write(`
     <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">assert</span> <span class="n">n</span> <span class="o">==</span> <span class="n">m</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Input tensor must be square.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-
-
-<div class="viewcode-block" id="NTXEntLoss">
-<a class="viewcode-back" href="../../api/gen_modules/stable_pretraining.losses.NTXEntLoss.html#stable_pretraining.losses.NTXEntLoss">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">NTXEntLoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalized temperature-scaled cross entropy loss.</span>
-
-<span class="sd">    Introduced in the SimCLR paper :cite:`chen2020simple`.</span>
-<span class="sd">    Also used in MoCo :cite:`he2020momentum`.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        temperature (float, optional): The temperature scaling factor.</span>
-<span class="sd">            Default is 0.5.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span>
-
-<div class="viewcode-block" id="NTXEntLoss.forward">
-<a class="viewcode-back" href="../../api/gen_modules/stable_pretraining.losses.NTXEntLoss.html#stable_pretraining.losses.NTXEntLoss.forward">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the NT-Xent loss.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            z_i (torch.Tensor): Latent representation of the first augmented view of the batch.</span>
-<span class="sd">            z_j (torch.Tensor): Latent representation of the second augmented view of the batch.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            float: The computed contrastive loss.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">z_i</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">all_gather</span><span class="p">(</span><span class="n">z_i</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">z_j</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">all_gather</span><span class="p">(</span><span class="n">z_j</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
-
-        <span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">N</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="n">features</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">sim</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span>
-
-        <span class="n">sim_i_j</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">N</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">sim_j_i</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="o">-</span><span class="n">N</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
-
-        <span class="n">positive_samples</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">sim_i_j</span><span class="p">,</span> <span class="n">sim_j_i</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">z_i</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">negative_samples</span> <span class="o">=</span> <span class="n">sim</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="n">attraction</span> <span class="o">=</span> <span class="o">-</span><span class="n">positive_samples</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-        <span class="n">repulsion</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">(</span><span class="n">negative_samples</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="n">attraction</span> <span class="o">+</span> <span class="n">repulsion</span></div>
-</div>
-
 
 
 <div class="viewcode-block" id="NegativeCosineSimilarity">
@@ -594,6 +541,157 @@ document.write(`
         <span class="k">return</span> <span class="n">loss</span></div>
 </div>
 
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ContrastiveLoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A general-purpose engine for InfoNCE-style contrastive loss.</span>
+
+<span class="sd">    This module computes the cross-entropy loss between anchor embeddings</span>
+<span class="sd">    and a set of candidate embeddings, given the ground-truth targets. It</span>
+<span class="sd">    forms the core mathematical operation for losses like those in CLIP</span>
+<span class="sd">    and SimCLR.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        temperature (float, optional): The temperature scaling factor.</span>
+<span class="sd">            Default is 0.07.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.07</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">anchors</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">candidates</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">targets</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">logit_scale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">logit_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="k">if</span> <span class="n">logit_scale</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">logit_scale</span>
+
+        <span class="n">anchors</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">all_gather</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">anchors</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">all_gather</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)),</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">logits</span> <span class="o">=</span> <span class="p">(</span><span class="n">anchors</span> <span class="o">@</span> <span class="n">candidates</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="n">logit_scale</span>
+
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logits</span> <span class="o">=</span> <span class="n">logits</span><span class="o">.</span><span class="n">masked_fill</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">anchors</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">candidates</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">targets</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">logit_scale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the contrastive loss.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            anchors (torch.Tensor): The primary set of embeddings (queries) of shape `[N, D]`.</span>
+<span class="sd">            candidates (torch.Tensor): The set of embeddings to contrast against (keys)</span>
+<span class="sd">                of shape `[M, D]`.</span>
+<span class="sd">            targets (torch.Tensor): A 1D tensor of ground-truth indices of shape `[N]`,</span>
+<span class="sd">                where `targets[i]` is the index of the positive candidate for `anchors[i]`.</span>
+<span class="sd">            mask (torch.Tensor, optional): A boolean mask of shape `[N, M]` to exclude</span>
+<span class="sd">                certain anchor-candidate pairs from the loss calculation. Values set to</span>
+<span class="sd">                `True` will be ignored.</span>
+<span class="sd">            logit_scale (torch.Tensor | float, optional): The temperature scaling factor.</span>
+<span class="sd">                Default is `self.temperature`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: A scalar loss value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute</span><span class="p">(</span><span class="n">anchors</span><span class="p">,</span> <span class="n">candidates</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">logit_scale</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="NTXEntLoss">
+<a class="viewcode-back" href="../../api/gen_modules/stable_pretraining.losses.NTXEntLoss.html#stable_pretraining.losses.NTXEntLoss">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NTXEntLoss</span><span class="p">(</span><span class="n">ContrastiveLoss</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalized temperature-scaled cross entropy loss.</span>
+
+<span class="sd">    Introduced in the SimCLR paper :cite:`chen2020simple`.</span>
+<span class="sd">    Also used in MoCo :cite:`he2020momentum`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        temperature (float, optional): The temperature scaling factor.</span>
+<span class="sd">            Default is 0.5.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">)</span>
+
+<div class="viewcode-block" id="NTXEntLoss.forward">
+<a class="viewcode-back" href="../../api/gen_modules/stable_pretraining.losses.NTXEntLoss.html#stable_pretraining.losses.NTXEntLoss.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_i</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">z_j</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the NT-Xent loss.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            z_i (torch.Tensor): Latent representation of the first augmented view of the batch.</span>
+<span class="sd">            z_j (torch.Tensor): Latent representation of the second augmented view of the batch.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The computed contrastive loss.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">anchors</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_j</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="n">anchors</span>
+
+        <span class="n">N</span> <span class="o">=</span> <span class="n">z_i</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">z_i</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">z_i</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="c1"># prevent self-matching by masking diagonal</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">z_i</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute</span><span class="p">(</span><span class="n">anchors</span><span class="p">,</span> <span class="n">candidates</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SymmetricContrastiveLoss</span><span class="p">(</span><span class="n">ContrastiveLoss</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Symmetric contrastive image-text loss, as used in CLIP :cite:`radford2021learningtransferablevisualmodels`.</span>
+
+<span class="sd">    Computes symmetric cross-entropy over image-text and text-image logits.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        temperature (float, optional): Softmax temperature. Default is 0.07.</span>
+<span class="sd">            (If you use a learnable logit_scale in your model, pass it to</span>
+<span class="sd">            forward(...) and this temperature will be ignored.)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.07</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">feats_i</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">feats_j</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">logit_scale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="c1"># for CLIP, targets are always the diagonal</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">feats_i</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">feats_i</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="c1"># calculate loss in both directions</span>
+        <span class="n">loss_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute</span><span class="p">(</span>
+            <span class="n">anchors</span><span class="o">=</span><span class="n">feats_i</span><span class="p">,</span>
+            <span class="n">candidates</span><span class="o">=</span><span class="n">feats_j</span><span class="p">,</span>
+            <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span>
+            <span class="n">logit_scale</span><span class="o">=</span><span class="n">logit_scale</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">loss_j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute</span><span class="p">(</span>
+            <span class="n">anchors</span><span class="o">=</span><span class="n">feats_j</span><span class="p">,</span>
+            <span class="n">candidates</span><span class="o">=</span><span class="n">feats_i</span><span class="p">,</span>
+            <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span>
+            <span class="n">logit_scale</span><span class="o">=</span><span class="n">logit_scale</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">loss_i</span> <span class="o">+</span> <span class="n">loss_j</span><span class="p">)</span>
 </pre></div>
 
                 </article>
