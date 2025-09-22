@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.data.utils &#8212; stable-pretraining 0.1.2.dev1+gbb907f4b1 documentation</title>
+    <title>stable_pretraining.data.utils &#8212; stable-pretraining 0.1.2.dev2+gd3c7e27a4 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=6a5e66fd"></script>
+    <script src="../../../_static/documentation_options.js?v=669de48e"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.2.dev1+gbb907f4b1 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.2.dev2+gd3c7e27a4 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -374,7 +374,11 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">unique_consecutive</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">counts</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">max</span><span class="p">()):</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;counts are not the same for all samples!&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">&quot;counts are not the same for all samples!</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;This typically occurs when batch size and number of views</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;are not divisible&quot;</span>
+        <span class="p">)</span>
     <span class="n">n_views</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
     <span class="n">fold_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">tensor</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">//</span> <span class="n">n_views</span><span class="p">,</span> <span class="n">n_views</span><span class="p">)</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">fold_shape</span><span class="p">,</span> <span class="o">*</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
