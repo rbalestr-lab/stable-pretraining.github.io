@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Contributing &#8212; stable-pretraining 0.1.2.dev3+geb3a9c361 documentation</title>
+    <title>Contributing &#8212; stable-pretraining 0.1.2.dev4+ge105c448e documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=204ed3b3"></script>
+    <script src="_static/documentation_options.js?v=244ff4d2"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -136,7 +136,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.2.dev3+geb3a9c361 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.2.dev4+ge105c448e documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -459,10 +459,18 @@ check the following points:</p>
 <li><p>If your pull request addresses an issue, please use the pull request title to describe the issue and mention the issue number in the pull request description. This will make sure a link back to the original issue is created.</p></li>
 <li><p>The documentation is updated if necessary. You can edit the documentation using any text editor and then generate the HTML output by typing <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> from the <code class="docutils literal notranslate"><span class="pre">docs/</span></code> directory. The resulting HTML files will be placed in <code class="docutils literal notranslate"><span class="pre">docs/build/html/</span></code> and are viewable in a web browser.</p></li>
 </ul>
-<p>When creating a pull request (PR), use the appropriate prefix to indicate its status:</p>
+<p>When creating a pull request (PR), use the appropriate prefix to indicate its status and type:</p>
+<p><strong>Status prefix:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">[MRG]</span></code> <strong>(Ready for Merge)</strong>: Use this prefix if your contribution is complete and ready for a detailed review. A core maintainer will review your code and approve it for merging if it meets the required standards.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">[WIP]</span></code> <strong>(Work in Progress)</strong>: Use this prefix for an incomplete contribution where further work is planned before seeking a full review. Consider including a <a class="reference external" href="https://github.com/blog/1375-task-lists-in-gfm-issues-pulls-comments">task list</a> in your PR description to outline planned work or track progress. Change the prefix to <cite>[MRG]</cite> once the PR is mature and ready for detailed review.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[WIP]</span></code> <strong>(Work in Progress)</strong>: Use this prefix for an incomplete contribution where further work is planned before seeking a full review. Consider including a <a class="reference external" href="https://github.com/blog/1375-task-lists-in-gfm-issues-pulls-comments">task list</a> in your PR description to outline planned work or track progress. Remove the <code class="docutils literal notranslate"><span class="pre">[WIP]</span></code> prefix once the PR is ready for review.</p></li>
+</ul>
+<p><strong>Type prefix (use when PR is ready):</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[BugFix]</span></code>: For bug fixes and patches</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[Feature]</span></code>: For new features or enhancements</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[Example]</span></code>: For adding or updating examples</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[Benchmark]</span></code>: For benchmark-related changes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[Doc]</span></code>: For documentation updates</p></li>
 </ul>
 <p>A <code class="docutils literal notranslate"><span class="pre">[WIP]</span></code> PR can serve multiple purposes:
 1- Indicate that you are actively working on something to prevent duplicated efforts by others.
