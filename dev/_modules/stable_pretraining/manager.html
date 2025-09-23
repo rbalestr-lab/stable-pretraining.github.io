@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.manager &#8212; stable-pretraining 0.1.2.dev2+gd3c7e27a4 documentation</title>
+    <title>stable_pretraining.manager &#8212; stable-pretraining 0.1.2.dev3+geb3a9c361 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=669de48e"></script>
+    <script src="../../_static/documentation_options.js?v=204ed3b3"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.2.dev2+gd3c7e27a4 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.2.dev3+geb3a9c361 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -659,6 +659,28 @@ document.write(`
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`trainer` should be a Trainer&quot;</span><span class="p">)</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● trainer instantiated ✅&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Auto-detect TeacherStudentWrapper and add callback if needed</span>
+        <span class="c1"># This runs AFTER trainer is set up, regardless of how it was created</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.callbacks.teacher_student</span><span class="w"> </span><span class="kn">import</span> <span class="n">TeacherStudentCallback</span>
+
+        <span class="n">needs_teacher_student</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instantiated_module</span><span class="o">.</span><span class="n">modules</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;update_teacher&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;teacher&quot;</span><span class="p">):</span>
+                <span class="n">needs_teacher_student</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="n">needs_teacher_student</span><span class="p">:</span>
+            <span class="c1"># Check if TeacherStudentCallback is already in the list</span>
+            <span class="n">has_ts_callback</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">cb</span><span class="p">,</span> <span class="n">TeacherStudentCallback</span><span class="p">)</span> <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">callbacks</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">has_ts_callback</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● Auto-detected TeacherStudentWrapper, adding TeacherStudentCallback ✅&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TeacherStudentCallback</span><span class="p">())</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">init_and_sync_wandb</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● logger updated accordingly ✅&quot;</span><span class="p">)</span>
 

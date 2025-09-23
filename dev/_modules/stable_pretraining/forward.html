@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.2.dev2+gd3c7e27a4 documentation</title>
+    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.2.dev3+geb3a9c361 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=669de48e"></script>
+    <script src="../../_static/documentation_options.js?v=204ed3b3"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.2.dev2+gd3c7e27a4 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.2.dev3+geb3a9c361 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -498,12 +498,11 @@ document.write(`
 <span class="sd">    target network and predicting target projections from online projections.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        self: Module instance (automatically bound) with required attributes:</span>
-<span class="sd">            - backbone: Online network feature extractor</span>
-<span class="sd">            - projector: Online network projection head</span>
+<span class="sd">        self: Module instance with required attributes:</span>
+<span class="sd">            - backbone: TeacherStudentWrapper for feature extraction</span>
+<span class="sd">            - projector: TeacherStudentWrapper for projection head</span>
 <span class="sd">            - predictor: Online network predictor</span>
-<span class="sd">            - target_backbone: Target network backbone (momentum encoder)</span>
-<span class="sd">            - target_projector: Target network projection head</span>
+<span class="sd">            - byol_loss: BYOL loss function (optional, uses MSE if not provided)</span>
 <span class="sd">        batch: Input batch dictionary containing:</span>
 <span class="sd">            - &#39;image&#39;: Tensor of augmented images [N*views, C, H, W]</span>
 <span class="sd">            - &#39;sample_idx&#39;: Indices to identify views of same image</span>
@@ -511,31 +510,48 @@ document.write(`
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Dictionary containing:</span>
-<span class="sd">            - &#39;embedding&#39;: Feature representations from online backbone</span>
-<span class="sd">            - &#39;loss&#39;: MSE loss between predictions and targets (during training)</span>
+<span class="sd">            - &#39;embedding&#39;: Feature representations from teacher backbone (EMA target)</span>
+<span class="sd">            - &#39;loss&#39;: BYOL loss between predictions and targets (during training)</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        Introduced in the BYOL paper :cite:`grill2020bootstrap`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
+    <span class="n">images</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
-        <span class="n">online_proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
-        <span class="n">online_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">online_proj</span><span class="p">)</span>
+    <span class="c1"># Get online embeddings</span>
+    <span class="n">online_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
 
+    <span class="c1"># Return early if not training: expose teacher features for evaluation</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="n">target_embedding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
-            <span class="n">target_proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_projector</span><span class="p">(</span><span class="n">target_embedding</span><span class="p">)</span>
+            <span class="n">target_only_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;embedding&quot;</span><span class="p">:</span> <span class="n">target_only_features</span><span class="o">.</span><span class="n">detach</span><span class="p">()}</span>
 
-        <span class="n">online_views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">online_pred</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
-        <span class="n">target_views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">target_proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
+    <span class="c1"># Process online network</span>
+    <span class="n">online_proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">online_features</span><span class="p">)</span>
+    <span class="n">online_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">online_proj</span><span class="p">)</span>
 
-        <span class="n">loss1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">online_views</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">target_views</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span>
-        <span class="n">loss2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">online_views</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">target_views</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span>
-        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">loss1</span> <span class="o">+</span> <span class="n">loss2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="c1"># Process target network</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">target_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        <span class="n">target_proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">target_features</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">out</span></div>
+    <span class="c1"># Compute loss</span>
+    <span class="n">online_views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">online_pred</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
+    <span class="n">target_views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">target_proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;byol_loss&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;byol_forward requires &#39;byol_loss&#39; to be provided (e.g., spt.losses.BYOLLoss()). &quot;</span>
+            <span class="s2">&quot;Pass it when constructing the Module: Module(..., byol_loss=spt.losses.BYOLLoss(), ...)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">loss</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">byol_loss</span><span class="p">(</span><span class="n">online_views</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">target_views</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">byol_loss</span><span class="p">(</span><span class="n">online_views</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">target_views</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;embedding&quot;</span><span class="p">:</span> <span class="n">target_features</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">}</span></div>
 
 
 
