@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.3.dev6+g044d40b2b.d20250927 documentation</title>
+    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.3.dev7+g35e467667.d20250928 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../_static/documentation_options.js?v=9789e5bd"></script>
+    <script src="../_static/documentation_options.js?v=705fb976"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -136,7 +136,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev6+g044d40b2b.d20250927 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev7+g35e467667.d20250928 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -486,9 +486,8 @@ augmented views of the same image via a contrastive loss in the latent space.</p
 - backbone: Feature extraction network
 - projector: Projection head mapping features to latent space
 - simclr_loss: NT-Xent contrastive loss function</p></li>
-<li><p><strong>batch</strong> – Input batch dictionary containing:
-- ‘image’: Tensor of augmented images [N*views, C, H, W]
-- ‘sample_idx’: Indices to identify views of same image</p></li>
+<li><p><strong>batch</strong> – Either a list of view dicts (from MultiViewTransform) or
+a single dict (for validation/single-view)</p></li>
 <li><p><strong>stage</strong> – Training stage (‘train’, ‘val’, or ‘test’)</p></li>
 </ul>
 </dd>
@@ -496,6 +495,7 @@ augmented views of the same image via a contrastive loss in the latent space.</p
 <dd class="field-even"><p><ul class="simple">
 <li><p>‘embedding’: Feature representations from backbone</p></li>
 <li><p>’loss’: NT-Xent contrastive loss (during training only)</p></li>
+<li><p>’label’: Labels if present (for probes/callbacks)</p></li>
 </ul>
 </p>
 </dd>
@@ -555,9 +555,8 @@ instances, not just for different augmentations of the same instance.</p>
 - projector: Projection head for embedding transformation
 - predictor: Prediction head used for the online view
 - nnclr_loss: NTXent contrastive loss function</p></li>
-<li><p><strong>batch</strong> – Input batch dictionary containing:
-- ‘image’: Tensor of augmented images [N*views, C, H, W]
-- ‘sample_idx’: Indices to identify views of same image</p></li>
+<li><p><strong>batch</strong> – Either a list of view dicts (from MultiViewTransform) or
+a single dict (for validation/single-view)</p></li>
 <li><p><strong>stage</strong> – Training stage (‘train’, ‘val’, or ‘test’)</p></li>
 </ul>
 </dd>
@@ -566,6 +565,7 @@ instances, not just for different augmentations of the same instance.</p>
 <li><p>‘embedding’: Feature representations from backbone</p></li>
 <li><p>’loss’: NTXent contrastive loss (during training only)</p></li>
 <li><p>’nnclr_support_set’: Projections to be added to the support set queue</p></li>
+<li><p>’label’: Labels if present (for probes/callbacks)</p></li>
 </ul>
 </p>
 </dd>
@@ -653,9 +653,8 @@ target network and predicting target projections from online projections.</p>
 - projector: TeacherStudentWrapper for projection head
 - predictor: Online network predictor
 - byol_loss: BYOL loss function (optional, uses MSE if not provided)</p></li>
-<li><p><strong>batch</strong> – Input batch dictionary containing:
-- ‘image’: Tensor of augmented images [N*views, C, H, W]
-- ‘sample_idx’: Indices to identify views of same image</p></li>
+<li><p><strong>batch</strong> – Either a list of view dicts (from MultiViewTransform) or
+a single dict (for validation/single-view)</p></li>
 <li><p><strong>stage</strong> – Training stage (‘train’, ‘val’, or ‘test’)</p></li>
 </ul>
 </dd>
@@ -663,6 +662,7 @@ target network and predicting target projections from online projections.</p>
 <dd class="field-even"><p><ul class="simple">
 <li><p>‘embedding’: Feature representations from teacher backbone (EMA target)</p></li>
 <li><p>’loss’: BYOL loss between predictions and targets (during training)</p></li>
+<li><p>’label’: Labels if present (for probes/callbacks)</p></li>
 </ul>
 </p>
 </dd>
@@ -726,9 +726,8 @@ features).</p>
 - backbone: Feature extraction network
 - projector: Projection head for embedding transformation
 - vicreg_loss: VICReg loss with variance, invariance, covariance terms</p></li>
-<li><p><strong>batch</strong> – Input batch dictionary containing:
-- ‘image’: Tensor of augmented images [N*views, C, H, W]
-- ‘sample_idx’: Indices to identify views of same image</p></li>
+<li><p><strong>batch</strong> – Either a list of view dicts (from MultiViewTransform) or
+a single dict (for validation/single-view)</p></li>
 <li><p><strong>stage</strong> – Training stage (‘train’, ‘val’, or ‘test’)</p></li>
 </ul>
 </dd>
@@ -736,6 +735,7 @@ features).</p>
 <dd class="field-even"><p><ul class="simple">
 <li><p>‘embedding’: Feature representations from backbone</p></li>
 <li><p>’loss’: Combined VICReg loss (during training only)</p></li>
+<li><p>’label’: Labels if present (for probes/callbacks)</p></li>
 </ul>
 </p>
 </dd>
@@ -790,9 +790,8 @@ possible, reducing redundancy while maintaining invariance.</p>
 - backbone: Feature extraction network
 - projector: Projection head (typically with BN and high dimension)
 - barlow_loss: Barlow Twins loss function</p></li>
-<li><p><strong>batch</strong> – Input batch dictionary containing:
-- ‘image’: Tensor of augmented images [N*views, C, H, W]
-- ‘sample_idx’: Indices to identify views of same image</p></li>
+<li><p><strong>batch</strong> – Either a list of view dicts (from MultiViewTransform) or
+a single dict (for validation/single-view)</p></li>
 <li><p><strong>stage</strong> – Training stage (‘train’, ‘val’, or ‘test’)</p></li>
 </ul>
 </dd>
@@ -800,6 +799,7 @@ possible, reducing redundancy while maintaining invariance.</p>
 <dd class="field-even"><p><ul class="simple">
 <li><p>‘embedding’: Feature representations from backbone</p></li>
 <li><p>’loss’: Barlow Twins loss (during training only)</p></li>
+<li><p>’label’: Labels if present (for probes/callbacks)</p></li>
 </ul>
 </p>
 </dd>
@@ -849,7 +849,8 @@ useful for baseline comparisons and fine-tuning pre-trained models.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> – Module instance (automatically bound) with required attributes:
 - backbone: Feature extraction network
-- classifier: Classification head (e.g., Linear layer)</p></li>
+- classifier: Classification head (e.g., Linear layer)
+- supervised_loss: Loss function for supervised learning</p></li>
 <li><p><strong>batch</strong> – Input batch dictionary containing:
 - ‘image’: Tensor of images [N, C, H, W]
 - ‘label’: Ground truth labels [N] (optional, for loss computation)</p></li>
@@ -860,7 +861,7 @@ useful for baseline comparisons and fine-tuning pre-trained models.</p>
 <dd class="field-even"><p><ul class="simple">
 <li><p>‘embedding’: Feature representations from backbone</p></li>
 <li><p>’logits’: Classification predictions</p></li>
-<li><p>’loss’: Cross-entropy loss (if labels provided)</p></li>
+<li><p>’loss’: Supervised loss (if labels provided)</p></li>
 </ul>
 </p>
 </dd>

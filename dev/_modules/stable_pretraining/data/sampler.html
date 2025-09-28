@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.data.sampler &#8212; stable-pretraining 0.1.3.dev6+g044d40b2b.d20250927 documentation</title>
+    <title>stable_pretraining.data.sampler &#8212; stable-pretraining 0.1.3.dev7+g35e467667.d20250928 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=9789e5bd"></script>
+    <script src="../../../_static/documentation_options.js?v=705fb976"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev6+g044d40b2b.d20250927 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev7+g35e467667.d20250928 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -353,16 +353,31 @@ document.write(`
 <div class="viewcode-block" id="RepeatedRandomSampler">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_pretraining.data.RepeatedRandomSampler.html#stable_pretraining.data.RepeatedRandomSampler">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RepeatedRandomSampler</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DistributedSampler</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Samples elements randomly. If without replacement, then sample from a shuffled dataset.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sampler that repeats each dataset index consecutively for multi-view learning.</span>
 
-<span class="sd">    If with replacement, then user can specify :attr:`num_samples` to draw.</span>
+<span class="sd">    IMPORTANT: This sampler repeats each index n_views times in a row, creating</span>
+<span class="sd">    sequences like [0,0,0,0, 1,1,1,1, 2,2,2,2, ...] for n_views=4. This means:</span>
+<span class="sd">    - The DataLoader will load the SAME image multiple times consecutively</span>
+<span class="sd">    - Each repeated index goes through the transform pipeline separately</span>
+<span class="sd">    - BATCH SIZE: The batch_size in DataLoader refers to total augmented samples.</span>
+<span class="sd">      For example: batch_size=128 with n_views=8 means only 16 unique images,</span>
+<span class="sd">      each appearing 8 times with different augmentations</span>
+
+<span class="sd">    Designed to work with RoundRobinMultiViewTransform which uses a counter to apply different</span>
+<span class="sd">    augmentations to each repeated occurrence of the same image.</span>
+
+<span class="sd">    Example behavior with n_views=3:</span>
+<span class="sd">        Dataset indices: [0, 1, 2, 3, 4]</span>
+<span class="sd">        Sampler output:  [0,0,0, 1,1,1, 2,2,2, 3,3,3, 4,4,4]</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        data_source (Dataset): dataset to sample from</span>
-<span class="sd">        n_views (int): number of views to repeat each sample, default=1</span>
+<span class="sd">        n_views (int): number of times to repeat each index consecutively, default=1</span>
 <span class="sd">        replacement (bool): samples are drawn on-demand with replacement if ``True``, default=``False``</span>
-<span class="sd">        num_samples (int): number of samples to draw, default=`len(dataset)`.</span>
-<span class="sd">        generator (Generator): Generator used in sampling.</span>
+<span class="sd">        seed (int): random seed for shuffling</span>
+
+<span class="sd">    Note: For an alternative approach that loads each image once, consider using</span>
+<span class="sd">    MultiViewTransform with a standard sampler.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>

@@ -38,6 +38,7 @@
       RandomRotation
       RandomSolarize
       Resize
+      RoundRobinMultiViewTransform
       ToImage
       Transform
       UniformTemporalSubsample

@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.3.dev6+g044d40b2b.d20250927 documentation</title>
+    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.3.dev7+g35e467667.d20250928 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=9789e5bd"></script>
+    <script src="../../_static/documentation_options.js?v=705fb976"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev6+g044d40b2b.d20250927 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev7+g35e467667.d20250928 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -366,8 +366,292 @@ document.write(`
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">stable_pretraining</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.callbacks.queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_or_create_queue_callback</span><span class="p">,</span> <span class="n">OnlineQueue</span>
+
+
+<div class="viewcode-block" id="supervised_forward">
+<a class="viewcode-back" href="../../api/forward.html#stable_pretraining.forward.supervised_forward">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">supervised_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for standard supervised training.</span>
+
+<span class="sd">    This function implements traditional supervised learning with labels,</span>
+<span class="sd">    useful for baseline comparisons and fine-tuning pre-trained models.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        self: Module instance (automatically bound) with required attributes:</span>
+<span class="sd">            - backbone: Feature extraction network</span>
+<span class="sd">            - classifier: Classification head (e.g., Linear layer)</span>
+<span class="sd">            - supervised_loss: Loss function for supervised learning</span>
+<span class="sd">        batch: Input batch dictionary containing:</span>
+<span class="sd">            - &#39;image&#39;: Tensor of images [N, C, H, W]</span>
+<span class="sd">            - &#39;label&#39;: Ground truth labels [N] (optional, for loss computation)</span>
+<span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary containing:</span>
+<span class="sd">            - &#39;embedding&#39;: Feature representations from backbone</span>
+<span class="sd">            - &#39;logits&#39;: Classification predictions</span>
+<span class="sd">            - &#39;loss&#39;: Supervised loss (if labels provided)</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Unlike SSL methods, this function uses actual labels for training</span>
+<span class="sd">        and is primarily used for evaluation or supervised baselines.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;logits&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;supervised_loss&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;supervised_forward requires &#39;supervised_loss&#39; to be provided (e.g., nn.CrossEntropyLoss()). &quot;</span>
+                <span class="s2">&quot;Pass it when constructing the Module: Module(..., supervised_loss=nn.CrossEntropyLoss(), ...)&quot;</span>
+            <span class="p">)</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">supervised_loss</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;logits&quot;</span><span class="p">],</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+
+<div class="viewcode-block" id="simclr_forward">
+<a class="viewcode-back" href="../../api/forward.html#stable_pretraining.forward.simclr_forward">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">simclr_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for SimCLR (Simple Contrastive Learning of Representations).</span>
+
+<span class="sd">    SimCLR learns representations by maximizing agreement between differently</span>
+<span class="sd">    augmented views of the same image via a contrastive loss in the latent space.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        self: Module instance (automatically bound) with required attributes:</span>
+<span class="sd">            - backbone: Feature extraction network</span>
+<span class="sd">            - projector: Projection head mapping features to latent space</span>
+<span class="sd">            - simclr_loss: NT-Xent contrastive loss function</span>
+<span class="sd">        batch: Either a list of view dicts (from MultiViewTransform) or</span>
+<span class="sd">            a single dict (for validation/single-view)</span>
+<span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary containing:</span>
+<span class="sd">            - &#39;embedding&#39;: Feature representations from backbone</span>
+<span class="sd">            - &#39;loss&#39;: NT-Xent contrastive loss (during training only)</span>
+<span class="sd">            - &#39;label&#39;: Labels if present (for probes/callbacks)</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Introduced in the SimCLR paper :cite:`chen2020simple`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># Multi-view training - batch is a list of view dicts</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Concatenate labels for callbacks (probes need this)</span>
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+            <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">emb</span><span class="p">)</span> <span class="k">for</span> <span class="n">emb</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simclr_loss</span><span class="p">(</span><span class="n">projections</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">projections</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Single-view validation</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+
+<div class="viewcode-block" id="byol_forward">
+<a class="viewcode-back" href="../../api/forward.html#stable_pretraining.forward.byol_forward">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">byol_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for BYOL (Bootstrap Your Own Latent).</span>
+
+<span class="sd">    BYOL learns representations without negative pairs by using a momentum-based</span>
+<span class="sd">    target network and predicting target projections from online projections.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        self: Module instance with required attributes:</span>
+<span class="sd">            - backbone: TeacherStudentWrapper for feature extraction</span>
+<span class="sd">            - projector: TeacherStudentWrapper for projection head</span>
+<span class="sd">            - predictor: Online network predictor</span>
+<span class="sd">            - byol_loss: BYOL loss function (optional, uses MSE if not provided)</span>
+<span class="sd">        batch: Either a list of view dicts (from MultiViewTransform) or</span>
+<span class="sd">            a single dict (for validation/single-view)</span>
+<span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary containing:</span>
+<span class="sd">            - &#39;embedding&#39;: Feature representations from teacher backbone (EMA target)</span>
+<span class="sd">            - &#39;loss&#39;: BYOL loss between predictions and targets (during training)</span>
+<span class="sd">            - &#39;label&#39;: Labels if present (for probes/callbacks)</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Introduced in the BYOL paper :cite:`grill2020bootstrap`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># Multi-view training - batch is a list of view dicts</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="p">[</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
+
+        <span class="c1"># Concatenate labels for callbacks</span>
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Get online embeddings for both views</span>
+        <span class="n">online_features</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">img</span><span class="p">)</span> <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">images</span><span class="p">]</span>
+
+        <span class="c1"># Return early if not training</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="n">all_images</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">target_only_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">all_images</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;embedding&quot;</span><span class="p">:</span> <span class="n">target_only_features</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="o">**</span><span class="n">out</span><span class="p">}</span>
+
+        <span class="c1"># Process online network</span>
+        <span class="n">online_proj</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span> <span class="k">for</span> <span class="n">feat</span> <span class="ow">in</span> <span class="n">online_features</span><span class="p">]</span>
+        <span class="n">online_pred</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span> <span class="k">for</span> <span class="n">proj</span> <span class="ow">in</span> <span class="n">online_proj</span><span class="p">]</span>
+
+        <span class="c1"># Process target network</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">target_features</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">img</span><span class="p">)</span> <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">images</span><span class="p">]</span>
+            <span class="n">target_proj</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span> <span class="k">for</span> <span class="n">feat</span> <span class="ow">in</span> <span class="n">target_features</span>
+            <span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;byol_loss&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;byol_forward requires &#39;byol_loss&#39; to be provided (e.g., spt.losses.BYOLLoss()). &quot;</span>
+                <span class="s2">&quot;Pass it when constructing the Module: Module(..., byol_loss=spt.losses.BYOLLoss(), ...)&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Compute loss between view pairs</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">byol_loss</span><span class="p">(</span><span class="n">online_pred</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">target_proj</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">byol_loss</span><span class="p">(</span><span class="n">online_pred</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">target_proj</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">target_features</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Single-view validation</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Just return embeddings for validation</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">target_only_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_only_features</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+
+<div class="viewcode-block" id="vicreg_forward">
+<a class="viewcode-back" href="../../api/forward.html#stable_pretraining.forward.vicreg_forward">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">vicreg_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for VICReg (Variance-Invariance-Covariance Regularization).</span>
+
+<span class="sd">    VICReg learns representations using three criteria: variance (maintaining</span>
+<span class="sd">    information), invariance (to augmentations), and covariance (decorrelating</span>
+<span class="sd">    features).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        self: Module instance (automatically bound) with required attributes:</span>
+<span class="sd">            - backbone: Feature extraction network</span>
+<span class="sd">            - projector: Projection head for embedding transformation</span>
+<span class="sd">            - vicreg_loss: VICReg loss with variance, invariance, covariance terms</span>
+<span class="sd">        batch: Either a list of view dicts (from MultiViewTransform) or</span>
+<span class="sd">            a single dict (for validation/single-view)</span>
+<span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary containing:</span>
+<span class="sd">            - &#39;embedding&#39;: Feature representations from backbone</span>
+<span class="sd">            - &#39;loss&#39;: Combined VICReg loss (during training only)</span>
+<span class="sd">            - &#39;label&#39;: Labels if present (for probes/callbacks)</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Introduced in the VICReg paper :cite:`bardes2022vicreg`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># Multi-view training - batch is a list of view dicts</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Concatenate labels for callbacks</span>
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+            <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">emb</span><span class="p">)</span> <span class="k">for</span> <span class="n">emb</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vicreg_loss</span><span class="p">(</span><span class="n">projections</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">projections</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Single-view validation</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+
+<div class="viewcode-block" id="barlow_twins_forward">
+<a class="viewcode-back" href="../../api/forward.html#stable_pretraining.forward.barlow_twins_forward">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">barlow_twins_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for Barlow Twins.</span>
+
+<span class="sd">    Barlow Twins learns representations by making the cross-correlation matrix</span>
+<span class="sd">    between embeddings of augmented views as close to the identity matrix as</span>
+<span class="sd">    possible, reducing redundancy while maintaining invariance.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        self: Module instance (automatically bound) with required attributes:</span>
+<span class="sd">            - backbone: Feature extraction network</span>
+<span class="sd">            - projector: Projection head (typically with BN and high dimension)</span>
+<span class="sd">            - barlow_loss: Barlow Twins loss function</span>
+<span class="sd">        batch: Either a list of view dicts (from MultiViewTransform) or</span>
+<span class="sd">            a single dict (for validation/single-view)</span>
+<span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary containing:</span>
+<span class="sd">            - &#39;embedding&#39;: Feature representations from backbone</span>
+<span class="sd">            - &#39;loss&#39;: Barlow Twins loss (during training only)</span>
+<span class="sd">            - &#39;label&#39;: Labels if present (for probes/callbacks)</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Introduced in the Barlow Twins paper :cite:`zbontar2021barlow`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># Multi-view training - batch is a list of view dicts</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Concatenate labels for callbacks</span>
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+            <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">emb</span><span class="p">)</span> <span class="k">for</span> <span class="n">emb</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">barlow_loss</span><span class="p">(</span><span class="n">projections</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">projections</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Single-view validation</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">out</span></div>
+
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_find_nearest_neighbors</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">support_set</span><span class="p">):</span>
@@ -395,9 +679,8 @@ document.write(`
 <span class="sd">            - projector: Projection head for embedding transformation</span>
 <span class="sd">            - predictor: Prediction head used for the online view</span>
 <span class="sd">            - nnclr_loss: NTXent contrastive loss function</span>
-<span class="sd">        batch: Input batch dictionary containing:</span>
-<span class="sd">            - &#39;image&#39;: Tensor of augmented images [N*views, C, H, W]</span>
-<span class="sd">            - &#39;sample_idx&#39;: Indices to identify views of same image</span>
+<span class="sd">        batch: Either a list of view dicts (from MultiViewTransform) or</span>
+<span class="sd">            a single dict (for validation/single-view)</span>
 <span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
 
 <span class="sd">    Returns:</span>
@@ -405,267 +688,59 @@ document.write(`
 <span class="sd">            - &#39;embedding&#39;: Feature representations from backbone</span>
 <span class="sd">            - &#39;loss&#39;: NTXent contrastive loss (during training only)</span>
 <span class="sd">            - &#39;nnclr_support_set&#39;: Projections to be added to the support set queue</span>
+<span class="sd">            - &#39;label&#39;: Labels if present (for probes/callbacks)</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        Introduced in the NNCLR paper :cite:`dwibedi2021little`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
 
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_nnclr_queue_callback&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_nnclr_queue_callback</span> <span class="o">=</span> <span class="n">find_or_create_queue_callback</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span>
-                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;nnclr_support_set&quot;</span><span class="p">,</span>
-                <span class="n">queue_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hparams</span><span class="o">.</span><span class="n">support_set_size</span><span class="p">,</span>
-                <span class="n">dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hparams</span><span class="o">.</span><span class="n">projection_dim</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="n">queue_callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nnclr_queue_callback</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># Multi-view training - batch is a list of view dicts</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="n">proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
-        <span class="n">views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
+        <span class="c1"># Concatenate labels for callbacks</span>
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="n">proj_q</span><span class="p">,</span> <span class="n">proj_k</span> <span class="o">=</span> <span class="n">views</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">views</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_nnclr_queue_callback&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nnclr_queue_callback</span> <span class="o">=</span> <span class="n">find_or_create_queue_callback</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span>
+                    <span class="n">key</span><span class="o">=</span><span class="s2">&quot;nnclr_support_set&quot;</span><span class="p">,</span>
+                    <span class="n">queue_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hparams</span><span class="o">.</span><span class="n">support_set_size</span><span class="p">,</span>
+                    <span class="n">dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hparams</span><span class="o">.</span><span class="n">projection_dim</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">queue_callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nnclr_queue_callback</span>
 
-        <span class="n">support_set</span> <span class="o">=</span> <span class="n">OnlineQueue</span><span class="o">.</span><span class="n">_shared_queues</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">queue_callback</span><span class="o">.</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">emb</span><span class="p">)</span> <span class="k">for</span> <span class="n">emb</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+            <span class="n">proj_q</span><span class="p">,</span> <span class="n">proj_k</span> <span class="o">=</span> <span class="n">projections</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">projections</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">support_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">support_set</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">pred_q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">proj_q</span><span class="p">)</span>
-            <span class="n">pred_k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">proj_k</span><span class="p">)</span>
+            <span class="n">support_set</span> <span class="o">=</span> <span class="n">OnlineQueue</span><span class="o">.</span><span class="n">_shared_queues</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">queue_callback</span><span class="o">.</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
-            <span class="n">nn_k</span> <span class="o">=</span> <span class="n">_find_nearest_neighbors</span><span class="p">(</span><span class="n">proj_k</span><span class="p">,</span> <span class="n">support_set</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
-            <span class="n">nn_q</span> <span class="o">=</span> <span class="n">_find_nearest_neighbors</span><span class="p">(</span><span class="n">proj_q</span><span class="p">,</span> <span class="n">support_set</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">support_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">support_set</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">pred_q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">proj_q</span><span class="p">)</span>
+                <span class="n">pred_k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">proj_k</span><span class="p">)</span>
 
-            <span class="n">loss_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nnclr_loss</span><span class="p">(</span><span class="n">pred_q</span><span class="p">,</span> <span class="n">nn_k</span><span class="p">)</span>
-            <span class="n">loss_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nnclr_loss</span><span class="p">(</span><span class="n">pred_k</span><span class="p">,</span> <span class="n">nn_q</span><span class="p">)</span>
-            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">loss_a</span> <span class="o">+</span> <span class="n">loss_b</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+                <span class="n">nn_k</span> <span class="o">=</span> <span class="n">_find_nearest_neighbors</span><span class="p">(</span><span class="n">proj_k</span><span class="p">,</span> <span class="n">support_set</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+                <span class="n">nn_q</span> <span class="o">=</span> <span class="n">_find_nearest_neighbors</span><span class="p">(</span><span class="n">proj_q</span><span class="p">,</span> <span class="n">support_set</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
 
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Fallback to SimCLR style loss if queue is empty</span>
-            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nnclr_loss</span><span class="p">(</span><span class="n">proj_q</span><span class="p">,</span> <span class="n">proj_k</span><span class="p">)</span>
+                <span class="n">loss_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nnclr_loss</span><span class="p">(</span><span class="n">pred_q</span><span class="p">,</span> <span class="n">nn_k</span><span class="p">)</span>
+                <span class="n">loss_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nnclr_loss</span><span class="p">(</span><span class="n">pred_k</span><span class="p">,</span> <span class="n">nn_q</span><span class="p">)</span>
+                <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">loss_a</span> <span class="o">+</span> <span class="n">loss_b</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Fallback to SimCLR style loss if queue is empty</span>
+                <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nnclr_loss</span><span class="p">(</span><span class="n">proj_q</span><span class="p">,</span> <span class="n">proj_k</span><span class="p">)</span>
 
-        <span class="c1"># The key here must match the `key` argument of the `OnlineQueue` callback</span>
-        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;nnclr_support_set&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">views</span><span class="p">)</span>
+            <span class="c1"># The key here must match the `key` argument of the `OnlineQueue` callback</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;nnclr_support_set&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">projections</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">out</span></div>
-
-
-
-<div class="viewcode-block" id="simclr_forward">
-<a class="viewcode-back" href="../../api/forward.html#stable_pretraining.forward.simclr_forward">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">simclr_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for SimCLR (Simple Contrastive Learning of Representations).</span>
-
-<span class="sd">    SimCLR learns representations by maximizing agreement between differently</span>
-<span class="sd">    augmented views of the same image via a contrastive loss in the latent space.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        self: Module instance (automatically bound) with required attributes:</span>
-<span class="sd">            - backbone: Feature extraction network</span>
-<span class="sd">            - projector: Projection head mapping features to latent space</span>
-<span class="sd">            - simclr_loss: NT-Xent contrastive loss function</span>
-<span class="sd">        batch: Input batch dictionary containing:</span>
-<span class="sd">            - &#39;image&#39;: Tensor of augmented images [N*views, C, H, W]</span>
-<span class="sd">            - &#39;sample_idx&#39;: Indices to identify views of same image</span>
-<span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Dictionary containing:</span>
-<span class="sd">            - &#39;embedding&#39;: Feature representations from backbone</span>
-<span class="sd">            - &#39;loss&#39;: NT-Xent contrastive loss (during training only)</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        Introduced in the SimCLR paper :cite:`chen2020simple`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
-
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
-        <span class="n">proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
-        <span class="n">views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
-        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simclr_loss</span><span class="p">(</span><span class="n">views</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">views</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-    <span class="k">return</span> <span class="n">out</span></div>
-
-
-
-<div class="viewcode-block" id="byol_forward">
-<a class="viewcode-back" href="../../api/forward.html#stable_pretraining.forward.byol_forward">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">byol_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for BYOL (Bootstrap Your Own Latent).</span>
-
-<span class="sd">    BYOL learns representations without negative pairs by using a momentum-based</span>
-<span class="sd">    target network and predicting target projections from online projections.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        self: Module instance with required attributes:</span>
-<span class="sd">            - backbone: TeacherStudentWrapper for feature extraction</span>
-<span class="sd">            - projector: TeacherStudentWrapper for projection head</span>
-<span class="sd">            - predictor: Online network predictor</span>
-<span class="sd">            - byol_loss: BYOL loss function (optional, uses MSE if not provided)</span>
-<span class="sd">        batch: Input batch dictionary containing:</span>
-<span class="sd">            - &#39;image&#39;: Tensor of augmented images [N*views, C, H, W]</span>
-<span class="sd">            - &#39;sample_idx&#39;: Indices to identify views of same image</span>
-<span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Dictionary containing:</span>
-<span class="sd">            - &#39;embedding&#39;: Feature representations from teacher backbone (EMA target)</span>
-<span class="sd">            - &#39;loss&#39;: BYOL loss between predictions and targets (during training)</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        Introduced in the BYOL paper :cite:`grill2020bootstrap`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">images</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
-
-    <span class="c1"># Get online embeddings</span>
-    <span class="n">online_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
-
-    <span class="c1"># Return early if not training: expose teacher features for evaluation</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="n">target_only_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;embedding&quot;</span><span class="p">:</span> <span class="n">target_only_features</span><span class="o">.</span><span class="n">detach</span><span class="p">()}</span>
-
-    <span class="c1"># Process online network</span>
-    <span class="n">online_proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">online_features</span><span class="p">)</span>
-    <span class="n">online_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictor</span><span class="p">(</span><span class="n">online_proj</span><span class="p">)</span>
-
-    <span class="c1"># Process target network</span>
-    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-        <span class="n">target_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
-        <span class="n">target_proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">target_features</span><span class="p">)</span>
-
-    <span class="c1"># Compute loss</span>
-    <span class="n">online_views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">online_pred</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
-    <span class="n">target_views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">target_proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;byol_loss&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;byol_forward requires &#39;byol_loss&#39; to be provided (e.g., spt.losses.BYOLLoss()). &quot;</span>
-            <span class="s2">&quot;Pass it when constructing the Module: Module(..., byol_loss=spt.losses.BYOLLoss(), ...)&quot;</span>
-        <span class="p">)</span>
-
-    <span class="n">loss</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">byol_loss</span><span class="p">(</span><span class="n">online_views</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">target_views</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">byol_loss</span><span class="p">(</span><span class="n">online_views</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">target_views</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
-
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;embedding&quot;</span><span class="p">:</span> <span class="n">target_features</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">}</span></div>
-
-
-
-<div class="viewcode-block" id="vicreg_forward">
-<a class="viewcode-back" href="../../api/forward.html#stable_pretraining.forward.vicreg_forward">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">vicreg_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for VICReg (Variance-Invariance-Covariance Regularization).</span>
-
-<span class="sd">    VICReg learns representations using three criteria: variance (maintaining</span>
-<span class="sd">    information), invariance (to augmentations), and covariance (decorrelating</span>
-<span class="sd">    features).</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        self: Module instance (automatically bound) with required attributes:</span>
-<span class="sd">            - backbone: Feature extraction network</span>
-<span class="sd">            - projector: Projection head for embedding transformation</span>
-<span class="sd">            - vicreg_loss: VICReg loss with variance, invariance, covariance terms</span>
-<span class="sd">        batch: Input batch dictionary containing:</span>
-<span class="sd">            - &#39;image&#39;: Tensor of augmented images [N*views, C, H, W]</span>
-<span class="sd">            - &#39;sample_idx&#39;: Indices to identify views of same image</span>
-<span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Dictionary containing:</span>
-<span class="sd">            - &#39;embedding&#39;: Feature representations from backbone</span>
-<span class="sd">            - &#39;loss&#39;: Combined VICReg loss (during training only)</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        Introduced in the VICReg paper :cite:`bardes2022vicreg`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
-
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
-        <span class="n">proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
-        <span class="n">views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
-        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vicreg_loss</span><span class="p">(</span><span class="n">views</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">views</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-    <span class="k">return</span> <span class="n">out</span></div>
-
-
-
-<div class="viewcode-block" id="barlow_twins_forward">
-<a class="viewcode-back" href="../../api/forward.html#stable_pretraining.forward.barlow_twins_forward">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">barlow_twins_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for Barlow Twins.</span>
-
-<span class="sd">    Barlow Twins learns representations by making the cross-correlation matrix</span>
-<span class="sd">    between embeddings of augmented views as close to the identity matrix as</span>
-<span class="sd">    possible, reducing redundancy while maintaining invariance.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        self: Module instance (automatically bound) with required attributes:</span>
-<span class="sd">            - backbone: Feature extraction network</span>
-<span class="sd">            - projector: Projection head (typically with BN and high dimension)</span>
-<span class="sd">            - barlow_loss: Barlow Twins loss function</span>
-<span class="sd">        batch: Input batch dictionary containing:</span>
-<span class="sd">            - &#39;image&#39;: Tensor of augmented images [N*views, C, H, W]</span>
-<span class="sd">            - &#39;sample_idx&#39;: Indices to identify views of same image</span>
-<span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Dictionary containing:</span>
-<span class="sd">            - &#39;embedding&#39;: Feature representations from backbone</span>
-<span class="sd">            - &#39;loss&#39;: Barlow Twins loss (during training only)</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        Introduced in the Barlow Twins paper :cite:`zbontar2021barlow`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
-
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
-        <span class="n">proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
-        <span class="n">views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
-        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">barlow_loss</span><span class="p">(</span><span class="n">views</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">views</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-    <span class="k">return</span> <span class="n">out</span></div>
-
-
-
-<div class="viewcode-block" id="supervised_forward">
-<a class="viewcode-back" href="../../api/forward.html#stable_pretraining.forward.supervised_forward">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">supervised_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for standard supervised training.</span>
-
-<span class="sd">    This function implements traditional supervised learning with labels,</span>
-<span class="sd">    useful for baseline comparisons and fine-tuning pre-trained models.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        self: Module instance (automatically bound) with required attributes:</span>
-<span class="sd">            - backbone: Feature extraction network</span>
-<span class="sd">            - classifier: Classification head (e.g., Linear layer)</span>
-<span class="sd">        batch: Input batch dictionary containing:</span>
-<span class="sd">            - &#39;image&#39;: Tensor of images [N, C, H, W]</span>
-<span class="sd">            - &#39;label&#39;: Ground truth labels [N] (optional, for loss computation)</span>
-<span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Dictionary containing:</span>
-<span class="sd">            - &#39;embedding&#39;: Feature representations from backbone</span>
-<span class="sd">            - &#39;logits&#39;: Classification predictions</span>
-<span class="sd">            - &#39;loss&#39;: Cross-entropy loss (if labels provided)</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        Unlike SSL methods, this function uses actual labels for training</span>
-<span class="sd">        and is primarily used for evaluation or supervised baselines.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
-    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;logits&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
-
-    <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
-        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;logits&quot;</span><span class="p">],</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Single-view validation</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">out</span></div>
 
