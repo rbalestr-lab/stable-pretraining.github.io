@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.manager &#8212; stable-pretraining 0.1.3.dev11+g37ca84627.d20250929 documentation</title>
+    <title>stable_pretraining.manager &#8212; stable-pretraining 0.1.3.dev12+g4dd5cdd8c.d20250929 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=9313e022"></script>
+    <script src="../../_static/documentation_options.js?v=779974f3"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev11+g37ca84627.d20250929 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev12+g4dd5cdd8c.d20250929 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -354,6 +354,7 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">lightning</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">submitit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lightning.pytorch.callbacks</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelCheckpoint</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">lightning.pytorch.utilities.rank_zero</span><span class="w"> </span><span class="kn">import</span> <span class="n">rank_zero_only</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">omegaconf</span><span class="w"> </span><span class="kn">import</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">OmegaConf</span><span class="p">,</span> <span class="n">open_dict</span>
@@ -613,22 +614,7 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instantiated_data</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># self._setup_logging()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📁📁📁 CURRENT WORKING DIR: </span><span class="si">{</span><span class="n">Path</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="si">}</span><span class="s2"> 📁📁📁&quot;</span><span class="p">)</span>
-
-        <span class="c1"># if &quot;SLURM_JOB_ID&quot; in os.environ:</span>
-        <span class="c1">#     # single-node and multi-node distributed training on SLURM cluster</span>
-        <span class="c1">#     # requeue job on SLURM preemption</span>
-        <span class="c1">#     self.submitit_signal = signal.getsignal(</span>
-        <span class="c1">#         signal.__dict__[self.slurm_requeue_signal]</span>
-        <span class="c1">#     )</span>
-        <span class="c1">#     logging.info(f&quot;\t● saved signal {self.submitit_signal} ✅&quot;)</span>
-        <span class="c1">#     logging.info(</span>
-        <span class="c1">#         f&quot;\t● setting up checkpoint and requeue on {self.slurm_requeue_signal} ✅&quot;</span>
-        <span class="c1">#     )</span>
-        <span class="c1">#     signal.signal(</span>
-        <span class="c1">#         signal.__dict__[self.slurm_requeue_signal], self.checkpoint_and_requeue</span>
-        <span class="c1">#     )</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🌱🌱🌱 SEEDING EVERYTHING with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="si">=}</span><span class="s2"> 🌱🌱🌱&quot;</span><span class="p">)</span>
         <span class="n">pl</span><span class="o">.</span><span class="n">seed_everything</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">):</span>
@@ -698,119 +684,18 @@ document.write(`
             <span class="p">)</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Consider passing a value to the Manager&#39;s `ckpt_path` &quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">checkpointing</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">pytorch</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ModelCheckpoint</span><span class="p">):</span>
-                    <span class="n">saving_names</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="p">(</span>
-                            <span class="n">Path</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">dirpath</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="n">callback</span><span class="o">.</span><span class="n">filename</span>
-                        <span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;ckpt&quot;</span><span class="p">)</span>
-                    <span class="p">]</span>
-                    <span class="k">if</span> <span class="n">callback</span><span class="o">.</span><span class="n">save_last</span><span class="p">:</span>
-                        <span class="n">saving_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                            <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">dirpath</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;last&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span>
-                                <span class="s2">&quot;ckpt&quot;</span>
-                            <span class="p">)</span>
-                        <span class="p">)</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - we found a Checkpoint callback with name(s) </span><span class="si">{</span><span class="n">saving_names</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="p">)</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span> <span class="ow">in</span> <span class="n">saving_names</span><span class="p">:</span>
-                        <span class="n">checkpointing</span> <span class="o">=</span> <span class="kc">True</span>
-                        <span class="k">break</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_configure_checkpointing</span><span class="p">()</span>
 
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">checkpointing</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - we are in a SLURM job but no checkpoint callback&quot;</span>
-                <span class="p">)</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2">   found with `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="si">}</span><span class="s2">` saving name (user&#39;s `ckpt_path`)&quot;</span>
-                <span class="p">)</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - we are adding a ModelCheckpoint callback with&quot;</span><span class="p">)</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - dirpath=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">parent</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - filename=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-                <span class="n">saver</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">pytorch</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ModelCheckpoint</span><span class="p">(</span>
-                    <span class="n">dirpath</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">parent</span><span class="p">),</span>
-                    <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                    <span class="n">save_last</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">save_on_train_epoch_end</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">enable_version_counter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">saver</span><span class="p">)</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - Done!&quot;</span><span class="p">)</span>
-
-        <span class="c1"># logging.info(f&quot;\t● Searching for checkpoint to warm restart...&quot;)</span>
-        <span class="c1"># ckpt_path = None</span>
-        <span class="c1"># if wandb.run and not wandb.run.offline:</span>
-        <span class="c1">#     logging.info(</span>
-        <span class="c1">#         f&quot;\t\t● Wandb is online... searching for `requeue_checkpoint` in Artifacts...&quot;</span>
-        <span class="c1">#     )</span>
-        <span class="c1">#     r = wandb.Api().run(wandb.run.path)</span>
-        <span class="c1">#     artifacts = r.logged_artifacts()</span>
-        <span class="c1">#     logging.info(f&quot;\t\t● wandb run artifacts:&quot;)</span>
-        <span class="c1">#     for artifact in artifacts:</span>
-        <span class="c1">#         logging.info(</span>
-        <span class="c1">#             f&quot;\t\t\t● {artifact.name}, {artifact.type}, {artifact.created_at}&quot;</span>
-        <span class="c1">#         )</span>
-        <span class="c1">#         if artifact.name.split(&quot;:&quot;)[0] == &quot;requeue_checkpoint&quot;:</span>
-        <span class="c1">#             logging.info(f&quot;\t\t● Checkpoint found! 🔥&quot;)</span>
-        <span class="c1">#             ckpt_path = artifact</span>
-        <span class="c1">#     # we wait the end to download to make sure we get the</span>
-        <span class="c1">#     # latest version</span>
-        <span class="c1">#     if ckpt_path:</span>
-        <span class="c1">#         datadir = Path(ckpt_path.download()) / &quot;checkpoint.ckpt&quot;</span>
-        <span class="c1">#         logging.info(f&quot;\t● Checkpoint downloaded ({datadir})!  🔥&quot;)</span>
-        <span class="c1">#         ckpt_path = datadir</span>
-        <span class="c1">#     else:</span>
-        <span class="c1">#         logging.info(</span>
-        <span class="c1">#             f&quot;\t\t● No Checkpoint artifact found in Wandb artifacts... searching in config ❌&quot;</span>
-        <span class="c1">#         )</span>
-        <span class="c1">#         if &quot;ckpt_path&quot; in wandb.run.config:</span>
-        <span class="c1">#             logging.info(</span>
-        <span class="c1">#                 f&quot;\t\t● `ckpt_path` found in Wandb config: {ckpt_path} 🔥&quot;</span>
-        <span class="c1">#             )</span>
-        <span class="c1">#             ckpt_path = wandb.run.config[&quot;ckpt_path&quot;]</span>
-        <span class="c1">#             if ckpt_path is not None and Path(ckpt_path).is_file():</span>
-        <span class="c1">#                 logging.info(</span>
-        <span class="c1">#                     f&quot;\t\t● `ckpt_path` found in Wandb config: {ckpt_path} 🔥&quot;</span>
-        <span class="c1">#                 )</span>
-        <span class="c1">#             else:</span>
-        <span class="c1">#                 logging.info(</span>
-        <span class="c1">#                     f&quot;\t\t● `{ckpt_path=}` is not a valid file... not using it ❌&quot;</span>
-        <span class="c1">#                 )</span>
-        <span class="c1">#                 ckpt_path = None</span>
-        <span class="c1">#         else:</span>
-        <span class="c1">#             logging.info(</span>
-        <span class="c1">#                 f&quot;\t\t● `ckpt_path` not found in online Wandb config ...!&quot;</span>
-        <span class="c1">#             )</span>
-        <span class="c1"># else:</span>
-        <span class="c1">#     logging.info(</span>
-        <span class="c1">#         f&quot;\t\t● Wandb is offline... searching in local logger&#39;s config...&quot;</span>
-        <span class="c1">#     )</span>
-        <span class="c1">#     cfg = self.trainer.logger.get(&quot;config&quot;, {})</span>
-        <span class="c1">#     if cfg and cfg.get(&quot;ckpt_path&quot;, None):</span>
-        <span class="c1">#         ckpt_path = cfg[&quot;ckpt_path&quot;]</span>
-        <span class="c1">#         if ckpt_path is not None and Path(ckpt_path).is_file():</span>
-        <span class="c1">#             logging.info(</span>
-        <span class="c1">#                 f&quot;\t\t● `ckpt_path` found in local config: {ckpt_path} 🔥&quot;</span>
-        <span class="c1">#             )</span>
-        <span class="c1">#         else:</span>
-        <span class="c1">#             logging.info(</span>
-        <span class="c1">#                 f&quot;\t\t● `{ckpt_path=}` is not a valid file... not using it ❌&quot;</span>
-        <span class="c1">#             )</span>
-        <span class="c1">#             ckpt_path = None</span>
-        <span class="c1"># if ckpt_path is None:</span>
-        <span class="c1">#     logging.error(f&quot;\t\t● No checkpoint found! ❌&quot;)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ckpt_path</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="si">}</span><span class="s2"> does not exist, using None for now!&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">ckpt_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="si">}</span><span class="s2"> specified, but does not exist, using None for now!&quot;</span>
+            <span class="p">)</span>
             <span class="n">ckpt_path</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ckpt_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span><span class="p">)</span>
+            <span class="n">ckpt_path</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📣📣📣 CALLING trainer.fit with </span><span class="si">{</span><span class="n">ckpt_path</span><span class="si">=}</span><span class="s2"> 📣📣📣&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">instantiated_module</span><span class="p">,</span>
@@ -933,7 +818,164 @@ document.write(`
                 <span class="n">wandb</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;ckpt_path&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">())})</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● `ckpt_path` added to Wandb config ✅&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># for offline case</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dump_wandb_data</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dump_wandb_data</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_matches_template</span><span class="p">(</span><span class="n">ckpt_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">ModelCheckpoint</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if a concrete checkpoint filename could have been generated by a callback&#39;s template.</span>
+
+<span class="sd">        This is a heuristic that handles two cases:</span>
+<span class="sd">        1.  Guaranteed Match: Checks if the name is &#39;last.ckpt&#39; and the callback has `save_last=True`.</span>
+<span class="sd">        2.  Template Match: Checks if all metric keys from the filename template (e.g., &quot;epoch&quot;, &quot;step&quot;)</span>
+<span class="sd">            are present in the concrete checkpoint name (e.g., &quot;epoch=10-step=5000.ckpt&quot;).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ckpt_name: The concrete filename (e.g., &quot;last.ckpt&quot;, &quot;epoch=1-step=100.ckpt&quot;).</span>
+<span class="sd">            callback: The ModelCheckpoint callback instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if the name is a plausible match, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+        <span class="c1"># Case 1: guaranteed `last.pt` case</span>
+        <span class="n">ckpt_stem</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">ckpt_name</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span>
+
+        <span class="c1"># the user can customize the name for the last checkpoint, so use the callback&#39;s property</span>
+        <span class="k">if</span> <span class="n">ckpt_stem</span> <span class="o">==</span> <span class="n">callback</span><span class="o">.</span><span class="n">CHECKPOINT_NAME_LAST</span><span class="p">:</span>
+            <span class="c1"># If the user&#39;s path is &#39;last.ckpt&#39;, the callback MUST have `save_last` enabled.</span>
+            <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">save_last</span><span class="p">)</span>
+
+        <span class="c1"># Case 2: versioned `last.pt` case</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">ckpt_stem</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">callback</span><span class="o">.</span><span class="n">CHECKPOINT_NAME_LAST</span><span class="si">}</span><span class="s2">-v&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">callback</span><span class="o">.</span><span class="n">save_last</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># Case 3: templated filename case</span>
+        <span class="c1"># Get the template from the callback, using the default if not set.</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">callback</span><span class="o">.</span><span class="n">filename</span> <span class="ow">or</span> <span class="s2">&quot;</span><span class="si">{epoch}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">callback</span><span class="o">.</span><span class="n">CHECKPOINT_JOIN_CHAR</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{step}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Find all unique metric keys within the template string (e.g., from &quot;{epoch}-{val_loss:.2f}&quot;)</span>
+        <span class="c1"># This regex finds the name inside the curly braces, ignoring any formatting specs.</span>
+        <span class="n">template_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\{([a-zA-Z0-9_/-]+)&quot;</span><span class="p">,</span> <span class="n">template</span><span class="p">))</span>
+
+        <span class="c1"># If the template has no keys, we can&#39;t perform a match, so we assume it&#39;s valid if the dir matches.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">template_keys</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># Check if all keys from the template appear in the concrete filename in the format &quot;key=...&quot;.</span>
+        <span class="c1"># This is how PyTorch Lightning formats them by default.</span>
+        <span class="n">filename_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">ckpt_stem</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">CHECKPOINT_JOIN_CHAR</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">callback</span><span class="o">.</span><span class="n">CHECKPOINT_EQUALS_CHAR</span> <span class="ow">in</span> <span class="n">part</span><span class="p">:</span>
+                <span class="n">filename_keys</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">CHECKPOINT_EQUALS_CHAR</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">template_keys</span> <span class="o">==</span> <span class="n">filename_keys</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_configure_checkpointing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyzes user configuration for checkpointing and ensures it&#39;s set up correctly.</span>
+
+<span class="sd">        This function is designed to handle four primary user scenarios by inspecting</span>
+<span class="sd">        the state of the Trainer&#39;s callbacks and the `ckpt_path` provided to the Manager.</span>
+<span class="sd">        It provides informative logs for each case and can add a `ModelCheckpoint`</span>
+<span class="sd">        callback as a safety net if needed.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            trainer: The PyTorch Lightning Trainer instance whose callbacks will be checked and</span>
+<span class="sd">                    potentially modified.</span>
+<span class="sd">            ckpt_path: The checkpoint path provided to the Manager, which indicates the user&#39;s</span>
+<span class="sd">                    intent to resume from or save to a specific file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">● 📞📞📞 CHECKPOINTING SETUP 📞📞📞&quot;</span><span class="p">)</span>
+        <span class="n">trainer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span>
+        <span class="n">ckpt_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_path</span>
+
+        <span class="c1"># This flag checks if the user *explicitly* added any ModelCheckpoint</span>
+        <span class="c1"># instance in their configuration. It runs before Lightning&#39;s potential</span>
+        <span class="c1"># default callback is added.</span>
+        <span class="n">is_mc_explicitly_configured</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">cb</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">pytorch</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">ModelCheckpoint</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">trainer</span><span class="o">.</span><span class="n">callbacks</span>
+        <span class="p">)</span>
+
+        <span class="c1"># This flag checks if any of the *explicitly added* callbacks are configured</span>
+        <span class="c1"># to save to the directory containing the specific path the Manager cares about.</span>
+        <span class="n">is_manager_path_handled_by_callback</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">is_slurm_job</span> <span class="o">=</span> <span class="s2">&quot;SLURM_JOB_ID&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span>
+
+        <span class="k">if</span> <span class="n">is_mc_explicitly_configured</span> <span class="ow">and</span> <span class="n">ckpt_path</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="n">trainer</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">ModelCheckpoint</span><span class="p">):</span>
+                    <span class="c1"># manually resolve the directory path the callback will use.</span>
+                    <span class="n">resolved_dirpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span>
+                        <span class="n">callback</span><span class="o">.</span><span class="n">_ModelCheckpoint__resolve_ckpt_dir</span><span class="p">(</span><span class="n">trainer</span><span class="p">)</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
+                    <span class="k">if</span> <span class="n">ckpt_path</span><span class="o">.</span><span class="n">parent</span> <span class="o">==</span> <span class="n">resolved_dirpath</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matches_template</span><span class="p">(</span>
+                        <span class="n">ckpt_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">callback</span>
+                    <span class="p">):</span>
+                        <span class="n">is_manager_path_handled_by_callback</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+
+        <span class="c1"># Case 1: Intentional ckpt_path, correct callback passed in - do nothing</span>
+        <span class="k">if</span> <span class="n">ckpt_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">is_manager_path_handled_by_callback</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> Checkpoint: `manager.ckpt_path` (</span><span class="si">{</span><span class="n">ckpt_path</span><span class="si">}</span><span class="s2">) is set and a matching `ModelCheckpoint` callback was found to be saving to the same directory.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_slurm_job</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> This setup is ready for SLURM preemption and requeueing.&quot;</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Case 2: Intentional ckpt_path, but no callback found - assume the user forgot and add a callback</span>
+        <span class="k">elif</span> <span class="n">ckpt_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_manager_path_handled_by_callback</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> Checkpoint mismatch: `manager.ckpt_path` (</span><span class="si">{</span><span class="n">ckpt_path</span><span class="si">}</span><span class="s2">) was provided, but no matching `ModelCheckpoint` callback was found.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> Automatically creating a `ModelCheckpoint` to save to the specified path to prevent data loss.&quot;</span>
+            <span class="p">)</span>
+
+            <span class="n">saver</span> <span class="o">=</span> <span class="n">ModelCheckpoint</span><span class="p">(</span>
+                <span class="n">dirpath</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">parent</span><span class="p">),</span>
+                <span class="n">filename</span><span class="o">=</span><span class="n">ckpt_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">save_last</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># be explicit, last.ckpt is a special case</span>
+                <span class="n">save_on_train_epoch_end</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">enable_version_counter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">trainer</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">saver</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> - Automatic `ModelCheckpoint` callback has been added to the trainer.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Case 3: No checkpoint, but with ModelCheckpoint callback - assume we are training from scratch.</span>
+        <span class="k">elif</span> <span class="n">ckpt_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">is_mc_explicitly_configured</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> Checkpointing: A user-defined `ModelCheckpoint` callback was found. It will be used for saving checkpoints.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> The `Manager` will not manage resuming from a specific path as `manager.ckpt_path` was not provided.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_slurm_job</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> SLURM WARNING: Since `manager.ckpt_path` is not set, this job will restart from scratch if requeued, even though checkpoints are being saved elsewhere.&quot;</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Case 4: No checkpoint and no ModelCheckpoint callback - assume we are training without saving checkpoints</span>
+        <span class="k">elif</span> <span class="n">ckpt_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_mc_explicitly_configured</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> No Checkpointing: No `manager.ckpt_path` was provided and no `ModelCheckpoint` callback was found.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> The model will not be saved during this run.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_slurm_job</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\t\t</span><span class="s2"> CRITICAL SLURM WARNING: This job will lose all progress if it is preempted or requeued. It is highly recommended to configure checkpointing.&quot;</span>
+                <span class="p">)</span></div>
 
 </pre></div>
 
