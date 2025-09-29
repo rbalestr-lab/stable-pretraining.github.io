@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.manager &#8212; stable-pretraining 0.1.3.dev14+g7e19fc511.d20250929 documentation</title>
+    <title>stable_pretraining.manager &#8212; stable-pretraining 0.1.3.dev15+g5ed659f3e.d20250929 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=56b96370"></script>
+    <script src="../../_static/documentation_options.js?v=dfdef029"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev14+g7e19fc511.d20250929 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev15+g5ed659f3e.d20250929 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -379,7 +379,8 @@ document.write(`
 <span class="sd">        module (Union[dict, DictConfig, pl.LightningModule]): Lightning module configuration or instance.</span>
 <span class="sd">        data (Union[dict, DictConfig, pl.LightningDataModule]): Data module configuration or instance.</span>
 <span class="sd">        seed (int, optional): Random seed for reproducibility. Defaults to None.</span>
-<span class="sd">        ckpt_path (str, optional): Path to checkpoint for resuming training. Defaults to &quot;last.</span>
+<span class="sd">        ckpt_path (str, optional): Path to checkpoint for resuming training. Defaults to &quot;last&quot;.</span>
+<span class="sd">        compile (bool, optional): Should we compile the given module. Defaults to False.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -389,15 +390,13 @@ document.write(`
         <span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">LightningDataModule</span><span class="p">],</span>
         <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">ckpt_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">compile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="c1"># This is the state that will be saved by `checkpoint`</span>
-        <span class="c1"># we do deepcopy in case the user changes things after</span>
-        <span class="c1"># padding the dicts (since it will be a copy by reference)</span>
         <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;User didn&#39;t specify seed, runs won&#39;t be exactly reproducible!&quot;</span>
             <span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">compile</span> <span class="o">=</span> <span class="nb">compile</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">trainer</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
             <span class="n">trainer</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">trainer</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">trainer</span><span class="p">)</span> <span class="ow">is</span> <span class="n">DictConfig</span><span class="p">:</span>
@@ -696,6 +695,9 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ckpt_path</span> <span class="o">=</span> <span class="kc">None</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compile</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Compiling module!&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">instantiated_module</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📣📣📣 CALLING trainer.fit with </span><span class="si">{</span><span class="n">ckpt_path</span><span class="si">=}</span><span class="s2"> 📣📣📣&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">instantiated_module</span><span class="p">,</span>
