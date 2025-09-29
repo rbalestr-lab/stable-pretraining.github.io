@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.losses &#8212; stable-pretraining 0.1.3.dev9+g123d2abf3.d20250929 documentation</title>
+    <title>stable_pretraining.losses &#8212; stable-pretraining 0.1.3.dev10+g3ec941370.d20250929 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=948ef8a1"></script>
+    <script src="../../_static/documentation_options.js?v=73547c26"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev9+g123d2abf3.d20250929 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev10+g3ec941370.d20250929 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -346,6 +346,7 @@ document.write(`
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
 
@@ -692,6 +693,122 @@ document.write(`
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">loss_i</span> <span class="o">+</span> <span class="n">loss_j</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DINOLoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DINO loss for self-distillation with cross-entropy :cite:`caron2021emerging`.</span>
+
+<span class="sd">    This loss computes the cross-entropy between teacher and student predictions</span>
+<span class="sd">    using a sharpening temperature for the student and a separate temperature for</span>
+<span class="sd">    the teacher. The teacher predictions are centered to prevent mode collapse.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        out_dim (int): Dimensionality of the DINO head output (number of prototypes). Default is 65536.</span>
+<span class="sd">        temperature_student (float, optional): Temperature for student softmax. Default is 0.1.</span>
+<span class="sd">        center_momentum (float, optional): Momentum for center update. Default is 0.9.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">out_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">65536</span><span class="p">,</span>
+        <span class="n">temperature_student</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">center_momentum</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_dim</span> <span class="o">=</span> <span class="n">out_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature_student</span> <span class="o">=</span> <span class="n">temperature_student</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center_momentum</span> <span class="o">=</span> <span class="n">center_momentum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prototypes_layer</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Will be created on first forward pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">student_embeddings</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">teacher_embeddings</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">temperature_teacher</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.04</span><span class="p">,</span>
+        <span class="n">update_center</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute DINO loss.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            student_embeddings: Student network output embeddings [N_views, batch_size, embed_dim].</span>
+<span class="sd">            teacher_embeddings: Teacher network output embeddings [N_views, batch_size, embed_dim].</span>
+<span class="sd">            temperature_teacher: Temperature for teacher softmax.</span>
+<span class="sd">            update_center: Whether to update the center (should be True during training).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Scalar DINO loss value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize prototypes layer if needed</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prototypes_layer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">embed_dim</span> <span class="o">=</span> <span class="n">student_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prototypes_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embed_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+                <span class="n">student_embeddings</span><span class="o">.</span><span class="n">device</span>
+            <span class="p">)</span>
+
+        <span class="c1"># L2 normalize embeddings</span>
+        <span class="n">student_embeddings</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">student_embeddings</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">teacher_embeddings</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">teacher_embeddings</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># Apply prototypes layer to get logits</span>
+        <span class="n">student_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prototypes_layer</span><span class="p">(</span><span class="n">student_embeddings</span><span class="p">)</span>
+        <span class="n">teacher_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prototypes_layer</span><span class="p">(</span><span class="n">teacher_embeddings</span><span class="p">)</span>
+        <span class="c1"># Compute teacher probabilities with centering</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">teacher_probs</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">teacher_logits</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span> <span class="o">/</span> <span class="n">temperature_teacher</span><span class="p">,</span>
+                <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">teacher_probs</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">teacher_logits</span> <span class="o">/</span> <span class="n">temperature_teacher</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Compute student log probabilities</span>
+        <span class="n">student_log_probs</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span>
+            <span class="n">student_logits</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_student</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Compute cross-entropy loss following the original DINO implementation</span>
+        <span class="c1"># Flatten batch and feature dimensions together: [n_views, batch_size * dim]</span>
+        <span class="n">teacher_probs_flat</span> <span class="o">=</span> <span class="n">teacher_probs</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">start_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">student_log_probs_flat</span> <span class="o">=</span> <span class="n">student_log_probs</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">start_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Compute cross-entropy matrix: [n_teacher_views, n_student_views]</span>
+        <span class="c1"># Each element represents the total cross-entropy across all batch items and features</span>
+        <span class="n">loss_matrix</span> <span class="o">=</span> <span class="o">-</span><span class="n">teacher_probs_flat</span> <span class="o">@</span> <span class="n">student_log_probs_flat</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="c1"># Zero out the diagonal (same view comparisons)</span>
+        <span class="n">loss_matrix</span><span class="o">.</span><span class="n">fill_diagonal_</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Normalize the loss</span>
+        <span class="c1"># Total number of valid terms: all pairs minus diagonal</span>
+        <span class="n">n_terms</span> <span class="o">=</span> <span class="n">loss_matrix</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">-</span> <span class="n">loss_matrix</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">student_logits</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Average over valid terms and batch size</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_matrix</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_terms</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">)</span>
+
+        <span class="c1"># Update center with EMA</span>
+        <span class="k">if</span> <span class="n">update_center</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="c1"># Compute batch center from teacher logits</span>
+                <span class="n">batch_center</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">teacher_logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">batch_center</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># For distributed training, gather from all GPUs</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+                        <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">is_initialized</span><span class="p">()</span>
+                    <span class="p">):</span>
+                        <span class="n">batch_center</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">all_gather</span><span class="p">(</span><span class="n">batch_center</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
+                            <span class="n">dim</span><span class="o">=</span><span class="mi">0</span>
+                        <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_momentum</span> <span class="o">+</span> <span class="n">batch_center</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_momentum</span>
+                    <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">loss</span>
 </pre></div>
 
                 </article>

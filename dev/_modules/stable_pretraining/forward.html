@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.3.dev9+g123d2abf3.d20250929 documentation</title>
+    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.3.dev10+g3ec941370.d20250929 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=948ef8a1"></script>
+    <script src="../../_static/documentation_options.js?v=73547c26"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev9+g123d2abf3.d20250929 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev10+g3ec941370.d20250929 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -792,6 +792,166 @@ document.write(`
 
     <span class="k">return</span> <span class="n">out</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dino_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for DINO (self-DIstillation with NO labels).</span>
+
+<span class="sd">    DINO learns representations through self-distillation where a student network</span>
+<span class="sd">    is trained to match the output of a teacher network (EMA of student) on</span>
+<span class="sd">    different augmented views. Global views are processed by both networks while</span>
+<span class="sd">    local views are only processed by the student.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        self: Module instance (automatically bound) with required attributes:</span>
+<span class="sd">            - backbone: TeacherStudentWrapper for feature extraction</span>
+<span class="sd">            - projector: TeacherStudentWrapper for projection head</span>
+<span class="sd">            - dino_loss: DINOLoss instance (required, pass spt.losses.DINOLoss())</span>
+<span class="sd">            - warmup_temperature_teacher (float): Starting teacher temperature</span>
+<span class="sd">            - temperature_teacher (float): Final teacher temperature</span>
+<span class="sd">            - warmup_epochs_temperature_teacher (int): Epochs to warm up temperature</span>
+<span class="sd">        batch: Either a list of view dicts (from MultiViewTransform) or</span>
+<span class="sd">            a single dict (for validation/single-view).</span>
+<span class="sd">            For multi-crop: First 2 views should be global crops, rest are local crops</span>
+<span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary containing:</span>
+<span class="sd">            - &#39;embedding&#39;: Feature representations from teacher backbone</span>
+<span class="sd">            - &#39;loss&#39;: DINO distillation loss (during training only)</span>
+<span class="sd">            - &#39;label&#39;: Labels if present (for probes/callbacks)</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Introduced in the DINO paper :cite:`caron2021emerging`.</span>
+<span class="sd">        Requires TeacherStudentWrapper for both backbone and projector,</span>
+<span class="sd">        and assumes first 2 views in batch are global views.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Check if batch is dict of named views</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;image&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
+        <span class="c1"># Dict of named views - separate by &quot;global&quot; or &quot;local&quot; in key</span>
+        <span class="n">global_views</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">local_views</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">&quot;global&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                <span class="n">global_views</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">&quot;local&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                <span class="n">local_views</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+
+        <span class="n">n_global</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">global_views</span><span class="p">)</span>
+        <span class="n">n_local</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">local_views</span><span class="p">)</span>
+        <span class="n">all_views</span> <span class="o">=</span> <span class="n">global_views</span> <span class="o">+</span> <span class="n">local_views</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># List of views - assume first 2 are global</span>
+        <span class="n">all_views</span> <span class="o">=</span> <span class="n">batch</span>
+        <span class="n">n_global</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_views</span><span class="p">))</span>
+        <span class="n">n_local</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_views</span><span class="p">)</span> <span class="o">-</span> <span class="n">n_global</span>
+        <span class="n">global_views</span> <span class="o">=</span> <span class="n">all_views</span><span class="p">[:</span><span class="n">n_global</span><span class="p">]</span>
+        <span class="n">local_views</span> <span class="o">=</span> <span class="n">all_views</span><span class="p">[</span><span class="n">n_global</span><span class="p">:]</span> <span class="k">if</span> <span class="n">n_local</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">[]</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Single view validation</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
+
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">teacher_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">teacher_features</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="c1"># Multi-view processing</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="n">all_views</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;image&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Concatenate labels for callbacks - only from global views for probes</span>
+    <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">all_views</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="c1"># For training, only use labels from global views since we only return global embeddings</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">global_views</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># For validation, use all labels since we return all embeddings</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">all_views</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+        <span class="c1"># During validation, just process all views through teacher</span>
+        <span class="n">all_images</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">all_views</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">teacher_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">all_images</span><span class="p">)</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">teacher_features</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="c1"># Training: separate processing for global and local views</span>
+    <span class="n">global_images</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">global_views</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Teacher processes only global views</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">teacher_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">global_images</span><span class="p">)</span>
+        <span class="n">teacher_embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">teacher_features</span><span class="p">)</span>
+        <span class="n">teacher_embeddings</span> <span class="o">=</span> <span class="n">teacher_embeddings</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n_global</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Student processes all views</span>
+    <span class="n">student_embeddings_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Process global views through student</span>
+    <span class="n">student_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">global_images</span><span class="p">)</span>
+    <span class="n">student_global_embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">student_features</span><span class="p">)</span>
+    <span class="n">student_global_embeddings</span> <span class="o">=</span> <span class="n">student_global_embeddings</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n_global</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">student_embeddings_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student_global_embeddings</span><span class="p">)</span>
+
+    <span class="c1"># Process local views through student (if any)</span>
+    <span class="k">if</span> <span class="n">n_local</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">local_images</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">local_views</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">student_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">local_images</span><span class="p">)</span>
+        <span class="n">student_local_embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">student_features</span><span class="p">)</span>
+        <span class="n">student_local_embeddings</span> <span class="o">=</span> <span class="n">student_local_embeddings</span><span class="o">.</span><span class="n">view</span><span class="p">(</span>
+            <span class="n">n_local</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="n">student_embeddings_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student_local_embeddings</span><span class="p">)</span>
+
+    <span class="c1"># Concatenate student embeddings along the view dimension</span>
+    <span class="n">student_embeddings</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+        <span class="n">student_embeddings_list</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span>
+    <span class="p">)</span>  <span class="c1"># [n_views, batch_size, dim]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;dino_loss&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;dino_forward requires &#39;dino_loss&#39; to be provided (e.g., spt.losses.DINOLoss()). &quot;</span>
+            <span class="s2">&quot;Pass it when constructing the Module: Module(..., dino_loss=spt.losses.DINOLoss(), ...)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Temperature scheduling for teacher</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;warmup_epochs_temperature_teacher&quot;</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;warmup_temperature_teacher&quot;</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;temperature_teacher&quot;</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_epoch</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_epochs_temperature_teacher</span><span class="p">:</span>
+            <span class="c1"># Linear warmup from warmup_temperature_teacher to temperature_teacher</span>
+            <span class="n">progress</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_epoch</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_epochs_temperature_teacher</span>
+            <span class="n">temperature_teacher</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_temperature_teacher</span> <span class="o">+</span> <span class="n">progress</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">temperature_teacher</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_temperature_teacher</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temperature_teacher</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_teacher</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Default temperature if attributes not set</span>
+        <span class="n">temperature_teacher</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;temperature_teacher&quot;</span><span class="p">,</span> <span class="mf">0.07</span><span class="p">)</span>
+
+    <span class="c1"># Compute DINO loss</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dino_loss</span><span class="p">(</span>
+        <span class="n">student_embeddings</span><span class="p">,</span>
+        <span class="n">teacher_embeddings</span><span class="p">,</span>
+        <span class="n">temperature_teacher</span><span class="o">=</span><span class="n">temperature_teacher</span><span class="p">,</span>
+        <span class="n">update_center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">teacher_features</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss</span>
+
+    <span class="k">return</span> <span class="n">out</span>
 </pre></div>
 
                 </article>
