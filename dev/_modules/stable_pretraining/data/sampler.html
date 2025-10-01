@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.data.sampler &#8212; stable-pretraining 0.1.3.dev20+g6aaa0bf5c.d20251001 documentation</title>
+    <title>stable_pretraining.data.sampler &#8212; stable-pretraining 0.1.3.dev21+g0916aa4a7.d20251001 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=820152fa"></script>
+    <script src="../../../_static/documentation_options.js?v=66f47dda"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev20+g6aaa0bf5c.d20251001 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev21+g0916aa4a7.d20251001 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -375,6 +375,7 @@ document.write(`
 <span class="sd">        n_views (int): number of times to repeat each index consecutively, default=1</span>
 <span class="sd">        replacement (bool): samples are drawn on-demand with replacement if ``True``, default=``False``</span>
 <span class="sd">        seed (int): random seed for shuffling</span>
+<span class="sd">        pass_view_idx (bool): whether to pass the view index to the dataset getitem</span>
 
 <span class="sd">    Note: For an alternative approach that loads each image once, consider using</span>
 <span class="sd">    MultiViewTransform with a standard sampler.</span>
@@ -386,6 +387,7 @@ document.write(`
         <span class="n">n_views</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">replacement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">pass_view_idx</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">data_source_or_len</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data_source_len</span> <span class="o">=</span> <span class="n">data_source_or_len</span>
@@ -394,6 +396,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">replacement</span> <span class="o">=</span> <span class="n">replacement</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_views</span> <span class="o">=</span> <span class="n">n_views</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pass_view_idx</span> <span class="o">=</span> <span class="n">pass_view_idx</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">if</span> <span class="n">dist</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="ow">and</span> <span class="n">dist</span><span class="o">.</span><span class="n">is_initialized</span><span class="p">():</span>
@@ -446,7 +449,13 @@ document.write(`
             <span class="n">rank_slice</span> <span class="o">=</span> <span class="n">overall_slice</span><span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span> <span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span>
             <span class="p">]</span>
-            <span class="k">yield from</span> <span class="n">rank_slice</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_views</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">rank_slice</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_views</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pass_view_idx</span><span class="p">:</span>
+                <span class="k">yield from</span> <span class="n">indices</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">indices</span> <span class="o">=</span> <span class="p">[(</span><span class="n">idx</span><span class="p">,</span> <span class="n">v</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_views</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices</span><span class="p">)]</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;IN IT!!!!&quot;</span><span class="p">)</span>
+                <span class="k">yield from</span> <span class="n">indices</span></div>
 
 
 
