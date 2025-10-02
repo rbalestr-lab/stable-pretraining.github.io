@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.3.dev23+g5b8008d7a.d20251002 documentation</title>
+    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.3.dev24+g1699039ff.d20251002 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=4d0f605c"></script>
+    <script src="../../_static/documentation_options.js?v=70891fea"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev23+g5b8008d7a.d20251002 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev24+g1699039ff.d20251002 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -806,7 +806,7 @@ document.write(`
 <span class="sd">        self: Module instance (automatically bound) with required attributes:</span>
 <span class="sd">            - backbone: TeacherStudentWrapper for feature extraction</span>
 <span class="sd">            - projector: TeacherStudentWrapper for projection head</span>
-<span class="sd">            - dino_loss: DINOLoss instance (required, pass spt.losses.DINOLoss())</span>
+<span class="sd">            - dino_loss: DINOv1Loss instance (required, pass spt.losses.DINOv1Loss())</span>
 <span class="sd">            - warmup_temperature_teacher (float): Starting teacher temperature</span>
 <span class="sd">            - temperature_teacher (float): Final teacher temperature</span>
 <span class="sd">            - warmup_epochs_temperature_teacher (int): Epochs to warm up temperature</span>
@@ -918,9 +918,20 @@ document.write(`
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;dino_loss&quot;</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;dino_forward requires &#39;dino_loss&#39; to be provided (e.g., spt.losses.DINOLoss()). &quot;</span>
-            <span class="s2">&quot;Pass it when constructing the Module: Module(..., dino_loss=spt.losses.DINOLoss(), ...)&quot;</span>
+            <span class="s2">&quot;dino_forward requires &#39;dino_loss&#39; to be provided (e.g., spt.losses.DINOv1Loss()). &quot;</span>
+            <span class="s2">&quot;Pass it when constructing the Module: Module(..., dino_loss=spt.losses.DINOv1Loss(), ...)&quot;</span>
         <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;projector&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;dino_forward requires &#39;projector&#39; to be provided. &quot;</span>
+            <span class="s2">&quot;This should be a TeacherStudentWrapper containing the projector (MLP + normalize + prototypes). &quot;</span>
+            <span class="s2">&quot;Pass it when constructing the Module: Module(..., projector=wrapped_projector, ...)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Apply projector to get logits (separate teacher and student projectors)</span>
+    <span class="n">teacher_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">teacher_embeddings</span><span class="p">)</span>
+    <span class="n">student_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">student_embeddings</span><span class="p">)</span>
 
     <span class="c1"># Temperature scheduling for teacher</span>
     <span class="k">if</span> <span class="p">(</span>
@@ -940,13 +951,16 @@ document.write(`
         <span class="c1"># Default temperature if attributes not set</span>
         <span class="n">temperature_teacher</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;temperature_teacher&quot;</span><span class="p">,</span> <span class="mf">0.07</span><span class="p">)</span>
 
-    <span class="c1"># Compute DINO loss</span>
-    <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dino_loss</span><span class="p">(</span>
-        <span class="n">student_embeddings</span><span class="p">,</span>
-        <span class="n">teacher_embeddings</span><span class="p">,</span>
-        <span class="n">temperature_teacher</span><span class="o">=</span><span class="n">temperature_teacher</span><span class="p">,</span>
-        <span class="n">update_center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">,</span>
+    <span class="c1"># Process teacher logits with classical centering (DINOv1 approach)</span>
+    <span class="n">teacher_probs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dino_loss</span><span class="o">.</span><span class="n">softmax_center_teacher</span><span class="p">(</span>
+        <span class="n">teacher_logits</span><span class="p">,</span> <span class="n">teacher_temp</span><span class="o">=</span><span class="n">temperature_teacher</span>
     <span class="p">)</span>
+
+    <span class="c1"># Compute DINO loss</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dino_loss</span><span class="p">(</span><span class="n">student_logits</span><span class="p">,</span> <span class="n">teacher_probs</span><span class="p">)</span>
+
+    <span class="c1"># Queue async center update (will be applied next iteration)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dino_loss</span><span class="o">.</span><span class="n">update_center</span><span class="p">(</span><span class="n">teacher_logits</span><span class="p">)</span>
 
     <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">teacher_features</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
     <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss</span>
