@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.3.dev24+g1699039ff.d20251002 documentation</title>
+    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.3.dev25+gb627ff33a.d20251003 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=70891fea"></script>
+    <script src="../../_static/documentation_options.js?v=081f7fda"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev24+g1699039ff.d20251002 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev25+gb627ff33a.d20251003 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -366,6 +366,7 @@ document.write(`
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">.callbacks.queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_or_create_queue_callback</span><span class="p">,</span> <span class="n">OnlineQueue</span>
 
 
@@ -860,7 +861,7 @@ document.write(`
 
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="n">teacher_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
-        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">teacher_features</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">teacher_features</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">out</span>
 
     <span class="c1"># Multi-view processing</span>
@@ -880,7 +881,7 @@ document.write(`
         <span class="n">all_images</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">all_views</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="n">teacher_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">all_images</span><span class="p">)</span>
-        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">teacher_features</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">teacher_features</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">out</span>
 
     <span class="c1"># Training: separate processing for global and local views</span>
@@ -889,32 +890,28 @@ document.write(`
     <span class="c1"># Teacher processes only global views</span>
     <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
         <span class="n">teacher_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">global_images</span><span class="p">)</span>
-        <span class="n">teacher_embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">teacher_features</span><span class="p">)</span>
-        <span class="n">teacher_embeddings</span> <span class="o">=</span> <span class="n">teacher_embeddings</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n_global</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">teacher_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">teacher_features</span><span class="p">)</span>
+        <span class="n">teacher_logits</span> <span class="o">=</span> <span class="n">teacher_logits</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n_global</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># Student processes all views</span>
-    <span class="n">student_embeddings_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">student_logits_list</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># Process global views through student</span>
     <span class="n">student_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">global_images</span><span class="p">)</span>
-    <span class="n">student_global_embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">student_features</span><span class="p">)</span>
-    <span class="n">student_global_embeddings</span> <span class="o">=</span> <span class="n">student_global_embeddings</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n_global</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">student_embeddings_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student_global_embeddings</span><span class="p">)</span>
+    <span class="n">student_global_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">student_features</span><span class="p">)</span>
+    <span class="n">student_global_logits</span> <span class="o">=</span> <span class="n">student_global_logits</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n_global</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">student_logits_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student_global_logits</span><span class="p">)</span>
 
     <span class="c1"># Process local views through student (if any)</span>
     <span class="k">if</span> <span class="n">n_local</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">local_images</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">local_views</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">student_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">local_images</span><span class="p">)</span>
-        <span class="n">student_local_embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">student_features</span><span class="p">)</span>
-        <span class="n">student_local_embeddings</span> <span class="o">=</span> <span class="n">student_local_embeddings</span><span class="o">.</span><span class="n">view</span><span class="p">(</span>
-            <span class="n">n_local</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="p">)</span>
-        <span class="n">student_embeddings_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student_local_embeddings</span><span class="p">)</span>
+        <span class="n">student_local_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">student_features</span><span class="p">)</span>
+        <span class="n">student_local_logits</span> <span class="o">=</span> <span class="n">student_local_logits</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n_local</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">student_logits_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student_local_logits</span><span class="p">)</span>
 
-    <span class="c1"># Concatenate student embeddings along the view dimension</span>
-    <span class="n">student_embeddings</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
-        <span class="n">student_embeddings_list</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span>
-    <span class="p">)</span>  <span class="c1"># [n_views, batch_size, dim]</span>
+    <span class="c1"># Concatenate student logits along the view dimension</span>
+    <span class="n">student_logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">student_logits_list</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;dino_loss&quot;</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -928,10 +925,6 @@ document.write(`
             <span class="s2">&quot;This should be a TeacherStudentWrapper containing the projector (MLP + normalize + prototypes). &quot;</span>
             <span class="s2">&quot;Pass it when constructing the Module: Module(..., projector=wrapped_projector, ...)&quot;</span>
         <span class="p">)</span>
-
-    <span class="c1"># Apply projector to get logits (separate teacher and student projectors)</span>
-    <span class="n">teacher_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">teacher_embeddings</span><span class="p">)</span>
-    <span class="n">student_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">student_embeddings</span><span class="p">)</span>
 
     <span class="c1"># Temperature scheduling for teacher</span>
     <span class="k">if</span> <span class="p">(</span>
@@ -963,6 +956,307 @@ document.write(`
     <span class="bp">self</span><span class="o">.</span><span class="n">dino_loss</span><span class="o">.</span><span class="n">update_center</span><span class="p">(</span><span class="n">teacher_logits</span><span class="p">)</span>
 
     <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">teacher_features</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss</span>
+
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dinov2_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for DINOv2 with iBOT.</span>
+
+<span class="sd">    DINOv2 combines two self-supervised losses:</span>
+<span class="sd">    - DINO: CLS token distillation between global views</span>
+<span class="sd">    - iBOT: Masked patch prediction</span>
+
+<span class="sd">    Both losses use Sinkhorn-Knopp normalization for optimal transport.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        self: Module instance (automatically bound) with required attributes:</span>
+<span class="sd">            - backbone: TeacherStudentWrapper for feature extraction (ViT)</span>
+<span class="sd">            - projector: TeacherStudentWrapper for CLS token projection head</span>
+<span class="sd">            - patch_projector: TeacherStudentWrapper for patch projection head</span>
+<span class="sd">            - dinov2_loss: DINOv2Loss instance combining DINO + iBOT</span>
+<span class="sd">            - warmup_temperature_teacher (float): Starting teacher temperature</span>
+<span class="sd">            - temperature_teacher (float): Final teacher temperature</span>
+<span class="sd">            - warmup_epochs_temperature_teacher (int): Epochs to warm up temperature</span>
+<span class="sd">            - mask_ratio (float): Ratio of patches to mask for iBOT (default: 0.3)</span>
+<span class="sd">        batch: Either a list of view dicts (from MultiViewTransform) or</span>
+<span class="sd">            a single dict (for validation/single-view).</span>
+<span class="sd">            For multi-crop: First 2 views should be global crops, rest are local crops</span>
+<span class="sd">        stage: Training stage (&#39;train&#39;, &#39;val&#39;, or &#39;test&#39;)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary containing:</span>
+<span class="sd">            - &#39;embedding&#39;: Feature representations from teacher backbone</span>
+<span class="sd">            - &#39;loss&#39;: Combined DINOv2 loss (DINO + iBOT)</span>
+<span class="sd">            - &#39;label&#39;: Labels if present (for probes/callbacks)</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Introduced in the DINOv2 paper.</span>
+<span class="sd">        Requires TeacherStudentWrapper for backbone, projector, and patch_projector.</span>
+<span class="sd">        Assumes first 2 views in batch are global views.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Check if batch is dict of named views</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;image&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
+        <span class="c1"># Dict of named views - separate by &quot;global&quot; or &quot;local&quot; in key</span>
+        <span class="n">global_views</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">local_views</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">&quot;global&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                <span class="n">global_views</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">&quot;local&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                <span class="n">local_views</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+
+        <span class="n">n_global</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">global_views</span><span class="p">)</span>
+        <span class="n">n_local</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">local_views</span><span class="p">)</span>
+        <span class="n">all_views</span> <span class="o">=</span> <span class="n">global_views</span> <span class="o">+</span> <span class="n">local_views</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># List of views - assume first 2 are global</span>
+        <span class="n">all_views</span> <span class="o">=</span> <span class="n">batch</span>
+        <span class="n">n_global</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_views</span><span class="p">))</span>
+        <span class="n">n_local</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_views</span><span class="p">)</span> <span class="o">-</span> <span class="n">n_global</span>
+        <span class="n">global_views</span> <span class="o">=</span> <span class="n">all_views</span><span class="p">[:</span><span class="n">n_global</span><span class="p">]</span>
+        <span class="n">local_views</span> <span class="o">=</span> <span class="n">all_views</span><span class="p">[</span><span class="n">n_global</span><span class="p">:]</span> <span class="k">if</span> <span class="n">n_local</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">[]</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Single view validation</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
+
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">teacher_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">teacher_features</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="c1"># Multi-view processing</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="n">all_views</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;image&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Concatenate labels for callbacks - only from global views for probes</span>
+    <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">all_views</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">global_views</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">all_views</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+        <span class="c1"># During validation, just process all views through teacher</span>
+        <span class="n">all_images</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">all_views</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">teacher_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span><span class="n">all_images</span><span class="p">)</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">teacher_features</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="c1"># Training: separate processing for global and local views</span>
+    <span class="n">global_images</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">global_views</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Temperature scheduling for teacher</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;warmup_epochs_temperature_teacher&quot;</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;warmup_temperature_teacher&quot;</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;temperature_teacher&quot;</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_epoch</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_epochs_temperature_teacher</span><span class="p">:</span>
+            <span class="n">progress</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_epoch</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_epochs_temperature_teacher</span>
+            <span class="n">temperature_teacher</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_temperature_teacher</span> <span class="o">+</span> <span class="n">progress</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">temperature_teacher</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_temperature_teacher</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temperature_teacher</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_teacher</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">temperature_teacher</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;temperature_teacher&quot;</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">)</span>
+
+    <span class="c1"># Get underlying backbones (handle TeacherStudentWrapper)</span>
+    <span class="n">teacher_backbone</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">,</span> <span class="s2">&quot;teacher&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">)</span>
+    <span class="n">student_backbone</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">,</span> <span class="s2">&quot;student&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">)</span>
+
+    <span class="c1"># ===== Extract tokens ONCE from teacher (used for both CLS and patches) =====</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="c1"># Extract teacher tokens for global views</span>
+        <span class="c1"># Support both HuggingFace ViT (returns dict with last_hidden_state) and timm ViT</span>
+        <span class="n">teacher_output</span> <span class="o">=</span> <span class="n">teacher_backbone</span><span class="p">(</span><span class="n">global_images</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">teacher_output</span><span class="p">,</span> <span class="s2">&quot;last_hidden_state&quot;</span><span class="p">):</span>
+            <span class="c1"># HuggingFace ViT: output.last_hidden_state is [B, num_patches+1, hidden_size]</span>
+            <span class="n">teacher_cls_features</span> <span class="o">=</span> <span class="n">teacher_output</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[</span>
+                <span class="p">:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:</span>
+            <span class="p">]</span>  <span class="c1"># CLS token</span>
+            <span class="n">teacher_patches_all</span> <span class="o">=</span> <span class="n">teacher_output</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[</span>
+                <span class="p">:,</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:</span>
+            <span class="p">]</span>  <span class="c1"># Patch tokens</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Fallback to timm or custom ViT (assumes returns tensor [B, num_patches+1, hidden_size])</span>
+            <span class="n">teacher_cls_features</span> <span class="o">=</span> <span class="n">teacher_output</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">teacher_patches_all</span> <span class="o">=</span> <span class="n">teacher_output</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+
+        <span class="c1"># Reshape CLS features for multi-view: [n_global * batch_size, dim] -&gt; [n_global, batch_size, dim]</span>
+        <span class="n">teacher_cls_features</span> <span class="o">=</span> <span class="n">teacher_cls_features</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n_global</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># CLS token projection</span>
+        <span class="n">teacher_cls_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span>
+            <span class="n">teacher_cls_features</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n_global</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">teacher_cls_logits</span> <span class="o">=</span> <span class="n">teacher_cls_logits</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n_global</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Apply Sinkhorn-Knopp to CLS tokens</span>
+        <span class="n">flat_cls_logits</span> <span class="o">=</span> <span class="n">teacher_cls_logits</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">teacher_cls_logits</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">teacher_cls_probs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dinov2_loss</span><span class="o">.</span><span class="n">dino_loss</span><span class="o">.</span><span class="n">sinkhorn_knopp_teacher</span><span class="p">(</span>
+            <span class="n">flat_cls_logits</span><span class="p">,</span>
+            <span class="n">teacher_temp</span><span class="o">=</span><span class="n">temperature_teacher</span><span class="p">,</span>
+            <span class="n">num_samples</span><span class="o">=</span><span class="n">n_global</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">teacher_cls_probs</span> <span class="o">=</span> <span class="n">teacher_cls_probs</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n_global</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Student processes all views for CLS tokens</span>
+    <span class="n">student_logits_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Process global views through student</span>
+    <span class="n">student_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">global_images</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">student_output</span><span class="p">,</span> <span class="s2">&quot;last_hidden_state&quot;</span><span class="p">):</span>
+        <span class="n">student_cls_features</span> <span class="o">=</span> <span class="n">student_output</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">student_cls_features</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">student_output</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="k">if</span> <span class="n">student_output</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span> <span class="k">else</span> <span class="n">student_output</span>
+        <span class="p">)</span>
+
+    <span class="n">student_global_cls_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span><span class="n">student_cls_features</span><span class="p">)</span>
+    <span class="n">student_global_cls_logits</span> <span class="o">=</span> <span class="n">student_global_cls_logits</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n_global</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">student_logits_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student_global_cls_logits</span><span class="p">)</span>
+
+    <span class="c1"># Process local views through student (if any)</span>
+    <span class="k">if</span> <span class="n">n_local</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">local_images</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">local_views</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># For HF ViT: need to pass interpolate_pos_encoding=True for different sized images</span>
+        <span class="n">student_local_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span>
+            <span class="n">local_images</span><span class="p">,</span> <span class="n">interpolate_pos_encoding</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">student_local_output</span><span class="p">,</span> <span class="s2">&quot;last_hidden_state&quot;</span><span class="p">):</span>
+            <span class="n">student_local_cls_features</span> <span class="o">=</span> <span class="n">student_local_output</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">student_local_cls_features</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">student_local_output</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="k">if</span> <span class="n">student_local_output</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span>
+                <span class="k">else</span> <span class="n">student_local_output</span>
+            <span class="p">)</span>
+
+        <span class="n">student_local_cls_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span>
+            <span class="n">student_local_cls_features</span>
+        <span class="p">)</span>
+        <span class="n">student_local_cls_logits</span> <span class="o">=</span> <span class="n">student_local_cls_logits</span><span class="o">.</span><span class="n">view</span><span class="p">(</span>
+            <span class="n">n_local</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="n">student_logits_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student_local_cls_logits</span><span class="p">)</span>
+
+    <span class="c1"># Concatenate student CLS logits along the view dimension</span>
+    <span class="n">student_cls_logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">student_logits_list</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># ===== Patch Processing (iBOT) =====</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;patch_projector&quot;</span><span class="p">):</span>
+        <span class="n">mask_ratio</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;mask_ratio&quot;</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Process first global view only for iBOT</span>
+            <span class="n">first_view</span> <span class="o">=</span> <span class="n">global_images</span><span class="p">[:</span><span class="n">batch_size</span><span class="p">]</span>
+
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="c1"># Extract teacher patches from first view (already computed above)</span>
+                <span class="n">teacher_patches</span> <span class="o">=</span> <span class="n">teacher_patches_all</span><span class="p">[</span>
+                    <span class="p">:</span><span class="n">batch_size</span>
+                <span class="p">]</span>  <span class="c1"># [batch_size, n_patches, dim]</span>
+
+                <span class="c1"># Create random mask: True = masked, False = visible (vectorized exact-k per sample)</span>
+                <span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">teacher_patches</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">n_masked</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="n">mask_ratio</span><span class="p">)</span>
+
+                <span class="n">bool_masked_pos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                    <span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">teacher_patches</span><span class="o">.</span><span class="n">device</span>
+                <span class="p">)</span>
+                <span class="c1"># Efficient: topk on random values (O(N) vs argsort O(N log N))</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">mask_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">teacher_patches</span><span class="o">.</span><span class="n">device</span><span class="p">),</span> <span class="n">n_masked</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span>
+                <span class="p">)</span>
+                <span class="n">bool_masked_pos</span><span class="o">.</span><span class="n">scatter_</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">mask_indices</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+                <span class="c1"># Extract patches that WERE masked (these are visible to teacher, masked for student)</span>
+                <span class="n">teacher_masked_patches</span> <span class="o">=</span> <span class="n">teacher_patches</span><span class="p">[</span>
+                    <span class="n">bool_masked_pos</span>
+                <span class="p">]</span>  <span class="c1"># [B*n_masked, C]</span>
+                <span class="n">teacher_patch_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_projector</span><span class="o">.</span><span class="n">forward_teacher</span><span class="p">(</span>
+                    <span class="n">teacher_masked_patches</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Apply Sinkhorn-Knopp to masked patches</span>
+                <span class="n">n_masked_total</span> <span class="o">=</span> <span class="n">teacher_masked_patches</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">teacher_patch_probs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dinov2_loss</span><span class="o">.</span><span class="n">ibot_loss</span><span class="o">.</span><span class="n">sinkhorn_knopp_teacher</span><span class="p">(</span>
+                    <span class="n">teacher_patch_logits</span><span class="p">,</span>
+                    <span class="n">teacher_temp</span><span class="o">=</span><span class="n">temperature_teacher</span><span class="p">,</span>
+                    <span class="n">num_samples</span><span class="o">=</span><span class="n">n_masked_total</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Student sees MASKED input (mask tokens injected at masked positions)</span>
+            <span class="c1"># HuggingFace ViT handles masking natively via bool_masked_pos parameter</span>
+            <span class="n">student_output_masked</span> <span class="o">=</span> <span class="n">student_backbone</span><span class="p">(</span>
+                <span class="n">first_view</span><span class="p">,</span> <span class="n">bool_masked_pos</span><span class="o">=</span><span class="n">bool_masked_pos</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">student_output_masked</span><span class="p">,</span> <span class="s2">&quot;last_hidden_state&quot;</span><span class="p">):</span>
+                <span class="n">student_patches</span> <span class="o">=</span> <span class="n">student_output_masked</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[</span>
+                    <span class="p">:,</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:</span>
+                <span class="p">]</span>  <span class="c1"># Skip CLS</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If not HF ViT, assume it&#39;s a raw tensor</span>
+                <span class="n">student_patches</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">student_output_masked</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+                    <span class="k">if</span> <span class="n">student_output_masked</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span>
+                    <span class="k">else</span> <span class="n">student_output_masked</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Extract the MASK TOKEN OUTPUTS from student (at masked positions)</span>
+            <span class="n">student_masked_patches</span> <span class="o">=</span> <span class="n">student_patches</span><span class="p">[</span><span class="n">bool_masked_pos</span><span class="p">]</span>  <span class="c1"># [B*n_masked, C]</span>
+            <span class="n">student_patch_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_projector</span><span class="o">.</span><span class="n">forward_student</span><span class="p">(</span>
+                <span class="n">student_masked_patches</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;dinov2_loss&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;dinov2_forward requires &#39;dinov2_loss&#39; to be provided (e.g., spt.losses.DINOv2Loss()). &quot;</span>
+                    <span class="s2">&quot;Pass it when constructing the Module: Module(..., dinov2_loss=spt.losses.DINOv2Loss(), ...)&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dinov2_loss</span><span class="p">(</span>
+                <span class="n">student_cls_logits</span><span class="o">=</span><span class="n">student_cls_logits</span><span class="p">,</span>
+                <span class="n">teacher_cls_probs</span><span class="o">=</span><span class="n">teacher_cls_probs</span><span class="p">,</span>
+                <span class="n">student_patch_logits</span><span class="o">=</span><span class="n">student_patch_logits</span><span class="p">,</span>
+                <span class="n">teacher_patch_probs</span><span class="o">=</span><span class="n">teacher_patch_probs</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="ne">RuntimeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># Backbone doesn&#39;t support HF ViT masking - provide clear error message</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;DINOv2 with iBOT (patch_projector) requires a HuggingFace ViT backbone that supports &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;the &#39;bool_masked_pos&#39; parameter for masking. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Please use: backbone = spt.backbone.vit_hf(&#39;tiny&#39;, use_mask_token=True)&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Original error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># No patch_projector provided, compute DINO loss only (no iBOT)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;dinov2_loss&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;dinov2_forward requires &#39;dinov2_loss&#39; to be provided. &quot;</span>
+                <span class="s2">&quot;Pass it when constructing the Module: Module(..., dinov2_loss=spt.losses.DINOv2Loss(), ...)&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Call DINOv2Loss with only CLS logits (iBOT disabled when no patch_projector)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dinov2_loss</span><span class="o">.</span><span class="n">dino_loss</span><span class="p">(</span><span class="n">student_cls_logits</span><span class="p">,</span> <span class="n">teacher_cls_probs</span><span class="p">)</span>
+
+    <span class="c1"># Return flattened CLS features for callbacks (probes expect [n_global * batch_size, dim])</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">teacher_cls_features</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">n_global</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
     <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss</span>
 
     <span class="k">return</span> <span class="n">out</span>

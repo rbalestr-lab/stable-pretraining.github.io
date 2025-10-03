@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.3.dev24+g1699039ff.d20251002 documentation</title>
+    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.3.dev25+gb627ff33a.d20251003 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=70891fea"></script>
+    <script src="../../../_static/documentation_options.js?v=081f7fda"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev24+g1699039ff.d20251002 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev25+gb627ff33a.d20251003 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -361,9 +361,111 @@ document.write(`
     <span class="n">_TIMM_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimmWrapperModel</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimmWrapperModel</span><span class="p">,</span> <span class="n">ViTConfig</span><span class="p">,</span> <span class="n">ViTModel</span>
+
+    <span class="n">_TRANSFORMERS_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">TimmWrapperModel</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">ViTConfig</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">ViTModel</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">_TRANSFORMERS_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">vit_hf</span><span class="p">(</span>
+    <span class="n">size</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;tiny&quot;</span><span class="p">,</span>
+    <span class="n">patch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span>
+    <span class="n">image_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">224</span><span class="p">,</span>
+    <span class="n">pretrained</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">use_mask_token</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Vision Transformer using HuggingFace transformers.</span>
+
+<span class="sd">    This provides a clean, well-maintained ViT implementation with native support for:</span>
+<span class="sd">    - Masking via bool_masked_pos parameter</span>
+<span class="sd">    - Learnable mask token</span>
+<span class="sd">    - Easy access to CLS and patch tokens</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        size: Model size - &quot;tiny&quot;, &quot;small&quot;, &quot;base&quot;, or &quot;large&quot;</span>
+<span class="sd">        patch_size: Patch size (default: 16)</span>
+<span class="sd">        image_size: Input image size (default: 224)</span>
+<span class="sd">        pretrained: Load pretrained weights from HuggingFace Hub</span>
+<span class="sd">        use_mask_token: Whether to include learnable mask token (needed for iBOT)</span>
+<span class="sd">        **kwargs: Additional ViTConfig parameters</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        HuggingFace ViTModel</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; backbone = vit_hf(&quot;tiny&quot;, use_mask_token=True)</span>
+<span class="sd">        &gt;&gt;&gt; x = torch.randn(2, 3, 224, 224)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Without masking</span>
+<span class="sd">        &gt;&gt;&gt; output = backbone(x)</span>
+<span class="sd">        &gt;&gt;&gt; cls_token = output.last_hidden_state[:, 0, :]</span>
+<span class="sd">        &gt;&gt;&gt; patch_tokens = output.last_hidden_state[:, 1:, :]</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # With masking (for iBOT student)</span>
+<span class="sd">        &gt;&gt;&gt; masks = torch.zeros(2, 196, dtype=torch.bool)</span>
+<span class="sd">        &gt;&gt;&gt; masks[:, :59] = True  # Mask 30%</span>
+<span class="sd">        &gt;&gt;&gt; output = backbone(x, bool_masked_pos=masks)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_TRANSFORMERS_AVAILABLE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;transformers library is required for vit_hf. &quot;</span>
+            <span class="s2">&quot;Install with: pip install transformers&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># ViT size configurations (matching timm/DINOv3)</span>
+    <span class="n">size_configs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;tiny&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;hidden_size&quot;</span><span class="p">:</span> <span class="mi">192</span><span class="p">,</span> <span class="s2">&quot;num_hidden_layers&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="s2">&quot;num_attention_heads&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+        <span class="s2">&quot;small&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;hidden_size&quot;</span><span class="p">:</span> <span class="mi">384</span><span class="p">,</span>
+            <span class="s2">&quot;num_hidden_layers&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+            <span class="s2">&quot;num_attention_heads&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;base&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;hidden_size&quot;</span><span class="p">:</span> <span class="mi">768</span><span class="p">,</span>
+            <span class="s2">&quot;num_hidden_layers&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+            <span class="s2">&quot;num_attention_heads&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;large&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;hidden_size&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+            <span class="s2">&quot;num_hidden_layers&quot;</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+            <span class="s2">&quot;num_attention_heads&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">size</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">size_configs</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Invalid size &#39;</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">&#39;. Choose from </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">size_configs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">config_params</span> <span class="o">=</span> <span class="n">size_configs</span><span class="p">[</span><span class="n">size</span><span class="p">]</span>
+    <span class="n">config_params</span><span class="p">[</span><span class="s2">&quot;intermediate_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config_params</span><span class="p">[</span><span class="s2">&quot;hidden_size&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span>
+    <span class="n">config_params</span><span class="p">[</span><span class="s2">&quot;image_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_size</span>
+    <span class="n">config_params</span><span class="p">[</span><span class="s2">&quot;patch_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">patch_size</span>
+    <span class="n">config_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pretrained</span><span class="p">:</span>
+        <span class="c1"># Try to load pretrained model from HF Hub</span>
+        <span class="n">model_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;google/vit-</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">-patch</span><span class="si">{</span><span class="n">patch_size</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">image_size</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading pretrained ViT from </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ViTModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+            <span class="n">model_name</span><span class="p">,</span> <span class="n">add_pooling_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_mask_token</span><span class="o">=</span><span class="n">use_mask_token</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">ViTConfig</span><span class="p">(</span><span class="o">**</span><span class="n">config_params</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ViTModel</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">add_pooling_layer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_mask_token</span><span class="o">=</span><span class="n">use_mask_token</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created ViT-</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> from scratch with config: </span><span class="si">{</span><span class="n">config_params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># IMPORTANT: Set model to always interpolate position encodings for dynamic input sizes</span>
+    <span class="c1"># This allows processing images of different sizes (e.g., 224x224 global + 96x96 local views)</span>
+    <span class="c1"># Must be set as instance attribute, not in config</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">interpolate_pos_encoding</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">model</span>
 
 
 <div class="viewcode-block" id="EvalOnly">
