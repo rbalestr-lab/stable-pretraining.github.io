@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.losses.joint_embedding &#8212; stable-pretraining 0.1.3.dev27+g2e4f13e33.d20251005 documentation</title>
+    <title>stable_pretraining.losses.joint_embedding &#8212; stable-pretraining 0.1.3.dev28+g1db356f68.d20251006 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=49349227"></script>
+    <script src="../../../_static/documentation_options.js?v=29dd945a"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev27+g2e4f13e33.d20251005 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev28+g1db356f68.d20251006 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -489,6 +489,99 @@ document.write(`
         <span class="k">return</span> <span class="n">loss</span></div>
 </div>
 
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SwAVLoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the SwAV loss, optionally using a feature queue.</span>
+
+<span class="sd">    This loss function contains the core components of the SwAV algorithm, including</span>
+<span class="sd">    the Sinkhorn-Knopp algorithm for online clustering and the swapped-prediction</span>
+<span class="sd">    contrastive task.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        temperature (float, optional): The temperature scaling factor for the softmax</span>
+<span class="sd">            in the swapped prediction task. Default is 0.1.</span>
+<span class="sd">        sinkhorn_iterations (int, optional): The number of iterations for the</span>
+<span class="sd">            Sinkhorn-Knopp algorithm. Default is 3.</span>
+<span class="sd">        epsilon (float, optional): A small value for numerical stability in the</span>
+<span class="sd">            Sinkhorn-Knopp algorithm. Default is 0.05.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Introduced in the SwAV paper :cite:`caron2020unsupervised`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">sinkhorn_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">temperature</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sinkhorn_iterations</span> <span class="o">=</span> <span class="n">sinkhorn_iterations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj1</span><span class="p">,</span> <span class="n">proj2</span><span class="p">,</span> <span class="n">prototypes</span><span class="p">,</span> <span class="n">queue_feats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the SwAV loss.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">        proj1 (torch.Tensor): Raw projections of the first view.</span>
+<span class="sd">        proj2 (torch.Tensor): Raw projections of the second view.</span>
+<span class="sd">        prototypes (torch.nn.Module): The prototype vectors.</span>
+<span class="sd">        queue_feats (torch.Tensor, optional): Raw features from the queue.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">proj1</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">proj1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">proj2</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">proj2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">queue_feats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">queue_feats</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">queue_feats</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">prototypes</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">prototypes</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">copy_</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+        <span class="n">scores1</span> <span class="o">=</span> <span class="n">prototypes</span><span class="p">(</span><span class="n">proj1</span><span class="p">)</span>
+        <span class="n">scores2</span> <span class="o">=</span> <span class="n">prototypes</span><span class="p">(</span><span class="n">proj2</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">queue_feats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">combined_feats</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">proj1</span><span class="p">,</span> <span class="n">proj2</span><span class="p">,</span> <span class="n">queue_feats</span><span class="p">])</span>
+                <span class="n">combined_scores</span> <span class="o">=</span> <span class="n">prototypes</span><span class="p">(</span><span class="n">combined_feats</span><span class="p">)</span>
+                <span class="n">all_q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sinkhorn</span><span class="p">(</span><span class="n">combined_scores</span><span class="p">)</span>
+                <span class="n">q1</span> <span class="o">=</span> <span class="n">all_q</span><span class="p">[:</span> <span class="n">proj1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                <span class="n">q2</span> <span class="o">=</span> <span class="n">all_q</span><span class="p">[</span><span class="n">proj1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">:</span> <span class="n">proj1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">batch_scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">scores1</span><span class="p">,</span> <span class="n">scores2</span><span class="p">])</span>
+                <span class="n">all_q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sinkhorn</span><span class="p">(</span><span class="n">batch_scores</span><span class="p">)</span>
+                <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span> <span class="o">=</span> <span class="n">all_q</span><span class="o">.</span><span class="n">chunk</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">swapped_prediction</span><span class="p">(</span><span class="n">scores1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">swapped_prediction</span><span class="p">(</span>
+            <span class="n">scores2</span><span class="p">,</span> <span class="n">q1</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span> <span class="o">/</span> <span class="mf">2.0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">swapped_prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the cross-entropy loss for the swapped prediction task.&quot;&quot;&quot;</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">q</span> <span class="o">*</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">scores</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span>
+
+    <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sinkhorn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scores</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Applies the Sinkhorn-Knopp algorithm.&quot;&quot;&quot;</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">scores</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">Q</span> <span class="o">/=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+        <span class="n">K</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">Q</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="o">/</span> <span class="n">K</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">Q</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="o">/</span> <span class="n">B</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sinkhorn_iterations</span><span class="p">):</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">Q</span> <span class="o">*=</span> <span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">Q</span> <span class="o">*=</span> <span class="p">(</span><span class="n">c</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">Q</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">InfoNCELoss</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>

@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.3.dev27+g2e4f13e33.d20251005 documentation</title>
+    <title>stable_pretraining.forward &#8212; stable-pretraining 0.1.3.dev28+g1db356f68.d20251006 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=49349227"></script>
+    <script src="../../_static/documentation_options.js?v=29dd945a"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev27+g2e4f13e33.d20251005 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev28+g1db356f68.d20251006 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -694,6 +694,59 @@ document.write(`
 
     <span class="k">return</span> <span class="n">out</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">swav_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward function for SwAV (Swapping Assignments between Views).</span>
+
+<span class="sd">    SwAV learns representations by predicting the cluster assignment (code) of one</span>
+<span class="sd">    view from the representation of another view. For small-batch training, this function</span>
+<span class="sd">    manages a feature queue to stabilize the training process.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">views</span> <span class="o">=</span> <span class="n">_get_views_list</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">views</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="p">]</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">views</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+            <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">emb</span><span class="p">)</span> <span class="k">for</span> <span class="n">emb</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+            <span class="n">proj1</span><span class="p">,</span> <span class="n">proj2</span> <span class="o">=</span> <span class="n">projections</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">projections</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">queue_feats</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">use_queue_logic</span> <span class="o">=</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;use_queue&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_queue</span>
+
+            <span class="k">if</span> <span class="n">use_queue_logic</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_swav_queue_callback&quot;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_swav_queue_callback</span> <span class="o">=</span> <span class="n">find_or_create_queue_callback</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span>
+                        <span class="n">key</span><span class="o">=</span><span class="s2">&quot;swav_queue&quot;</span><span class="p">,</span>
+                        <span class="n">queue_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">queue_length</span><span class="p">,</span>
+                        <span class="n">dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">projection_dim</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="n">queue</span> <span class="o">=</span> <span class="n">OnlineQueue</span><span class="o">.</span><span class="n">_shared_queues</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_swav_queue_callback</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">queue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">current_epoch</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_queue_at_epoch</span>
+                <span class="p">):</span>
+                    <span class="n">queue_feats</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">proj1</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+                <span class="n">out</span><span class="p">[</span><span class="s2">&quot;swav_queue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">projections</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">swav_loss</span><span class="p">(</span><span class="n">proj1</span><span class="p">,</span> <span class="n">proj2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prototypes</span><span class="p">,</span> <span class="n">queue_feats</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">out</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_find_nearest_neighbors</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">support_set</span><span class="p">):</span>
