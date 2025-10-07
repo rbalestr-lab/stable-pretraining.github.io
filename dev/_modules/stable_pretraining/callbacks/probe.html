@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.callbacks.probe &#8212; stable-pretraining 0.1.3.dev31+gd4f304b0d.d20251007 documentation</title>
+    <title>stable_pretraining.callbacks.probe &#8212; stable-pretraining 0.1.3.dev32+g23df56c1a.d20251007 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=06a107bb"></script>
+    <script src="../../../_static/documentation_options.js?v=8e5fd02c"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev31+gd4f304b0d.d20251007 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev32+g23df56c1a.d20251007 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -403,8 +403,8 @@ document.write(`
 <span class="sd">            metric stops improving.</span>
 
 <span class="sd">    Note:</span>
-<span class="sd">        - The probe module is stored in pl_module._callbacks_modules[name]</span>
-<span class="sd">        - Metrics are stored in pl_module._callbacks_metrics[name]</span>
+<span class="sd">        - The probe module is stored in pl_module.callbacks_modules[name]</span>
+<span class="sd">        - Metrics are stored in pl_module.callbacks_metrics[name]</span>
 <span class="sd">        - Predictions are stored in batch dict with key &#39;{name}_preds&#39;</span>
 <span class="sd">        - Loss is logged as &#39;train/{name}_loss&#39;</span>
 <span class="sd">        - Metrics are logged with prefix &#39;train/{name}_&#39; and &#39;eval/{name}_&#39;</span>
@@ -470,23 +470,17 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize optimizer, scheduler, and metrics.&quot;&quot;&quot;</span>
         <span class="c1"># Call parent setup for module/optimizer/scheduler</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">,</span> <span class="n">stage</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">stage</span> <span class="o">!=</span> <span class="s2">&quot;fit&quot;</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="c1"># Setup metrics</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Setting up metrics&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;_callbacks_metrics&quot;</span><span class="p">):</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;attaching a `_callbacks_metrics` to your LightningModule for callbacks&quot;</span>
-            <span class="p">)</span>
-            <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">format_metrics_as_dict</span><span class="p">(</span>
+        <span class="n">pl_module</span><span class="o">.</span><span class="n">callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">format_metrics_as_dict</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">metrics_config</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_train_metrics</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;_train&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_val_metrics</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;_val&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_train_metrics</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;_train&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val_metrics</span> <span class="o">=</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;_val&quot;</span><span class="p">]</span>
         <span class="n">pl_module</span><span class="o">.</span><span class="n">register_forward_hook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_hook_fn</span><span class="p">)</span></div>
 
 
@@ -536,7 +530,7 @@ document.write(`
         <span class="k">if</span> <span class="n">prediction_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
             <span class="n">outputs</span><span class="p">[</span><span class="n">prediction_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">preds</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
 
-        <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span>
+        <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span>
             <span class="s2">&quot;_train&quot;</span>
         <span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">metric</span><span class="p">(</span><span class="n">preds</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="n">y</span><span class="p">)</span>
@@ -596,7 +590,7 @@ document.write(`
 
         <span class="c1"># Update metrics and log</span>
         <span class="n">logs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span>
+        <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">pl_module</span><span class="o">.</span><span class="n">callbacks_metrics</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">][</span>
             <span class="s2">&quot;_val&quot;</span>
         <span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">metric</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>

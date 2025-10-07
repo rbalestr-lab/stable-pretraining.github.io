@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.callbacks.utils &#8212; stable-pretraining 0.1.3.dev31+gd4f304b0d.d20251007 documentation</title>
+    <title>stable_pretraining.callbacks.utils &#8212; stable-pretraining 0.1.3.dev32+g23df56c1a.d20251007 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=06a107bb"></script>
+    <script src="../../../_static/documentation_options.js?v=8e5fd02c"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev31+gd4f304b0d.d20251007 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev32+g23df56c1a.d20251007 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -413,24 +413,20 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">setup_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">:</span> <span class="n">Trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">:</span> <span class="n">LightningModule</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize and store the module.</span>
 
-<span class="sd">        This method handles module initialization and storage in _callbacks_modules.</span>
+<span class="sd">        This method handles module initialization and storage in callbacks_modules.</span>
 <span class="sd">        Subclasses can override this if they need custom module setup logic.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Initialize module</span>
         <span class="n">module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_module</span><span class="p">(</span><span class="n">pl_module</span><span class="p">)</span>
 
-        <span class="c1"># Ensure all parameters require gradients</span>
-        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
-            <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span>
-
         <span class="c1"># Move to correct device</span>
         <span class="n">module</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">pl_module</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
-        <span class="c1"># Store module in pl_module._callbacks_modules</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Storing module in _callbacks_modules&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;_callbacks_modules&quot;</span><span class="p">):</span>
-            <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_modules</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">pl_module</span><span class="o">.</span><span class="n">_callbacks_modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span>
+        <span class="c1"># Store module in pl_module.callbacks_modules</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: Storing module in callbacks_modules&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pl_module</span><span class="p">,</span> <span class="s2">&quot;callbacks_modules&quot;</span><span class="p">):</span>
+            <span class="n">pl_module</span><span class="o">.</span><span class="n">callbacks_modules</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">()</span>
+        <span class="n">pl_module</span><span class="o">.</span><span class="n">callbacks_modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">setup_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trainer</span><span class="p">:</span> <span class="n">Trainer</span><span class="p">,</span> <span class="n">pl_module</span><span class="p">:</span> <span class="n">LightningModule</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize optimizer with inheritance from main module if needed.&quot;&quot;&quot;</span>
@@ -556,6 +552,7 @@ document.write(`
                 <span class="nb">hasattr</span><span class="p">(</span><span class="n">trainer</span><span class="o">.</span><span class="n">precision_plugin</span><span class="p">,</span> <span class="s2">&quot;scaler&quot;</span><span class="p">)</span>
                 <span class="ow">and</span> <span class="n">trainer</span><span class="o">.</span><span class="n">precision_plugin</span><span class="o">.</span><span class="n">scaler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;YYY&quot;</span><span class="p">)</span>
                 <span class="n">trainer</span><span class="o">.</span><span class="n">precision_plugin</span><span class="o">.</span><span class="n">scaler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
@@ -564,10 +561,10 @@ document.write(`
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access module from pl_module._callbacks_modules.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access module from pl_module.callbacks_modules.</span>
 
 <span class="sd">        This property is only accessible after setup() has been called.</span>
-<span class="sd">        The module is stored centrally in pl_module._callbacks_modules</span>
+<span class="sd">        The module is stored centrally in pl_module.callbacks_modules</span>
 <span class="sd">        to avoid duplication in checkpoints.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pl_module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -575,7 +572,7 @@ document.write(`
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: module not accessible before setup(). &quot;</span>
                 <span class="s2">&quot;The module is initialized during the setup phase.&quot;</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pl_module</span><span class="o">.</span><span class="n">_callbacks_modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pl_module</span><span class="o">.</span><span class="n">callbacks_modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -585,7 +582,7 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">state_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save callback state - only optimizer and scheduler states.</span>
 
-<span class="sd">        The module itself is saved via pl_module._callbacks_modules,</span>
+<span class="sd">        The module itself is saved via pl_module.callbacks_modules,</span>
 <span class="sd">        so we don&#39;t duplicate it here.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -596,7 +593,7 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">load_state_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load callback state - only optimizer and scheduler states.</span>
 
-<span class="sd">        The module itself is loaded via pl_module._callbacks_modules,</span>
+<span class="sd">        The module itself is loaded via pl_module.callbacks_modules,</span>
 <span class="sd">        so we don&#39;t handle it here.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;optimizer&quot;</span> <span class="ow">in</span> <span class="n">state_dict</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">:</span>
