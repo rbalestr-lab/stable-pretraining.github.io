@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>OnlineProbe &#8212; stable-pretraining 0.1.3.dev34+g059e24e93.d20251008 documentation</title>
+    <title>OnlineProbe &#8212; stable-pretraining 0.1.3.dev36+g0a5a6a61b.d20251008 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=68d30dc9"></script>
+    <script src="../../_static/documentation_options.js?v=8ac6e7c2"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -136,7 +136,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev34+g059e24e93.d20251008 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev36+g0a5a6a61b.d20251008 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -389,8 +389,6 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.callbacks.OnlineProbe"><code class="docutils literal notranslate"><span class="pre">OnlineProbe</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.callbacks.OnlineProbe.forward_hook_fn"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.forward_hook_fn()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.callbacks.OnlineProbe.on_train_batch_end"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.on_train_batch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.callbacks.OnlineProbe.on_validation_batch_end"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.on_validation_batch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.callbacks.OnlineProbe.on_validation_epoch_end"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.on_validation_epoch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.callbacks.OnlineProbe.probe_module"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.probe_module</span></code></a></li>
@@ -469,23 +467,6 @@ metric stops improving.</p></li>
 </ul>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="stable_pretraining.callbacks.OnlineProbe.forward_hook_fn">
-<span class="sig-name descname"><span class="pre">forward_hook_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pl_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/stable_pretraining/callbacks/probe.html#OnlineProbe.forward_hook_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.callbacks.OnlineProbe.forward_hook_fn" title="Link to this definition">#</a></dt>
-<dd><p>Perform probe training step.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="stable_pretraining.callbacks.OnlineProbe.on_train_batch_end">
-<span class="sig-name descname"><span class="pre">on_train_batch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LightningModule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/stable_pretraining/callbacks/probe.html#OnlineProbe.on_train_batch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.callbacks.OnlineProbe.on_train_batch_end" title="Link to this definition">#</a></dt>
-<dd><p>Called when the train batch ends.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The value <code class="docutils literal notranslate"><span class="pre">outputs[&quot;loss&quot;]</span></code> here will be the normalized value w.r.t <code class="docutils literal notranslate"><span class="pre">accumulate_grad_batches</span></code> of the
-loss returned from <code class="docutils literal notranslate"><span class="pre">training_step</span></code>.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="stable_pretraining.callbacks.OnlineProbe.on_validation_batch_end">
 <span class="sig-name descname"><span class="pre">on_validation_batch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pl_module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LightningModule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloader_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/stable_pretraining/callbacks/probe.html#OnlineProbe.on_validation_batch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.callbacks.OnlineProbe.on_validation_batch_end" title="Link to this definition">#</a></dt>
 <dd><p>Compute probe predictions during validation.</p>
@@ -559,8 +540,6 @@ loss returned from <code class="docutils literal notranslate"><span class="pre">
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.callbacks.OnlineProbe"><code class="docutils literal notranslate"><span class="pre">OnlineProbe</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.callbacks.OnlineProbe.forward_hook_fn"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.forward_hook_fn()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.callbacks.OnlineProbe.on_train_batch_end"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.on_train_batch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.callbacks.OnlineProbe.on_validation_batch_end"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.on_validation_batch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.callbacks.OnlineProbe.on_validation_epoch_end"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.on_validation_epoch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.callbacks.OnlineProbe.probe_module"><code class="docutils literal notranslate"><span class="pre">OnlineProbe.probe_module</span></code></a></li>

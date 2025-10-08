@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.module &#8212; stable-pretraining 0.1.3.dev34+g059e24e93.d20251008 documentation</title>
+    <title>stable_pretraining.module &#8212; stable-pretraining 0.1.3.dev36+g0a5a6a61b.d20251008 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=68d30dc9"></script>
+    <script src="../../_static/documentation_options.js?v=8ac6e7c2"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev34+g059e24e93.d20251008 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev36+g0a5a6a61b.d20251008 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -529,13 +529,6 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="s2">&quot;fit&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Early exit if optimization disabled</span>
-
-        <span class="k">if</span> <span class="s2">&quot;loss&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;Training step has no &#39;loss&#39; in the output state, returning&quot;</span>
-            <span class="p">)</span>
-
         <span class="c1"># Resolve optimizers and schedulers (can be single or list)</span>
         <span class="n">optimizers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">optimizers</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
@@ -547,102 +540,108 @@ document.write(`
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">schedulers</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="n">schedulers</span> <span class="o">=</span> <span class="p">[</span><span class="n">schedulers</span><span class="p">]</span>
 
-        <span class="c1"># Get the joint loss</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span>
+        <span class="c1"># we first handle any callback loss</span>
+        <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">callback_optimizers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;loss_&quot;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">state</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;loss_&quot;</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_by_name</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">callback_optimizers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
-        <span class="c1"># Log training loss each step (and aggregate per epoch)</span>
-        <span class="n">log_value</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
-            <span class="s2">&quot;train/loss&quot;</span><span class="p">,</span>
-            <span class="n">log_value</span><span class="p">,</span>
-            <span class="n">on_step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">on_epoch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">prog_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">logger</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">sync_dist</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;loss&quot;</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
+            <span class="c1"># Log training loss each step (and aggregate per epoch)</span>
+            <span class="n">log_value</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="s2">&quot;train/loss&quot;</span><span class="p">,</span> <span class="n">log_value</span><span class="p">,</span> <span class="n">on_step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prog_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sync_dist</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
 
-        <span class="c1"># Gradient accumulation factor</span>
-        <span class="c1"># Check for transferred parameter first (from Lightning patch), then original</span>
-        <span class="n">accum</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
-            <span class="nb">int</span><span class="p">(</span>
-                <span class="nb">getattr</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span>
-                    <span class="s2">&quot;accumulate_grad_batches_&quot;</span><span class="p">,</span>
-                    <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;accumulate_grad_batches&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-                <span class="p">)</span>
-            <span class="p">),</span>
-            <span class="mi">1</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">accum</span><span class="p">)</span>
+            <span class="c1"># Gradient accumulation factor</span>
+            <span class="c1"># Check for transferred parameter first (from Lightning patch), then original</span>
+            <span class="n">accum</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span>
+                    <span class="nb">getattr</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span>
+                        <span class="s2">&quot;accumulate_grad_batches_&quot;</span><span class="p">,</span>
+                        <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;accumulate_grad_batches&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="p">),</span>
+                <span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">state</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">/=</span> <span class="n">accum</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">optimizers</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">callback_optimizers</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">accum</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">state</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">state</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">total_loss</span>
 
         <span class="c1"># Compute gradients once for the joint loss</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">manual_backward</span><span class="p">(</span><span class="n">loss</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manual_backward</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">])</span>
 
+        <span class="n">zero_grad_opts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># Stepping and gradient clipping at accumulation boundary</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">accum</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">opt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">optimizers</span><span class="p">):</span>
-                <span class="c1"># in case module has no optimizer, special case</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">pytorch</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">_MockOptimizer</span><span class="p">):</span>
-                    <span class="k">continue</span>
-                <span class="c1"># Honor per-optimizer frequency if available</span>
-                <span class="n">step_freq</span> <span class="o">=</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span><span class="p">:</span>
-                    <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-                    <span class="n">step_freq</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">step_freq</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">step_freq</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">opt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">optimizers</span><span class="p">):</span>
+            <span class="c1"># in case module has no optimizer, special case</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">pytorch</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">_MockOptimizer</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="c1"># Honor per-optimizer frequency if available</span>
+            <span class="n">step_freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span>
 
-                <span class="k">if</span> <span class="p">(</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">step_freq</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">continue</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">batch_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">step_freq</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
 
-                <span class="c1"># Clip gradients for this optimizer then step</span>
-                <span class="c1"># Check for transferred parameters first (from Lightning patch), then original</span>
-                <span class="n">clip_val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;gradient_clip_val_&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">gradient_clip_val</span>
+            <span class="c1"># Clip gradients for this optimizer then step</span>
+            <span class="n">clip_val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span> <span class="s2">&quot;gradient_clip_val_&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">gradient_clip_val</span>
+            <span class="p">)</span>
+            <span class="n">clip_algo</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span>
+                <span class="s2">&quot;gradient_clip_algorithm_&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">gradient_clip_algorithm</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">clip_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">clip_val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clip_gradients</span><span class="p">(</span>
+                    <span class="n">opt</span><span class="p">,</span>
+                    <span class="n">gradient_clip_val</span><span class="o">=</span><span class="n">clip_val</span><span class="p">,</span>
+                    <span class="n">gradient_clip_algorithm</span><span class="o">=</span><span class="n">clip_algo</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="n">clip_algo</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="p">,</span>
-                    <span class="s2">&quot;gradient_clip_algorithm_&quot;</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">gradient_clip_algorithm</span><span class="p">,</span>
-                <span class="p">)</span>
-
-                <span class="k">if</span> <span class="n">clip_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">clip_val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">clip_gradients</span><span class="p">(</span>
-                        <span class="n">opt</span><span class="p">,</span>
-                        <span class="n">gradient_clip_val</span><span class="o">=</span><span class="n">clip_val</span><span class="p">,</span>
-                        <span class="n">gradient_clip_algorithm</span><span class="o">=</span><span class="n">clip_algo</span><span class="p">,</span>
+            <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="n">zero_grad_opts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
+            <span class="c1"># Step matching scheduler if it exists</span>
+            <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">schedulers</span><span class="p">)</span> <span class="ow">and</span> <span class="n">schedulers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">schedulers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Scheduler step failed for optimizer index </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
-                <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-                <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">(</span><span class="n">set_to_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-                <span class="c1"># Step matching scheduler if it exists</span>
-                <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">schedulers</span><span class="p">)</span> <span class="ow">and</span> <span class="n">schedulers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">schedulers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Scheduler step failed for optimizer index </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
-                        <span class="p">)</span>
+        <span class="c1"># zero grad what&#39;s needed</span>
+        <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">zero_grad_opts</span><span class="p">:</span>
+            <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">(</span><span class="n">set_to_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">state</span></div>
 
 
-<div class="viewcode-block" id="Module.on_train_batch_end">
-<a class="viewcode-back" href="../../api/gen_modules/stable_pretraining.module.Module.html#stable_pretraining.module.Module.on_train_batch_end">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">on_train_batch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">batch_idx</span><span class="p">):</span>
-        <span class="c1"># this is required for the case where</span>
-        <span class="c1"># - the main module doesn&#39;t have an optimizer (e.g. frozen backbone probing)</span>
-        <span class="c1"># - but the callbacks have optimizers</span>
-        <span class="c1"># - we are using a precision plugin (e.g. bf16)</span>
-        <span class="c1"># in that case the callbacks still use the main module scaler and so we need</span>
-        <span class="c1"># to manually update it</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="p">(),</span> <span class="n">pl</span><span class="o">.</span><span class="n">pytorch</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">_MockOptimizer</span><span class="p">):</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">precision_plugin</span><span class="p">,</span> <span class="s2">&quot;scaler&quot;</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">precision_plugin</span><span class="o">.</span><span class="n">scaler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">precision_plugin</span><span class="o">.</span><span class="n">scaler</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
-
+    <span class="c1"># def on_train_batch_end(self, outputs, batch, batch_idx):</span>
+    <span class="c1">#     # this is required for the case where</span>
+    <span class="c1">#     # - the main module doesn&#39;t have an optimizer (e.g. frozen backbone probing)</span>
+    <span class="c1">#     # - but the callbacks have optimizers</span>
+    <span class="c1">#     # - we are using a precision plugin (e.g. bf16)</span>
+    <span class="c1">#     # in that case the callbacks still use the main module scaler and so we need</span>
+    <span class="c1">#     # to manually update it</span>
+    <span class="c1">#     super().on_train_batch_end(self, outputs, batch, batch_idx)</span>
+    <span class="c1">#     if isinstance(self.optimizers(), pl.pytorch.core.optimizer._MockOptimizer):</span>
+    <span class="c1">#         if (</span>
+    <span class="c1">#             hasattr(self.trainer.precision_plugin, &quot;scaler&quot;)</span>
+    <span class="c1">#             and self.trainer.precision_plugin.scaler is not None</span>
+    <span class="c1">#         ):</span>
+    <span class="c1">#             self.trainer.precision_plugin.scaler.update()</span>
 
 <div class="viewcode-block" id="Module.validation_step">
 <a class="viewcode-back" href="../../api/gen_modules/stable_pretraining.module.Module.html#stable_pretraining.module.Module.validation_step">[docs]</a>
@@ -846,6 +845,10 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Configuring optimizers and learning rate schedulers...&quot;</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_by_name</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span> <span class="o">=</span> <span class="p">{}</span>
+
         <span class="c1"># Early exit for disabled optimization</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;optim&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Optimization disabled - skipping optimizer configuration.&quot;</span><span class="p">)</span>
@@ -884,11 +887,9 @@ document.write(`
             <span class="p">)</span>
 
             <span class="c1"># Track names/frequencies for training_step</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_by_name</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
             <span class="c1"># Build scheduler config dict for Lightning</span>
             <span class="n">scheduler_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_scheduler_config</span><span class="p">(</span><span class="n">sched</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">)</span>
@@ -919,10 +920,6 @@ document.write(`
         <span class="c1"># Build optimizers and schedulers</span>
         <span class="n">optimizers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">schedulers</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_by_name</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">optim_items</span><span class="p">:</span>
             <span class="n">params</span> <span class="o">=</span> <span class="n">params_by_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">[])</span>

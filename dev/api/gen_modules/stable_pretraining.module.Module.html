@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Module &#8212; stable-pretraining 0.1.3.dev34+g059e24e93.d20251008 documentation</title>
+    <title>Module &#8212; stable-pretraining 0.1.3.dev36+g0a5a6a61b.d20251008 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=68d30dc9"></script>
+    <script src="../../_static/documentation_options.js?v=8ac6e7c2"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -136,7 +136,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev34+g059e24e93.d20251008 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev36+g0a5a6a61b.d20251008 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -392,7 +392,6 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.configure_optimizers"><code class="docutils literal notranslate"><span class="pre">Module.configure_optimizers()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.forward"><code class="docutils literal notranslate"><span class="pre">Module.forward()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.named_parameters"><code class="docutils literal notranslate"><span class="pre">Module.named_parameters()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.on_train_batch_end"><code class="docutils literal notranslate"><span class="pre">Module.on_train_batch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.parameters"><code class="docutils literal notranslate"><span class="pre">Module.parameters()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.predict_step"><code class="docutils literal notranslate"><span class="pre">Module.predict_step()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.test_step"><code class="docutils literal notranslate"><span class="pre">Module.test_step()</span></code></a></li>
@@ -567,26 +566,6 @@ For multiple optimizers: Returns a tuple of (optimizers, schedulers).</p>
 <p>Excludes parameters that belong to <cite>self._callbacks_modules</cite> or <cite>self.callbacks_metrics</cite>.
 This prevents accidental optimization of callback/metric internals, even if external code
 calls <cite>self.parameters()</cite> or <cite>self.named_parameters()</cite> directly.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="stable_pretraining.module.Module.on_train_batch_end">
-<span class="sig-name descname"><span class="pre">on_train_batch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/stable_pretraining/module.html#Module.on_train_batch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stable_pretraining.module.Module.on_train_batch_end" title="Link to this definition">#</a></dt>
-<dd><p>Called in the training loop after the batch.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>outputs</strong> – The outputs of training_step(x)</p></li>
-<li><p><strong>batch</strong> – The batched data as it is returned by the training DataLoader.</p></li>
-<li><p><strong>batch_idx</strong> – the index of the batch</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The value <code class="docutils literal notranslate"><span class="pre">outputs[&quot;loss&quot;]</span></code> here will be the normalized value w.r.t <code class="docutils literal notranslate"><span class="pre">accumulate_grad_batches</span></code> of the
-loss returned from <code class="docutils literal notranslate"><span class="pre">training_step</span></code>.</p>
-</div>
 </dd></dl>
 
 <dl class="py method">
@@ -875,7 +854,6 @@ the model goes back to training mode and gradients are enabled.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.configure_optimizers"><code class="docutils literal notranslate"><span class="pre">Module.configure_optimizers()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.forward"><code class="docutils literal notranslate"><span class="pre">Module.forward()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.named_parameters"><code class="docutils literal notranslate"><span class="pre">Module.named_parameters()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.on_train_batch_end"><code class="docutils literal notranslate"><span class="pre">Module.on_train_batch_end()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.parameters"><code class="docutils literal notranslate"><span class="pre">Module.parameters()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.predict_step"><code class="docutils literal notranslate"><span class="pre">Module.predict_step()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stable_pretraining.module.Module.test_step"><code class="docutils literal notranslate"><span class="pre">Module.test_step()</span></code></a></li>
