@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.3.dev42+g97fb804a6.d20251009 documentation</title>
+    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.3.dev44+g6582bcf75.d20251009 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=9a31b9c4"></script>
+    <script src="../../../_static/documentation_options.js?v=1cd06735"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev42+g97fb804a6.d20251009 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev44+g6582bcf75.d20251009 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -344,7 +344,7 @@ document.write(`
   <h1>Source code for stable_pretraining.backbone.utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torchvision</span>
@@ -876,6 +876,130 @@ document.write(`
 
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_map_shapes</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively maps a nested structure, replacing torch.Tensor objects with their .shape.</span>
+
+<span class="sd">    We preserve the original structure for lists, tuples, dicts, sets, namedtuples, and dataclasses.</span>
+<span class="sd">    Non-tensor objects are left unchanged.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">dataclasses</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_map_shapes</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_map_shapes</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_fields&quot;</span><span class="p">):</span>  <span class="c1"># namedtuple</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)(</span><span class="o">*</span><span class="p">(</span><span class="n">_map_shapes</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_map_shapes</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">_map_shapes</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">}</span>
+    <span class="k">elif</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+            <span class="n">obj</span><span class="p">,</span>
+            <span class="o">**</span><span class="p">{</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">_map_shapes</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">obj</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_output_shape</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Infers the output shapes of a PyTorch nn.Module by forwarding fake inputs on the &#39;meta&#39; device using FakeTensorMode.</span>
+
+<span class="sd">    Handles arbitrary nested output structures (lists, dicts, tuples, sets, namedtuples, dataclasses), preserving their</span>
+<span class="sd">    structure but replacing torch.Tensor objects with their .shape.</span>
+<span class="sd">    This function temporarily replaces the model&#39;s parameters and buffers with fake tensors on the &#39;meta&#39; device,</span>
+<span class="sd">    converts all tensor inputs and keyword arguments to &#39;meta&#39;, and runs the forward pass under FakeTensorMode.</span>
+<span class="sd">    After execution, the original parameters and buffers are restored. No real computation or memory allocation occurs.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        model (torch.nn.Module): The PyTorch module to evaluate. Must be on a real device (e.g., CPU).</span>
+<span class="sd">        *inputs: Positional arguments to pass to the model&#39;s forward method. All torch.Tensor inputs are converted to &#39;meta&#39;.</span>
+<span class="sd">        **kwargs: Keyword arguments to pass to the model&#39;s forward method. All torch.Tensor values are converted to &#39;meta&#39;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Any: The output structure from the model&#39;s forward pass, with all torch.Tensor objects replaced by their .shape.</span>
+<span class="sd">             Non-tensor objects are left unchanged.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - Supports nested output structures: dict, list, tuple, set, namedtuple, and dataclasses.</span>
+<span class="sd">        - No real memory is allocated; all tensors are on the &#39;meta&#39; device.</span>
+<span class="sd">        - Not thread-safe: concurrent calls may interfere with parameter/buffer swapping.</span>
+<span class="sd">        - Requires PyTorch 1.11+ for FakeTensorMode.</span>
+<span class="sd">        - If the model contains custom buffers or state, ensure they are handled appropriately.</span>
+<span class="sd">        - Raises exceptions if model forward fails or if parameters/buffers cannot be swapped.</span>
+<span class="sd">        - Non-tensor outputs are returned unchanged.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        shapes = get_output_shape_multi_input(model, input1, input2, key1=kwarg1)</span>
+<span class="sd">        # shapes will have the same structure as the model&#39;s output, but with torch.Size in place of tensors.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">torch.nn.utils.stateless</span><span class="w"> </span><span class="kn">import</span> <span class="n">functional_call</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">dataclasses</span>
+
+    <span class="c1"># Try to use FakeTensorConverter if available (PyTorch 2.x+)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">torch._subclasses.fake_tensor</span><span class="w"> </span><span class="kn">import</span> <span class="n">FakeTensorMode</span><span class="p">,</span> <span class="n">FakeTensorConverter</span>
+
+        <span class="n">fake_mode</span> <span class="o">=</span> <span class="n">FakeTensorMode</span><span class="p">()</span>
+        <span class="n">converter</span> <span class="o">=</span> <span class="n">FakeTensorConverter</span><span class="p">()</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_fake</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">from_real_tensor</span><span class="p">(</span><span class="n">fake_mode</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="c1"># Fallback: just use .to(&#39;meta&#39;) inside FakeTensorMode</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">torch._subclasses.fake_tensor</span><span class="w"> </span><span class="kn">import</span> <span class="n">FakeTensorMode</span>
+
+        <span class="n">fake_mode</span> <span class="o">=</span> <span class="n">FakeTensorMode</span><span class="p">()</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_fake</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;meta&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Prepare fake params and buffers</span>
+    <span class="n">params_and_buffers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">())</span>
+    <span class="n">params_and_buffers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">named_buffers</span><span class="p">())</span>
+    <span class="n">fake_params_and_buffers</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">to_fake</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params_and_buffers</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+    <span class="c1"># Recursively convert all tensor inputs/kwargs to fake/meta</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_inputs</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">to_fake</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">convert_inputs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">convert_inputs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_fields&quot;</span><span class="p">):</span>  <span class="c1"># namedtuple</span>
+            <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)(</span><span class="o">*</span><span class="p">(</span><span class="n">convert_inputs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">convert_inputs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">convert_inputs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">}</span>
+        <span class="k">elif</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                <span class="n">obj</span><span class="p">,</span>
+                <span class="o">**</span><span class="p">{</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">convert_inputs</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+                <span class="p">},</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">obj</span>
+
+    <span class="n">fake_inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">convert_inputs</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">]</span>
+    <span class="n">fake_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">convert_inputs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">with</span> <span class="n">fake_mode</span><span class="p">:</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">functional_call</span><span class="p">(</span>
+            <span class="n">model</span><span class="p">,</span> <span class="n">fake_params_and_buffers</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">fake_inputs</span><span class="p">),</span> <span class="n">fake_kwargs</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">_map_shapes</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="set_embedding_dim">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_pretraining.backbone.set_embedding_dim.html#stable_pretraining.backbone.set_embedding_dim">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">set_embedding_dim</span><span class="p">(</span>
@@ -956,6 +1080,45 @@ document.write(`
         <span class="n">module</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">to_empty</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">original_device</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">module</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_children_modules</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">L</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts unique module names matching a given parent_name and L submodules.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        model: The root nn.Module.</span>
+<span class="sd">        parent_name: The string or path component to match (e.g., &#39;blocks&#39;).</span>
+<span class="sd">        L: Number of levels after the parent_name to include in the result.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Sorted list of unique qualified module names at depth L after the parent_name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_modules</span><span class="p">():</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent_name</span> <span class="o">==</span> <span class="n">p</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="n">target_idx</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="n">L</span>
+            <span class="k">if</span> <span class="n">target_idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">):</span>
+                <span class="n">truncated</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[:</span> <span class="n">target_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">truncated</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="c1"># Ensure this is a valid submodule</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">get_submodule</span><span class="p">(</span><span class="n">truncated</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">truncated</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">L</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">truncated</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[:</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">get_submodule</span><span class="p">(</span><span class="n">truncated</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">truncated</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">continue</span>
+    <span class="k">return</span> <span class="n">result</span>
 </pre></div>
 
                 </article>
