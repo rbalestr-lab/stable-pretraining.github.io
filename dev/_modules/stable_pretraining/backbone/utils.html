@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.3.dev59+g58d734ebe.d20251015 documentation</title>
+    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.3.dev60+ge46e8f435.d20251015 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=2c04e73d"></script>
+    <script src="../../../_static/documentation_options.js?v=4b0f4253"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev59+g58d734ebe.d20251015 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev60+ge46e8f435.d20251015 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -836,6 +836,82 @@ document.write(`
 
     <span class="k">return</span> <span class="n">model</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">from_huggingface</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">pretrained</span><span class="p">,</span> <span class="n">attn_implementation</span><span class="o">=</span><span class="s2">&quot;sdpa&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Loads a Hugging Face Transformers base model, optionally with pretrained weights, and returns the backbone model.</span>
+
+<span class="sd">    This function wraps the Hugging Face `transformers` library to load a model specified by `model_name`.</span>
+<span class="sd">    It supports loading either pretrained weights or initializing from configuration only. The returned object</span>
+<span class="sd">    is the model&#39;s backbone (`model.base_model`), which is useful for extracting the core architecture</span>
+<span class="sd">    without task-specific heads.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        model_name (str): The Hugging Face model repository identifier or local path. Examples include</span>
+<span class="sd">            &quot;bert-base-uncased&quot;, &quot;facebook/opt-1.3b&quot;, or a local directory containing model files.</span>
+<span class="sd">        pretrained (bool): If True, loads pretrained weights via `AutoModel.from_pretrained`. If False,</span>
+<span class="sd">            initializes the model from configuration only via `AutoConfig.from_pretrained` and</span>
+<span class="sd">            `AutoModel.from_config`.</span>
+<span class="sd">        attn_implementation (str, optional): The attention backend to use. Supported values include</span>
+<span class="sd">            &quot;sdpa&quot; (default), &quot;eager&quot;, &quot;flash_attention_2&quot;, etc., as supported by the installed</span>
+<span class="sd">            version of `transformers` and your hardware. This is forwarded to the underlying model</span>
+<span class="sd">            constructor.</span>
+<span class="sd">        **kwargs: Additional keyword arguments forwarded to `AutoModel.from_pretrained` or</span>
+<span class="sd">            `AutoConfig.from_pretrained`. Common options include:</span>
+<span class="sd">            - `revision` (str): Model version or branch to use.</span>
+<span class="sd">            - `cache_dir` (str): Directory to cache downloaded models.</span>
+<span class="sd">            - `trust_remote_code` (bool): Allow loading custom code from model repo.</span>
+<span class="sd">            - `torch_dtype` (str or torch.dtype): Data type for model weights.</span>
+<span class="sd">            - `device_map` (str or dict): Device placement for model parameters.</span>
+<span class="sd">            - And others supported by Hugging Face Transformers.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        transformers.PreTrainedModel: The base (backbone) model instance, typically accessible via</span>
+<span class="sd">        `model.base_model`. For some architectures, this may be the model itself.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ImportError: If the `transformers` library is not installed.</span>
+<span class="sd">        OSError: If the model or configuration cannot be found or downloaded.</span>
+<span class="sd">        ValueError: If invalid arguments are provided.</span>
+<span class="sd">        Exception: Propagates any other exceptions raised by Hugging Face Transformers.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - The returned `base_model` may differ depending on the architecture. For some models,</span>
+<span class="sd">          `base_model` is the same as the full model.</span>
+<span class="sd">        - The availability of certain attention implementations (e.g., &quot;flash_attention_2&quot;) depends</span>
+<span class="sd">          on your hardware, installed libraries, and the version of `transformers`.</span>
+<span class="sd">        - Ensure that your environment meets the requirements for the selected attention backend.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; # Load a pretrained BERT model with default attention</span>
+<span class="sd">        &gt;&gt;&gt; model = from_huggingface(&quot;bert-base-uncased&quot;, pretrained=True)</span>
+<span class="sd">        &gt;&gt;&gt; # Initialize a model from config only, specifying a revision and device</span>
+<span class="sd">        &gt;&gt;&gt; model = from_huggingface(</span>
+<span class="sd">        ...     &quot;facebook/opt-1.3b&quot;,</span>
+<span class="sd">        ...     pretrained=False,</span>
+<span class="sd">        ...     revision=&quot;main&quot;,</span>
+<span class="sd">        ...     device_map=&quot;auto&quot;,</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; # Load a pretrained model using flash attention (if supported)</span>
+<span class="sd">        &gt;&gt;&gt; model = from_huggingface(</span>
+<span class="sd">        ...     &quot;meta-llama/Llama-2-7b-hf&quot;,</span>
+<span class="sd">        ...     pretrained=True,</span>
+<span class="sd">        ...     attn_implementation=&quot;flash_attention_2&quot;,</span>
+<span class="sd">        ... )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoModel</span><span class="p">,</span> <span class="n">AutoConfig</span>
+
+    <span class="k">if</span> <span class="n">pretrained</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+            <span class="n">model_name</span><span class="p">,</span> <span class="n">attn_implementation</span><span class="o">=</span><span class="n">attn_implementation</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">AutoConfig</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_config</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">attn_implementation</span><span class="o">=</span><span class="n">attn_implementation</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">base_model</span>
 
 
 <div class="viewcode-block" id="from_timm">
