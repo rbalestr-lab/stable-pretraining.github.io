@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.3.dev67+gd92190165.d20251019 documentation</title>
+    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.3.dev68+g47c9c0ae4.d20251019 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=66c0cbcc"></script>
+    <script src="../../../_static/documentation_options.js?v=041e37ae"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev67+gd92190165.d20251019 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev68+g47c9c0ae4.d20251019 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -785,19 +785,25 @@ document.write(`
 <span class="sd">            - &quot;ConvMixer&quot;</span>
 <span class="sd">        low_resolution (bool, optional): Whether to adapt the resolution of the model (for CIFAR typically).</span>
 <span class="sd">            By default False.</span>
-<span class="sd">        **kwargs: Additional keyword arguments for the model.</span>
+<span class="sd">        **kwargs: Additional keyword arguments for the model. Special handling:</span>
+<span class="sd">            - in_channels (int): Number of input channels. If provided for ResNet models, the first</span>
+<span class="sd">              conv layer will be modified to accept this many channels. Default is 3.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        torch.nn.Module: The neural network model.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Extract in_channels before passing to torchvision (which doesn&#39;t accept it)</span>
+    <span class="n">in_channels</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;in_channels&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
     <span class="k">try</span><span class="p">:</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">model_name</span><span class="p">](</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown model: </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">low_resolution</span><span class="p">:</span>  <span class="c1"># reduce resolution, for instance for CIFAR</span>
-        <span class="k">if</span> <span class="s2">&quot;resnet&quot;</span> <span class="ow">in</span> <span class="n">model_name</span><span class="p">:</span>
-            <span class="n">in_channels</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;in_channels&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="c1"># Modify conv1 for custom number of input channels and/or low resolution</span>
+    <span class="k">if</span> <span class="s2">&quot;resnet&quot;</span> <span class="ow">in</span> <span class="n">model_name</span> <span class="ow">and</span> <span class="p">(</span><span class="n">in_channels</span> <span class="o">!=</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">low_resolution</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">low_resolution</span><span class="p">:</span>
+            <span class="c1"># Low resolution: smaller kernel, stride=1, no maxpool (for CIFAR)</span>
             <span class="n">model</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span>
                 <span class="n">in_channels</span><span class="p">,</span>
                 <span class="mi">64</span><span class="p">,</span>
@@ -808,7 +814,17 @@ document.write(`
             <span class="p">)</span>
             <span class="n">model</span><span class="o">.</span><span class="n">maxpool</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot adapt resolution for model: </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="c1"># Full resolution: keep original kernel/stride, just change in_channels</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span>
+                <span class="n">in_channels</span><span class="p">,</span>
+                <span class="mi">64</span><span class="p">,</span>
+                <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
+                <span class="n">stride</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">low_resolution</span> <span class="ow">and</span> <span class="s2">&quot;resnet&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">model_name</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot adapt resolution for model: </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
     <span class="c1"># Handle num_classes parameter as documented</span>
     <span class="n">num_classes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;num_classes&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>

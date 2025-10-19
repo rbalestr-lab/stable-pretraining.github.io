@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>from_torchvision &#8212; stable-pretraining 0.1.3.dev67+gd92190165.d20251019 documentation</title>
+    <title>from_torchvision &#8212; stable-pretraining 0.1.3.dev68+g47c9c0ae4.d20251019 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=66c0cbcc"></script>
+    <script src="../../_static/documentation_options.js?v=041e37ae"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -136,7 +136,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev67+gd92190165.d20251019 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev68+g47c9c0ae4.d20251019 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -417,7 +417,12 @@ output size num_classes. Otherwise, the last layer is replaced by an identity la
 - “ConvMixer”</p></li>
 <li><p><strong>low_resolution</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to adapt the resolution of the model (for CIFAR typically).
 By default False.</p></li>
-<li><p><strong>**kwargs</strong> – Additional keyword arguments for the model.</p></li>
+<li><p><strong>**kwargs</strong> – <p>Additional keyword arguments for the model. Special handling:
+- in_channels (int): Number of input channels. If provided for ResNet models, the first</p>
+<blockquote>
+<div><p>conv layer will be modified to accept this many channels. Default is 3.</p>
+</div></blockquote>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
