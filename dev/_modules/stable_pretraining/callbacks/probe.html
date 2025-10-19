@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.callbacks.probe &#8212; stable-pretraining 0.1.3.dev69+g856c10769.d20251019 documentation</title>
+    <title>stable_pretraining.callbacks.probe &#8212; stable-pretraining 0.1.3.dev70+g3e5b3ad34.d20251019 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=b4561f36"></script>
+    <script src="../../../_static/documentation_options.js?v=8c545faf"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev69+g856c10769.d20251019 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev70+g3e5b3ad34.d20251019 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -350,7 +350,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">lightning.pytorch</span><span class="w"> </span><span class="kn">import</span> <span class="n">LightningModule</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_data_from_batch_or_outputs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_data_from_batch_or_outputs</span><span class="p">,</span> <span class="n">detach_tensors</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">TrainableCallback</span>
 
@@ -475,7 +475,9 @@ document.write(`
                 <span class="k">assert</span> <span class="n">callback</span><span class="o">.</span><span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span>
                 <span class="k">assert</span> <span class="n">callback</span><span class="o">.</span><span class="n">input</span> <span class="ow">is</span> <span class="kc">None</span>
                 <span class="k">assert</span> <span class="n">callback</span><span class="o">.</span><span class="n">loss_fn</span> <span class="ow">is</span> <span class="kc">None</span>
-                <span class="k">return</span> <span class="n">callback</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">callback</span><span class="o">.</span><span class="n">module</span><span class="p">(</span>
+                    <span class="n">detach_tensors</span><span class="p">(</span><span class="n">batch</span><span class="p">),</span> <span class="n">detach_tensors</span><span class="p">(</span><span class="n">outputs</span><span class="p">),</span> <span class="bp">self</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">x</span> <span class="o">=</span> <span class="n">get_data_from_batch_or_outputs</span><span class="p">(</span>
                     <span class="n">callback</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">caller_name</span><span class="o">=</span><span class="n">callback</span><span class="o">.</span><span class="n">name</span>
@@ -489,13 +491,8 @@ document.write(`
                         <span class="sa">f</span><span class="s2">&quot;Callback </span><span class="si">{</span><span class="n">callback</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> missing </span><span class="si">{</span><span class="n">callback</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2"> or </span><span class="si">{</span><span class="n">callback</span><span class="o">.</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
 
-                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
-                    <span class="n">_x</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
-                <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
-                    <span class="n">_x</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">_x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
-                <span class="n">preds</span> <span class="o">=</span> <span class="n">callback</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="n">_x</span><span class="p">)</span>
+                <span class="n">preds</span> <span class="o">=</span> <span class="n">callback</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="n">detach_tensors</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">detach_tensors</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 
             <span class="n">prediction_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">callback</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_preds&quot;</span>
             <span class="k">assert</span> <span class="n">prediction_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">batch</span>
