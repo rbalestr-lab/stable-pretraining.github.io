@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.callbacks.utils &#8212; stable-pretraining 0.1.3.dev77+g0de8ab05d.d20251020 documentation</title>
+    <title>stable_pretraining.callbacks.utils &#8212; stable-pretraining 0.1.3.dev78+gdf331d051.d20251021 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=d13c758e"></script>
+    <script src="../../../_static/documentation_options.js?v=96f32356"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev77+g0de8ab05d.d20251020 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev78+gdf331d051.d20251021 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -376,6 +376,8 @@ document.write(`
             <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">LRScheduler</span><span class="p">]</span>
         <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">accumulate_grad_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">gradient_clip_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">gradient_clip_algorithm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;norm&quot;</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize base callback with optimizer/scheduler configuration.</span>
 
@@ -385,10 +387,14 @@ document.write(`
 <span class="sd">            optimizer: Optimizer configuration. If None, inherits from main module.</span>
 <span class="sd">            scheduler: Scheduler configuration. If None, inherits from main module.</span>
 <span class="sd">            accumulate_grad_batches: Number of batches to accumulate gradients.</span>
+<span class="sd">            gradient_clip_val: Value to clip the gradient (default None).</span>
+<span class="sd">            gradient_clip_algorithm: Algorithm to clip the gradient (default `norm`).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">accumulate_grad_batches</span> <span class="o">=</span> <span class="n">accumulate_grad_batches</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gradient_clip_val</span> <span class="o">=</span> <span class="n">gradient_clip_val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gradient_clip_algorithm</span> <span class="o">=</span> <span class="n">gradient_clip_algorithm</span>
 
         <span class="c1"># Store configurations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_config</span> <span class="o">=</span> <span class="n">optimizer</span>
@@ -440,13 +446,23 @@ document.write(`
                 <span class="n">schedulers</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">optimizers</span><span class="p">,</span> <span class="n">schedulers</span> <span class="o">=</span> <span class="n">outputs</span>
-            <span class="k">assert</span> <span class="n">callback</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_by_name</span>
+            <span class="c1"># assert callback.name not in self._optimizer_name_to_index</span>
             <span class="k">assert</span> <span class="n">callback</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span>
-            <span class="k">assert</span> <span class="n">callback</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_by_name</span><span class="p">[</span><span class="n">callback</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="c1"># assert callback.name not in self._optimizer_names</span>
+            <span class="k">assert</span> <span class="n">callback</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_gradient_clip_val</span>
+            <span class="k">assert</span> <span class="n">callback</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_gradient_clip_algorithm</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">optimizers</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_to_name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_to_name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">optimizers</span><span class="p">)]</span> <span class="o">=</span> <span class="n">callback</span><span class="o">.</span><span class="n">name</span>
+            <span class="c1"># self._optimizer_name_to_index[callback.name] = len(self._optimizer_names)</span>
+            <span class="c1"># self._optimizer_names.append(callback.name)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span><span class="p">[</span><span class="n">callback</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">callback</span><span class="o">.</span><span class="n">accumulate_grad_batches</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_gradient_clip_val</span><span class="p">[</span><span class="n">callback</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">callback</span><span class="o">.</span><span class="n">gradient_clip_val</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_gradient_clip_algorithm</span><span class="p">[</span><span class="n">callback</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">callback</span><span class="o">.</span><span class="n">gradient_clip_algorithm</span>
             <span class="p">)</span>
             <span class="n">optimizers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">setup_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
             <span class="n">schedulers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="n">setup_scheduler</span><span class="p">(</span><span class="n">optimizers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="p">))</span>
