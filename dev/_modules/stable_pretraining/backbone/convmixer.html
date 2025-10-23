@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.backbone.convmixer &#8212; stable-pretraining 0.1.3.dev80+g583c35dfc.d20251022 documentation</title>
+    <title>stable_pretraining.backbone.convmixer &#8212; stable-pretraining 0.1.3.dev81+g42c6b88d9.d20251023 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=15afa605"></script>
+    <script src="../../../_static/documentation_options.js?v=32a03394"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev80+g583c35dfc.d20251022 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev81+g42c6b88d9.d20251023 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -348,7 +348,21 @@ document.write(`
 <div class="viewcode-block" id="ConvMixer">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_pretraining.backbone.ConvMixer.html#stable_pretraining.backbone.ConvMixer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConvMixer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;ConvMixer model from :cite:`trockman2022patches`.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ConvMixer model.</span>
+
+<span class="sd">    A simple and efficient convolutional architecture that operates directly on patches.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        in_channels (int, optional): Number of input channels. Defaults to 3.</span>
+<span class="sd">        num_classes (int, optional): Number of output classes. Defaults to 10.</span>
+<span class="sd">        dim (int, optional): Hidden dimension size. Defaults to 64.</span>
+<span class="sd">        depth (int, optional): Number of ConvMixer blocks. Defaults to 6.</span>
+<span class="sd">        kernel_size (int, optional): Kernel size for depthwise convolution. Defaults to 9.</span>
+<span class="sd">        patch_size (int, optional): Patch embedding size. Defaults to 7.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Introduced in :cite:`trockman2022patches`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -391,7 +405,14 @@ document.write(`
 <div class="viewcode-block" id="ConvMixer.forward">
 <a class="viewcode-back" href="../../../api/gen_modules/stable_pretraining.backbone.ConvMixer.html#stable_pretraining.backbone.ConvMixer.forward">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xb</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass through the ConvMixer model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            xb (torch.Tensor): Input tensor of shape (batch_size, in_channels, height, width).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Output logits of shape (batch_size, num_classes).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">xb</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blocks_a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks_b</span><span class="p">):</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">out</span> <span class="o">+</span> <span class="n">a</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
