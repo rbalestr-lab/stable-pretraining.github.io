@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>stable-pretraining &#8212; stable-pretraining 0.1.3.dev83+g19f95110b.d20251023 documentation</title>
+    <title>stable-pretraining &#8212; stable-pretraining 0.1.3.dev84+gc9aba863f.d20251024 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=b2ee0a1a"></script>
+    <script src="_static/documentation_options.js?v=c083f8dc"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -139,7 +139,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev83+g19f95110b.d20251023 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3.dev84+gc9aba863f.d20251024 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -487,7 +487,7 @@ document.write(`
     <span class="n">simclr_loss</span><span class="o">=</span><span class="n">spt</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">NTXEntLoss</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
     <span class="n">optim</span><span class="o">=</span><span class="p">{</span>
         <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Adam&quot;</span><span class="p">,</span> <span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">},</span>
-        <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;CosineAnnealing&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">},</span>
         <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="s2">&quot;epoch&quot;</span>
     <span class="p">}</span>
 <span class="p">)</span>
