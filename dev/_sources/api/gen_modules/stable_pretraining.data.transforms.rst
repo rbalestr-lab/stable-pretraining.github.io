@@ -27,6 +27,7 @@
       Lambda
       MultiViewTransform
       PILGaussianBlur
+      PatchMasking
       RGB
       RandomChannelPermutation
       RandomContiguousTemporalSampler
