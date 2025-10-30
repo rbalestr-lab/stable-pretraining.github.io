@@ -1,11 +1,9 @@
 :orphan:
 
-.. _examples:
+Examples
+========
 
-Gallery
-=======
-
-This is the example gallery for stable-SSL.
+Configuration examples for stable-pretraining.
 
 
 

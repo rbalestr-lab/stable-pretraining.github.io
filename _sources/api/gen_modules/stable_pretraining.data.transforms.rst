@@ -27,6 +27,7 @@
       Lambda
       MultiViewTransform
       PILGaussianBlur
+      PatchMasking
       RGB
       RandomChannelPermutation
       RandomContiguousTemporalSampler
@@ -38,6 +39,8 @@
       RandomRotation
       RandomSolarize
       Resize
+      RoundRobinMultiViewTransform
+      RoutingTransform
       ToImage
       Transform
       UniformTemporalSubsample

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>stable-pretraining &#8212; stable-pretraining 0.1.2 documentation</title>
+    <title>stable-pretraining &#8212; stable-pretraining 0.1.3 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=0deb7d70"></script>
+    <script src="_static/documentation_options.js?v=b617ff6d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -139,7 +139,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.2 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.3 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -392,8 +392,19 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how">How?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-structure">Core Structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-structure">Core Structure</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">1 - Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#module">2 - Module</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#callbacks">3 - Callbacks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trainer">4 - Trainer</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#complete-example">Complete Example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start-with-spt-cli">🚀 Quick Start with <code class="docutils literal notranslate"><span class="pre">spt</span></code> CLI</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-training">Local Training</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#slurm-cluster-training">SLURM Cluster Training</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ways-you-can-contribute">Ways You Can Contribute:</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributors">Contributors</a></li>
@@ -430,8 +441,9 @@ document.write(`
 <section id="core-structure">
 <h2>Core Structure<a class="headerlink" href="#core-structure" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">stable-pretraining</span></code> simplifies complex ML workflows into 4 intuitive components:</p>
-<ol class="arabic">
-<li><p><strong>data</strong>: Your dataset must follow a dictionary-structured format where each sample is a dictionary with named fields (e.g., <code class="docutils literal notranslate"><span class="pre">{&quot;image&quot;:</span> <span class="pre">...,</span> <span class="pre">&quot;label&quot;:</span> <span class="pre">...}</span></code>). This ensures consistent behavior across all components. You have multiple options for creating datasets:</p>
+<section id="data">
+<h3>1 - Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
+<p>Your dataset must follow a dictionary-structured format where each sample is a dictionary with named fields (e.g., <code class="docutils literal notranslate"><span class="pre">{&quot;image&quot;:</span> <span class="pre">...,</span> <span class="pre">&quot;label&quot;:</span> <span class="pre">...}</span></code>). This ensures consistent behavior across all components. You have multiple options for creating datasets:</p>
 <ul class="simple">
 <li><p><strong>HuggingFace datasets</strong> (if available on the Hub):</p></li>
 </ul>
@@ -457,20 +469,46 @@ document.write(`
 <ul class="simple">
 <li><p><strong>Custom datasets</strong>: Any dataset that returns dictionaries</p></li>
 </ul>
-<p>Once created, wrap your dataloaders in our <code class="docutils literal notranslate"><span class="pre">DataModule</span></code> for precise logging:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">datamodule</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataModule</span><span class="p">(</span><span class="n">train</span><span class="o">=</span><span class="n">train_dataloader</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="n">val_dataloader</span><span class="p">)</span>
 </pre></div>
 </div>
-</li>
-<li><p><strong>module</strong>: The key differentiator from PyTorch Lightning - <strong>you only define the <code class="docutils literal notranslate"><span class="pre">forward</span></code> function</strong>, not <code class="docutils literal notranslate"><span class="pre">training_step</span></code>! This unified approach computes losses and generates useful quantities that can be retrieved for monitoring and analysis:</p>
+</section>
+<section id="module">
+<h3>2 - Module<a class="headerlink" href="#module" title="Link to this heading">#</a></h3>
+<p>The key differentiator from PyTorch Lightning - <strong>you only define the <code class="docutils literal notranslate"><span class="pre">forward</span></code> function</strong>, not <code class="docutils literal notranslate"><span class="pre">training_step</span></code>! This unified approach computes losses and generates useful quantities that can be retrieved for monitoring and analysis:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use the pre-built forward functions from stable_pretraining</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stable_pretraining</span><span class="w"> </span><span class="kn">import</span> <span class="n">forward</span>
+
+<span class="c1"># Simply use the appropriate forward for your method</span>
+<span class="n">module</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">Module</span><span class="p">(</span>
+    <span class="n">backbone</span><span class="o">=</span><span class="n">backbone</span><span class="p">,</span>
+    <span class="n">projector</span><span class="o">=</span><span class="n">projector</span><span class="p">,</span>
+    <span class="n">forward</span><span class="o">=</span><span class="n">forward</span><span class="o">.</span><span class="n">simclr_forward</span><span class="p">,</span>  <span class="c1"># Or byol_forward, vicreg_forward, etc.</span>
+    <span class="n">simclr_loss</span><span class="o">=</span><span class="n">spt</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">NTXEntLoss</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">optim</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Adam&quot;</span><span class="p">,</span> <span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">},</span>
+        <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;CosineAnnealingLR&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="s2">&quot;epoch&quot;</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Or define your own custom forward:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
-        <span class="c1"># Define your loss directly in forward</span>
-        <span class="n">proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
-        <span class="n">views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
-        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simclr_loss</span><span class="p">(</span><span class="n">views</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">views</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># Multi-view training - batch is a list of view dicts</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">view</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+            <span class="n">projections</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">emb</span><span class="p">)</span> <span class="k">for</span> <span class="n">emb</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simclr_loss</span><span class="p">(</span><span class="n">projections</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">projections</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Single-view validation</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
+
     <span class="k">return</span> <span class="n">out</span>
 </pre></div>
 </div>
@@ -479,27 +517,12 @@ document.write(`
 <li><p>The <code class="docutils literal notranslate"><span class="pre">forward</span></code> method defines both the loss and any quantities to monitor</p></li>
 <li><p>No need to override <code class="docutils literal notranslate"><span class="pre">training_step</span></code>, <code class="docutils literal notranslate"><span class="pre">validation_step</span></code>, etc.</p></li>
 <li><p>Return a dictionary with a <code class="docutils literal notranslate"><span class="pre">&quot;loss&quot;</span></code> key for training</p></li>
-<li><p>All model components are passed as kwargs to <code class="docutils literal notranslate"><span class="pre">spt.Module</span></code>:</p></li>
+<li><p>All model components are passed as kwargs to <code class="docutils literal notranslate"><span class="pre">spt.Module</span></code></p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># First define your model components</span>
-<span class="n">backbone</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">from_torchvision</span><span class="p">(</span><span class="s2">&quot;resnet18&quot;</span><span class="p">)</span>
-<span class="n">projector</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
-
-<span class="c1"># Then create the module with all components</span>
-<span class="n">module</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">Module</span><span class="p">(</span>
-    <span class="n">backbone</span><span class="o">=</span><span class="n">backbone</span><span class="p">,</span>
-    <span class="n">projector</span><span class="o">=</span><span class="n">projector</span><span class="p">,</span>
-    <span class="n">forward</span><span class="o">=</span><span class="n">forward</span><span class="p">,</span>  <span class="c1"># The forward function defined above</span>
-    <span class="n">simclr_loss</span><span class="o">=</span><span class="n">spt</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">NTXEntLoss</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
-    <span class="n">optim</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Adam&quot;</span><span class="p">,</span> <span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">},</span>
-        <span class="s2">&quot;scheduler&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;CosineAnnealing&quot;</span><span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>callbacks</strong>: Monitor and evaluate your models in real-time during training. Callbacks are key ingredients of <code class="docutils literal notranslate"><span class="pre">stable-pretraining</span></code>, providing rich insights without interrupting your training flow:</p>
+</section>
+<section id="callbacks">
+<h3>3 - Callbacks<a class="headerlink" href="#callbacks" title="Link to this heading">#</a></h3>
+<p>Monitor and evaluate your models in real-time during training. Callbacks are key ingredients of <code class="docutils literal notranslate"><span class="pre">stable-pretraining</span></code>, providing rich insights without interrupting your training flow:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Monitor SSL representations with a linear probe</span>
 <span class="n">linear_probe</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">OnlineProbe</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;linear_probe&quot;</span><span class="p">,</span>  <span class="c1"># Useful for retrieving metrics and values in logging</span>
@@ -524,29 +547,25 @@ document.write(`
 </pre></div>
 </div>
 <p>Callbacks are powered by an intelligent queue management system that automatically shares memory between callbacks monitoring the same data thus eliminating redundant computations.</p>
-<p><strong>Why callbacks matter:</strong></p>
-<ul class="simple">
-<li><p><strong>Real-time feedback</strong>: Know if your SSL method is learning useful representations.</p></li>
-<li><p><strong>Debugging made easy</strong>: Catch issues like representation collapse early.</p></li>
-<li><p><strong>Research insights</strong>: Track multiple metrics simultaneously for deeper understanding.</p></li>
-</ul>
-</li>
-<li><p><strong>trainer</strong>: Orchestrate everything together with PyTorch Lightning’s <code class="docutils literal notranslate"><span class="pre">Trainer</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span>
-        <span class="n">max_epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-        <span class="n">num_sanity_val_steps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">linear_probe</span><span class="p">,</span> <span class="n">knn_probe</span><span class="p">,</span> <span class="n">rankme</span><span class="p">],</span>  <span class="c1"># Your monitoring callbacks</span>
-        <span class="n">precision</span><span class="o">=</span><span class="s2">&quot;16-mixed&quot;</span><span class="p">,</span>
-        <span class="n">logger</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">enable_checkpointing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span>
+<p><strong>Why callbacks matter:</strong> Get real-time feedback on representation quality, catch issues like collapse early, and track multiple metrics simultaneously for deeper insights.</p>
+</section>
+<section id="trainer">
+<h3>4 - Trainer<a class="headerlink" href="#trainer" title="Link to this heading">#</a></h3>
+<p>Orchestrate everything together with PyTorch Lightning’s <code class="docutils literal notranslate"><span class="pre">Trainer</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span>
+    <span class="n">max_epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">num_sanity_val_steps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">linear_probe</span><span class="p">,</span> <span class="n">knn_probe</span><span class="p">,</span> <span class="n">rankme</span><span class="p">],</span>  <span class="c1"># Your monitoring callbacks</span>
+    <span class="n">precision</span><span class="o">=</span><span class="s2">&quot;16-mixed&quot;</span><span class="p">,</span>
+    <span class="n">logger</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">enable_checkpointing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="n">manager</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">Manager</span><span class="p">(</span><span class="n">trainer</span><span class="o">=</span><span class="n">trainer</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 <span class="n">manager</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Once configured, the <code class="docutils literal notranslate"><span class="pre">Manager</span></code> connects all components and handles the training loop with precise logging and monitoring (optional).</p>
-</li>
-</ol>
+</section>
 </section>
 <section id="complete-example">
 <h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading">#</a></h2>
@@ -561,6 +580,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">lightning.pytorch.loggers</span><span class="w"> </span><span class="kn">import</span> <span class="n">WandbLogger</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">stable_pretraining</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stable_pretraining</span><span class="w"> </span><span class="kn">import</span> <span class="n">forward</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">stable_pretraining.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">transforms</span>
 
 <span class="c1"># Define augmentations for SimCLR (creates 2 views of each image)</span>
@@ -607,13 +627,13 @@ document.write(`
     <span class="p">),</span>
 <span class="p">)</span>
 
-<span class="c1"># Create dataloaders with view sampling for contrastive learning</span>
+<span class="c1"># Create dataloaders - MultiViewTransform handles the view creation</span>
 <span class="n">train_dataloader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
     <span class="n">dataset</span><span class="o">=</span><span class="n">train_dataset</span><span class="p">,</span>
-    <span class="n">sampler</span><span class="o">=</span><span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">RepeatedRandomSampler</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">n_views</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
     <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
     <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
     <span class="n">drop_last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Simple shuffle, no RepeatedRandomSampler needed</span>
 <span class="p">)</span>
 
 <span class="n">val_dataloader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
@@ -623,17 +643,6 @@ document.write(`
 <span class="p">)</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataModule</span><span class="p">(</span><span class="n">train</span><span class="o">=</span><span class="n">train_dataloader</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="n">val_dataloader</span><span class="p">)</span>
-
-<span class="c1"># Define the forward function (replaces training_step in PyTorch Lightning)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">stage</span><span class="p">):</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
-        <span class="c1"># Project embeddings and compute contrastive loss</span>
-        <span class="n">proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">])</span>
-        <span class="n">views</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fold_views</span><span class="p">(</span><span class="n">proj</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;sample_idx&quot;</span><span class="p">])</span>
-        <span class="n">out</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simclr_loss</span><span class="p">(</span><span class="n">views</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">views</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">out</span>
 
 <span class="c1"># Build model components</span>
 <span class="n">backbone</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">from_torchvision</span><span class="p">(</span><span class="s2">&quot;resnet18&quot;</span><span class="p">,</span> <span class="n">low_resolution</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -649,11 +658,11 @@ document.write(`
     <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2048</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span>
 <span class="p">)</span>
 
-<span class="c1"># Create the module with all components</span>
+<span class="c1"># Create the module using the built-in SimCLR forward function</span>
 <span class="n">module</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">Module</span><span class="p">(</span>
     <span class="n">backbone</span><span class="o">=</span><span class="n">backbone</span><span class="p">,</span>
     <span class="n">projector</span><span class="o">=</span><span class="n">projector</span><span class="p">,</span>
-    <span class="n">forward</span><span class="o">=</span><span class="n">forward</span><span class="p">,</span>
+    <span class="n">forward</span><span class="o">=</span><span class="n">forward</span><span class="o">.</span><span class="n">simclr_forward</span><span class="p">,</span>  <span class="c1"># Use the built-in forward function</span>
     <span class="n">simclr_loss</span><span class="o">=</span><span class="n">spt</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">NTXEntLoss</span><span class="p">(</span><span class="n">temperature</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
     <span class="n">optim</span><span class="o">=</span><span class="p">{</span>
         <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;LARS&quot;</span><span class="p">,</span> <span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">},</span>
@@ -699,6 +708,44 @@ document.write(`
 </pre></div>
 </div>
 </details>
+</section>
+<section id="quick-start-with-spt-cli">
+<h2>🚀 Quick Start with <code class="docutils literal notranslate"><span class="pre">spt</span></code> CLI<a class="headerlink" href="#quick-start-with-spt-cli" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">spt</span></code> command launches training from YAML configuration files using Hydra.</p>
+<p><strong>Note:</strong> <code class="docutils literal notranslate"><span class="pre">spt</span></code> requires YAML configs. If you have Python-based configs, you can:</p>
+<ul class="simple">
+<li><p>Convert them to YAML format where each component uses <code class="docutils literal notranslate"><span class="pre">_target_</span></code> to specify the importable class/function</p></li>
+<li><p>See <code class="docutils literal notranslate"><span class="pre">examples/simclr_cifar10_config.yaml</span></code> for the structure and syntax</p></li>
+</ul>
+<section id="local-training">
+<h3>Local Training<a class="headerlink" href="#local-training" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run with a config file</span>
+spt<span class="w"> </span>examples/simclr_cifar10_config.yaml
+
+<span class="c1"># With parameter overrides</span>
+spt<span class="w"> </span>examples/simclr_cifar10_config.yaml<span class="w"> </span>trainer.max_epochs<span class="o">=</span><span class="m">50</span><span class="w"> </span>module.optim.lr<span class="o">=</span><span class="m">0</span>.01
+
+<span class="c1"># Run from any directory - supports absolute and relative paths</span>
+spt<span class="w"> </span>../configs/my_config.yaml
+spt<span class="w"> </span>/path/to/config.yaml
+</pre></div>
+</div>
+</section>
+<section id="slurm-cluster-training">
+<h3>SLURM Cluster Training<a class="headerlink" href="#slurm-cluster-training" title="Link to this heading">#</a></h3>
+<p>For training on SLURM clusters, use the <code class="docutils literal notranslate"><span class="pre">-m</span></code> flag to enable multirun mode:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use the provided SLURM template (customize partition/QOS in the file)</span>
+spt<span class="w"> </span>examples/simclr_cifar10_slurm.yaml<span class="w"> </span>-m
+
+<span class="c1"># Override SLURM parameters via command line</span>
+spt<span class="w"> </span>examples/simclr_cifar10_slurm.yaml<span class="w"> </span>-m<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>hydra.launcher.partition<span class="o">=</span>gpu<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>hydra.launcher.qos<span class="o">=</span>normal<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>hydra.launcher.timeout_min<span class="o">=</span><span class="m">720</span>
+</pre></div>
+</div>
+<p>The SLURM template (<code class="docutils literal notranslate"><span class="pre">examples/simclr_cifar10_slurm.yaml</span></code>) includes placeholders for cluster-specific settings. Either modify the file directly or override values via command line.</p>
+</section>
 </section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
@@ -910,8 +957,19 @@ uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </s
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how">How?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-structure">Core Structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-structure">Core Structure</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">1 - Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#module">2 - Module</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#callbacks">3 - Callbacks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trainer">4 - Trainer</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#complete-example">Complete Example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start-with-spt-cli">🚀 Quick Start with <code class="docutils literal notranslate"><span class="pre">spt</span></code> CLI</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-training">Local Training</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#slurm-cluster-training">SLURM Cluster Training</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ways-you-can-contribute">Ways You Can Contribute:</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributors">Contributors</a></li>
