@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.3.dev93+g767693d6f documentation</title>
+    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.4.dev2+gaed0c50ca documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=03efd3af"></script>
+    <script src="../../../_static/documentation_options.js?v=b0ffd0af"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.3.dev93+g767693d6f documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.4.dev2+gaed0c50ca documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -1204,6 +1204,452 @@ document.write(`
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="k">continue</span>
     <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EfficientMaskedTimmViT</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimized Vision Transformer wrapper that efficiently handles NaN patches.</span>
+
+<span class="sd">    This module is designed to work with timm ViT models and provides:</span>
+<span class="sd">    - Per-sample NaN masking (different NaN patterns per image in batch)</span>
+<span class="sd">    - Fast path for same masking pattern across batch</span>
+<span class="sd">    - Support for class tokens (cls_token) and distillation tokens (dist_token)</span>
+<span class="sd">    - Compatibility with various timm ViT architectures (vit_*, deit_*, beit_*, etc.)</span>
+<span class="sd">    - Minimal overhead when no masking is present</span>
+
+<span class="sd">    Key Optimizations:</span>
+<span class="sd">    - Early exit when no NaN patches detected</span>
+<span class="sd">    - Simpler indexing for same masking patterns</span>
+<span class="sd">    - Cached batch indices for repeated operations</span>
+<span class="sd">    - Zero-copy operations where possible</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vit: A timm Vision Transformer model instance</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If samples have different numbers of NaN patches</span>
+<span class="sd">        ValueError: If all patches are NaN</span>
+<span class="sd">        RuntimeError: If the model structure is incompatible</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; import timm</span>
+<span class="sd">        &gt;&gt;&gt; vit = timm.create_model(&quot;vit_base_patch16_224&quot;, pretrained=True)</span>
+<span class="sd">        &gt;&gt;&gt; masked_vit = EfficientMaskedTimmViT(vit)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Create input with some NaN patches</span>
+<span class="sd">        &gt;&gt;&gt; x = torch.randn(4, 3, 224, 224)</span>
+<span class="sd">        &gt;&gt;&gt; output = masked_vit(x)</span>
+
+<span class="sd">    Performance:</span>
+<span class="sd">        - Same pattern masking: ~0-5% overhead vs different patterns</span>
+<span class="sd">        - No masking: &lt;2% overhead vs original model</span>
+<span class="sd">        - 50% masking: ~1.5x speedup</span>
+<span class="sd">        - 90% masking: ~2.5-3x speedup</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        All samples in a batch must have the same NUMBER of NaN patches,</span>
+<span class="sd">        but the LOCATION of NaN patches can differ per sample.</span>
+<span class="sd">    Performance Notes:</span>
+<span class="sd">        - Works best with vit_small and larger models</span>
+<span class="sd">        - vit_tiny: ~1.5x max speedup (model too small)</span>
+<span class="sd">        - vit_small: ~3-4x speedup at high masking</span>
+<span class="sd">        - vit_base: ~7-8x speedup at high masking</span>
+<span class="sd">        - Same pattern: 0-5% faster than different patterns</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vit</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vit</span> <span class="o">=</span> <span class="n">vit</span>
+
+        <span class="c1"># Cache for batch indices to avoid repeated allocation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_indices_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Validate model has required components</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;patch_embed&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Model must have &#39;patch_embed&#39; attribute. &quot;</span>
+                <span class="s2">&quot;This wrapper only supports patch-based ViT models.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;blocks&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Model must have &#39;blocks&#39; attribute containing transformer blocks.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_num_extra_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the number of extra tokens (cls, dist) the model uses.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Number of extra tokens (0, 1, or 2)</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This is cached based on model structure and doesn&#39;t change during forward pass.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_extra</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;cls_token&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">cls_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">num_extra</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;dist_token&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">dist_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">num_extra</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">num_extra</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_extra_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add cls_token and/or dist_token to the sequence.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x: Input tensor of shape (B, N, D) containing patch embeddings</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Tensor with extra tokens prepended, shape (B, N+num_extra, D)</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Tokens are added in the order: [cls_token, dist_token (if present), patches]</span>
+<span class="sd">            For DeiT models, the order is: [cls_token, dist_token, patches]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Add cls_token if present</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;cls_token&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">cls_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cls_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">cls_token</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">cls_tokens</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Add dist_token if present (for DeiT models)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;dist_token&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">dist_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dist_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">dist_token</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># Insert after cls_token if it exists, otherwise at the beginning</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;cls_token&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">cls_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">x</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">dist_tokens</span><span class="p">,</span> <span class="n">x</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:]],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">dist_tokens</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">x</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_batch_indices</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get or create cached batch indices for gathering operations.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            B: Batch size</span>
+<span class="sd">            num_keep: Number of patches to keep</span>
+<span class="sd">            device: Device for the tensor</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Batch indices of shape (B, num_keep) for advanced indexing</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Results are cached to avoid repeated allocations for common batch sizes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_indices_cache</span><span class="p">:</span>
+            <span class="n">batch_idx</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_batch_indices_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch_idx</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_indices_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_subsample_pos_embed_same_pattern</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">keep_idx</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subsample positional embeddings when all samples have the same mask pattern.</span>
+
+<span class="sd">        This is an optimized path that uses simpler indexing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            keep_idx: Indices of patches to keep, shape (num_keep,)</span>
+<span class="sd">            B: Batch size</span>
+<span class="sd">            N: Original number of patches</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Subsampled positional embeddings, shape (B, num_keep + num_extra, D)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pos_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">pos_embed</span>
+        <span class="n">num_extra_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_num_extra_tokens</span><span class="p">()</span>
+
+        <span class="c1"># Determine positional embedding structure</span>
+        <span class="k">if</span> <span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">N</span> <span class="o">+</span> <span class="n">num_extra_tokens</span><span class="p">:</span>
+            <span class="c1"># pos_embed includes positions for extra tokens</span>
+            <span class="n">extra_tokens_pos</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="p">[:,</span> <span class="p">:</span><span class="n">num_extra_tokens</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># (1, num_extra, D)</span>
+            <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="p">[:,</span> <span class="n">num_extra_tokens</span><span class="p">:,</span> <span class="p">:]</span>  <span class="c1"># (1, N, D)</span>
+
+            <span class="c1"># Subsample patch positions (same for all samples)</span>
+            <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="p">[:,</span> <span class="n">keep_idx</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># (1, num_keep, D)</span>
+
+            <span class="c1"># Expand and concatenate</span>
+            <span class="k">if</span> <span class="n">num_extra_tokens</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">pos_embed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">extra_tokens_pos</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                        <span class="n">patch_pos_embed</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="p">],</span>
+                    <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+            <span class="c1"># No extra token positions in pos_embed</span>
+            <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="p">[:,</span> <span class="n">keep_idx</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># (1, num_keep, D)</span>
+            <span class="n">pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unexpected pos_embed shape: </span><span class="si">{</span><span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Expected shape[1] to be </span><span class="si">{</span><span class="n">N</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">num_extra_tokens</span><span class="si">}</span><span class="s2"> or </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pos_embed</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_subsample_pos_embed_different_patterns</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">keep_indices</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subsample positional embeddings when samples have different mask patterns.</span>
+
+<span class="sd">        This uses advanced indexing and is slower than the same-pattern path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            keep_indices: Indices of patches to keep per sample, shape (B, num_keep)</span>
+<span class="sd">            B: Batch size</span>
+<span class="sd">            N: Original number of patches</span>
+<span class="sd">            num_keep: Number of patches to keep</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Subsampled positional embeddings, shape (B, num_keep + num_extra, D)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pos_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">pos_embed</span>
+        <span class="n">num_extra_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_num_extra_tokens</span><span class="p">()</span>
+
+        <span class="c1"># Determine positional embedding structure</span>
+        <span class="k">if</span> <span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">N</span> <span class="o">+</span> <span class="n">num_extra_tokens</span><span class="p">:</span>
+            <span class="n">extra_tokens_pos</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="p">[:,</span> <span class="p">:</span><span class="n">num_extra_tokens</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="p">[:,</span> <span class="n">num_extra_tokens</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="k">elif</span> <span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+            <span class="n">extra_tokens_pos</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">pos_embed</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unexpected pos_embed shape: </span><span class="si">{</span><span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Expected shape[1] to be </span><span class="si">{</span><span class="n">N</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">num_extra_tokens</span><span class="si">}</span><span class="s2"> or </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Subsample patch positional embeddings per sample (advanced indexing)</span>
+        <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (B, N, D)</span>
+        <span class="n">batch_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_batch_indices</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">,</span> <span class="n">keep_indices</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="p">[</span>
+            <span class="n">batch_idx</span><span class="p">,</span> <span class="n">keep_indices</span><span class="p">,</span> <span class="p">:</span>
+        <span class="p">]</span>  <span class="c1"># (B, num_keep, D)</span>
+
+        <span class="c1"># Combine with extra token positions if they exist</span>
+        <span class="k">if</span> <span class="n">extra_tokens_pos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num_extra_tokens</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">extra_tokens_pos</span> <span class="o">=</span> <span class="n">extra_tokens_pos</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">pos_embed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">extra_tokens_pos</span><span class="p">,</span> <span class="n">patch_pos_embed</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span>
+
+        <span class="k">return</span> <span class="n">pos_embed</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the classification head to the transformer output.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x: Output from transformer blocks, shape (B, N, D)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Classification logits or features</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Handles multiple head types used by different timm models.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Try different head application methods used by timm models</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;forward_head&quot;</span><span class="p">):</span>
+            <span class="c1"># Newer timm models with forward_head method</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">forward_head</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;head&quot;</span><span class="p">):</span>
+            <span class="c1"># Standard ViT: use cls token (first token)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;fc_norm&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">fc_norm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Some models apply additional norm before head</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">fc_norm</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;head_dist&quot;</span><span class="p">):</span>
+            <span class="c1"># DeiT with distillation - has two heads</span>
+            <span class="n">x_cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="n">x_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">head_dist</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+                <span class="c1"># Return both during training</span>
+                <span class="k">return</span> <span class="n">x_cls</span><span class="p">,</span> <span class="n">x_dist</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Average predictions during inference</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">x_cls</span> <span class="o">+</span> <span class="n">x_dist</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># No head - return raw features</span>
+            <span class="k">return</span> <span class="n">x</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass through the masked ViT.</span>
+
+<span class="sd">        This method implements an optimized forward pass with the following features:</span>
+<span class="sd">        - Early exit for inputs without NaN patches (fast path)</span>
+<span class="sd">        - Optimized indexing for same masking patterns across batch</span>
+<span class="sd">        - Per-sample masking support with advanced indexing</span>
+<span class="sd">        - Automatic NaN replacement for partial NaN patches</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x: Input tensor, either:</span>
+<span class="sd">               - Raw images: shape (B, C, H, W)</span>
+<span class="sd">               - Pre-patchified: shape (B, N, D) where N is number of patches</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Model output (logits if head exists, features otherwise)</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If samples have different numbers of NaN patches</span>
+<span class="sd">            ValueError: If all patches are NaN</span>
+
+<span class="sd">        Performance Notes:</span>
+<span class="sd">            - No NaN patches: Uses fast path with &lt;2% overhead</span>
+<span class="sd">            - Same pattern: Optimized indexing, ~0-5% overhead vs different patterns</span>
+<span class="sd">            - Different patterns: Uses advanced indexing, ~10-35% slower at high masking</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Patchify if needed</span>
+        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>  <span class="c1"># (B, C, H, W)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">patch_embed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">device</span>
+
+        <span class="c1"># Detect NaN patches per sample (mark as NaN if ANY element is NaN)</span>
+        <span class="n">nan_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># (B, N)</span>
+
+        <span class="c1"># FAST PATH: Early exit if no NaN patches</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">nan_mask</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="c1"># No masking needed - run through model normally</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_extra_tokens</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">pos_embed</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;pos_drop&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">pos_drop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">pos_drop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;patch_drop&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">patch_drop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">patch_drop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">blk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">blocks</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">blk</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;norm&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">norm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_head</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># MASKING PATH: Handle NaN patches</span>
+
+        <span class="c1"># Verify same number of NaN patches across batch</span>
+        <span class="n">num_nans</span> <span class="o">=</span> <span class="n">nan_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">num_nans</span> <span class="o">==</span> <span class="n">num_nans</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;All samples must have the same number of NaN patches. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Got counts: </span><span class="si">{</span><span class="n">num_nans</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">num_keep</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">num_nans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All patches are NaN - cannot process input&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check if all samples have the same masking pattern</span>
+        <span class="n">same_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="n">nan_mask</span> <span class="o">==</span> <span class="n">nan_mask</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">same_pattern</span><span class="p">:</span>
+            <span class="c1"># OPTIMIZED PATH: Same pattern for all samples</span>
+            <span class="n">keep_idx</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">nan_mask</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">as_tuple</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># (num_keep,)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span> <span class="n">keep_idx</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># Simple indexing - faster</span>
+
+            <span class="c1"># Subsample positional embeddings (optimized)</span>
+            <span class="n">pos_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subsample_pos_embed_same_pattern</span><span class="p">(</span><span class="n">keep_idx</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># GENERAL PATH: Different patterns per sample</span>
+            <span class="n">keep_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_keep_indices_vectorized</span><span class="p">(</span><span class="n">nan_mask</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">)</span>
+
+            <span class="c1"># Gather non-NaN patches (advanced indexing)</span>
+            <span class="n">batch_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_batch_indices</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">batch_idx</span><span class="p">,</span> <span class="n">keep_indices</span><span class="p">,</span> <span class="p">:]</span>
+
+            <span class="c1"># Subsample positional embeddings</span>
+            <span class="n">pos_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subsample_pos_embed_different_patterns</span><span class="p">(</span>
+                <span class="n">keep_indices</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">num_keep</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Replace any remaining NaNs with zeros (partial NaNs in patches)</span>
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="c1"># Add cls_token and/or dist_token</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_extra_tokens</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Add positional embeddings</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">pos_embed</span>
+
+        <span class="c1"># Apply positional dropout if it exists</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;pos_drop&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">pos_drop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">pos_drop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Apply patch dropout if it exists (some models have this)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;patch_drop&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">patch_drop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">patch_drop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Forward through transformer blocks</span>
+        <span class="k">for</span> <span class="n">blk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">blocks</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">blk</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Apply final norm</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;norm&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">norm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Apply head and return</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_head</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear the cached batch indices.</span>
+
+<span class="sd">        Useful if you want to free memory after processing different batch sizes.</span>
+<span class="sd">        The cache will be rebuilt as needed during forward passes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_indices_cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_keep_indices_vectorized</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">nan_mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get keep indices for all samples without Python loops (faster).</span>
+
+<span class="sd">        This vectorized approach is ~2-3x faster than iterating over the batch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nan_mask: Boolean mask indicating NaN patches, shape (B, N)</span>
+<span class="sd">            num_keep: Number of patches to keep per sample</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Keep indices per sample, shape (B, num_keep)</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Uses topk instead of nonzero to avoid Python loops. The indices</span>
+<span class="sd">            are sorted in ascending order.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">B</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">nan_mask</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">nan_mask</span><span class="o">.</span><span class="n">device</span>
+
+        <span class="c1"># Create index tensor for all samples</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (B, N)</span>
+
+        <span class="c1"># Mask out NaN positions by setting them to a large value</span>
+        <span class="n">indices_masked</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="n">indices_masked</span><span class="p">[</span><span class="n">nan_mask</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Larger than any valid index</span>
+
+        <span class="c1"># Use topk to get smallest indices (non-NaN positions)</span>
+        <span class="n">keep_indices</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span>
+            <span class="n">indices_masked</span><span class="p">,</span>
+            <span class="n">k</span><span class="o">=</span><span class="n">num_keep</span><span class="p">,</span>
+            <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">largest</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># Get smallest values</span>
+            <span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Keep sorted for cache friendliness</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">keep_indices</span><span class="o">.</span><span class="n">long</span><span class="p">()</span>
 </pre></div>
 
                 </article>
