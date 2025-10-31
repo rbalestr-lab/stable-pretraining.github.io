@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.4.dev4+gf894df521 documentation</title>
+    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.5.dev2+g2cbbd77c7 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=b8d9b68c"></script>
+    <script src="../../../_static/documentation_options.js?v=7d83cfee"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.4.dev4+gf894df521 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.5.dev2+g2cbbd77c7 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -1275,6 +1275,18 @@ document.write(`
                 <span class="s2">&quot;Model must have &#39;blocks&#39; attribute containing transformer blocks.&quot;</span>
             <span class="p">)</span>
 
+        <span class="k">def</span><span class="w"> </span><span class="nf">nan_gradient_hook</span><span class="p">(</span><span class="n">grad</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Replace NaN gradients with zeros.&quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">grad</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">grad</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">grad</span>
+
+        <span class="c1"># Register hook for all parameters</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">:</span>
+                <span class="n">param</span><span class="o">.</span><span class="n">register_hook</span><span class="p">(</span><span class="n">nan_gradient_hook</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registered NaN hook for: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_num_extra_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the number of extra tokens (cls, dist) the model uses.</span>
 
@@ -1347,31 +1359,21 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">_subsample_pos_embed_same_pattern</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">keep_idx</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subsample positional embeddings when all samples have the same mask pattern.</span>
-
-<span class="sd">        This is an optimized path that uses simpler indexing.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            keep_idx: Indices of patches to keep, shape (num_keep,)</span>
-<span class="sd">            B: Batch size</span>
-<span class="sd">            N: Original number of patches</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            torch.Tensor: Subsampled positional embeddings, shape (B, num_keep + num_extra, D)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subsample positional embeddings when all samples have the same mask pattern.&quot;&quot;&quot;</span>
         <span class="n">pos_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">pos_embed</span>
         <span class="n">num_extra_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_num_extra_tokens</span><span class="p">()</span>
 
+        <span class="c1"># ✨ NEW: Interpolate if needed for dynamic image sizes</span>
+        <span class="n">pos_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolate_pos_embed</span><span class="p">(</span><span class="n">pos_embed</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+
         <span class="c1"># Determine positional embedding structure</span>
         <span class="k">if</span> <span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">N</span> <span class="o">+</span> <span class="n">num_extra_tokens</span><span class="p">:</span>
-            <span class="c1"># pos_embed includes positions for extra tokens</span>
-            <span class="n">extra_tokens_pos</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="p">[:,</span> <span class="p">:</span><span class="n">num_extra_tokens</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># (1, num_extra, D)</span>
-            <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="p">[:,</span> <span class="n">num_extra_tokens</span><span class="p">:,</span> <span class="p">:]</span>  <span class="c1"># (1, N, D)</span>
+            <span class="n">extra_tokens_pos</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="p">[:,</span> <span class="p">:</span><span class="n">num_extra_tokens</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="p">[:,</span> <span class="n">num_extra_tokens</span><span class="p">:,</span> <span class="p">:]</span>
 
-            <span class="c1"># Subsample patch positions (same for all samples)</span>
-            <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="p">[:,</span> <span class="n">keep_idx</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># (1, num_keep, D)</span>
+            <span class="c1"># Subsample patch positions</span>
+            <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="p">[:,</span> <span class="n">keep_idx</span><span class="p">,</span> <span class="p">:]</span>
 
-            <span class="c1"># Expand and concatenate</span>
             <span class="k">if</span> <span class="n">num_extra_tokens</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">pos_embed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
                     <span class="p">[</span>
@@ -1384,12 +1386,11 @@ document.write(`
                 <span class="n">pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
-            <span class="c1"># No extra token positions in pos_embed</span>
-            <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="p">[:,</span> <span class="n">keep_idx</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># (1, num_keep, D)</span>
+            <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="p">[:,</span> <span class="n">keep_idx</span><span class="p">,</span> <span class="p">:]</span>
             <span class="n">pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Unexpected pos_embed shape: </span><span class="si">{</span><span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Unexpected pos_embed shape after interpolation: </span><span class="si">{</span><span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">. &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;Expected shape[1] to be </span><span class="si">{</span><span class="n">N</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">num_extra_tokens</span><span class="si">}</span><span class="s2"> or </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
@@ -1398,21 +1399,12 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">_subsample_pos_embed_different_patterns</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">keep_indices</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subsample positional embeddings when samples have different mask patterns.</span>
-
-<span class="sd">        This uses advanced indexing and is slower than the same-pattern path.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            keep_indices: Indices of patches to keep per sample, shape (B, num_keep)</span>
-<span class="sd">            B: Batch size</span>
-<span class="sd">            N: Original number of patches</span>
-<span class="sd">            num_keep: Number of patches to keep</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            torch.Tensor: Subsampled positional embeddings, shape (B, num_keep + num_extra, D)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subsample positional embeddings when samples have different mask patterns.&quot;&quot;&quot;</span>
         <span class="n">pos_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">pos_embed</span>
         <span class="n">num_extra_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_num_extra_tokens</span><span class="p">()</span>
+
+        <span class="c1"># ✨ NEW: Interpolate if needed for dynamic image sizes</span>
+        <span class="n">pos_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolate_pos_embed</span><span class="p">(</span><span class="n">pos_embed</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
 
         <span class="c1"># Determine positional embedding structure</span>
         <span class="k">if</span> <span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">N</span> <span class="o">+</span> <span class="n">num_extra_tokens</span><span class="p">:</span>
@@ -1423,18 +1415,15 @@ document.write(`
             <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">pos_embed</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Unexpected pos_embed shape: </span><span class="si">{</span><span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Unexpected pos_embed shape after interpolation: </span><span class="si">{</span><span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">. &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;Expected shape[1] to be </span><span class="si">{</span><span class="n">N</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">num_extra_tokens</span><span class="si">}</span><span class="s2"> or </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
-        <span class="c1"># Subsample patch positional embeddings per sample (advanced indexing)</span>
-        <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (B, N, D)</span>
+        <span class="c1"># Subsample patch positional embeddings per sample</span>
+        <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">batch_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_batch_indices</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">,</span> <span class="n">keep_indices</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="p">[</span>
-            <span class="n">batch_idx</span><span class="p">,</span> <span class="n">keep_indices</span><span class="p">,</span> <span class="p">:</span>
-        <span class="p">]</span>  <span class="c1"># (B, num_keep, D)</span>
+        <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="p">[</span><span class="n">batch_idx</span><span class="p">,</span> <span class="n">keep_indices</span><span class="p">,</span> <span class="p">:]</span>
 
-        <span class="c1"># Combine with extra token positions if they exist</span>
         <span class="k">if</span> <span class="n">extra_tokens_pos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num_extra_tokens</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">extra_tokens_pos</span> <span class="o">=</span> <span class="n">extra_tokens_pos</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">pos_embed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">extra_tokens_pos</span><span class="p">,</span> <span class="n">patch_pos_embed</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1507,37 +1496,42 @@ document.write(`
 <span class="sd">            - Same pattern: Optimized indexing, ~0-5% overhead vs different patterns</span>
 <span class="sd">            - Different patterns: Uses advanced indexing, ~10-35% slower at high masking</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Detect if this is a FakeTensor (used for shape inference/tracing)</span>
+        <span class="n">is_fake_tensor</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">x</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;FakeTensor&quot;</span>
+            <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;fake_mode&quot;</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="s2">&quot;Fake&quot;</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_fake_tensor</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
         <span class="c1"># Patchify if needed</span>
-        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>  <span class="c1"># (B, C, H, W)</span>
+        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>  <span class="c1"># (B, C, H, W) - raw image</span>
+            <span class="c1"># Apply patch embedding</span>
             <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">patch_embed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
+            <span class="c1"># Handle different output formats from different timm models</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>  <span class="c1"># (B, D, H, W) format</span>
+                <span class="c1"># Reshape to sequence format</span>
+                <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">W</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># (B, N, D) format - already good</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;patch_embed output has unexpected shape </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Expected 3D (B, N, D) or 4D (B, D, H, W)&quot;</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># (B, N, D) - already patchified</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Input must be 4D (B, C, H, W) image or 3D (B, N, D) patches. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Got shape: </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
         <span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">device</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">device</span>
-
-        <span class="c1"># Detect NaN patches per sample (mark as NaN if ANY element is NaN)</span>
         <span class="n">nan_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># (B, N)</span>
-
-        <span class="c1"># FAST PATH: Early exit if no NaN patches</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">nan_mask</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-            <span class="c1"># No masking needed - run through model normally</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_extra_tokens</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">pos_embed</span>
-
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;pos_drop&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">pos_drop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">pos_drop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;patch_drop&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">patch_drop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">patch_drop</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">blk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">blocks</span><span class="p">:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="n">blk</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="p">,</span> <span class="s2">&quot;norm&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">norm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vit</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_head</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-        <span class="c1"># MASKING PATH: Handle NaN patches</span>
 
         <span class="c1"># Verify same number of NaN patches across batch</span>
         <span class="n">num_nans</span> <span class="o">=</span> <span class="n">nan_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1650,6 +1644,79 @@ document.write(`
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">keep_indices</span><span class="o">.</span><span class="n">long</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_interpolate_pos_embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos_embed</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Interpolate positional embeddings to match the number of patches.</span>
+
+<span class="sd">        This is needed when dynamic_image_size=True and the input size differs</span>
+<span class="sd">        from the default/training size.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pos_embed: Original positional embeddings, shape (1, N_orig, D)</span>
+<span class="sd">            N: Target number of patches</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Interpolated positional embeddings, shape (1, N + num_extra, D)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_extra_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_num_extra_tokens</span><span class="p">()</span>
+        <span class="n">N_orig</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># If already correct size, return as-is</span>
+        <span class="k">if</span> <span class="n">N_orig</span> <span class="o">==</span> <span class="n">N</span> <span class="o">+</span> <span class="n">num_extra_tokens</span> <span class="ow">or</span> <span class="n">N_orig</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pos_embed</span>
+
+        <span class="c1"># Separate extra tokens from patch embeddings</span>
+        <span class="k">if</span> <span class="n">N_orig</span> <span class="o">&gt;</span> <span class="n">num_extra_tokens</span><span class="p">:</span>
+            <span class="n">extra_tokens_pos</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="p">[:,</span> <span class="p">:</span><span class="n">num_extra_tokens</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># (1, num_extra, D)</span>
+            <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">pos_embed</span><span class="p">[</span>
+                <span class="p">:,</span> <span class="n">num_extra_tokens</span><span class="p">:,</span> <span class="p">:</span>
+            <span class="p">]</span>  <span class="c1"># (1, N_orig - num_extra, D)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">extra_tokens_pos</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">pos_embed</span>
+
+        <span class="c1"># Calculate grid sizes</span>
+        <span class="n">N_orig_patches</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">gs_orig</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N_orig_patches</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">gs_new</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">gs_orig</span> <span class="o">*</span> <span class="n">gs_orig</span> <span class="o">!=</span> <span class="n">N_orig_patches</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Original positional embeddings (</span><span class="si">{</span><span class="n">N_orig_patches</span><span class="si">}</span><span class="s2">) don&#39;t form a square grid. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Non-square grids require custom interpolation.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">gs_new</span> <span class="o">*</span> <span class="n">gs_new</span> <span class="o">!=</span> <span class="n">N</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Target number of patches (</span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2">) doesn&#39;t form a square grid. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Non-square grids require custom interpolation.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Reshape to 2D grid: (1, N_orig, D) -&gt; (1, D, H_orig, W_orig)</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">gs_orig</span><span class="p">,</span> <span class="n">gs_orig</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span>
+            <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Interpolate using bicubic (same as timm)</span>
+        <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span>
+            <span class="n">patch_pos_embed</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">gs_new</span><span class="p">,</span> <span class="n">gs_new</span><span class="p">),</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;bicubic&quot;</span><span class="p">,</span>
+            <span class="n">align_corners</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">antialias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># Match timm behavior</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Reshape back: (1, D, H_new, W_new) -&gt; (1, N, D)</span>
+        <span class="n">patch_pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+
+        <span class="c1"># Recombine with extra tokens</span>
+        <span class="k">if</span> <span class="n">extra_tokens_pos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num_extra_tokens</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pos_embed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">extra_tokens_pos</span><span class="p">,</span> <span class="n">patch_pos_embed</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pos_embed</span> <span class="o">=</span> <span class="n">patch_pos_embed</span>
+
+        <span class="k">return</span> <span class="n">pos_embed</span>
 </pre></div>
 
                 </article>
