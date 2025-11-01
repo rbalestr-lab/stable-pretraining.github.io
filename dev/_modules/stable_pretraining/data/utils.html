@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.data.utils &#8212; stable-pretraining 0.1.5.dev8+ga73b31270 documentation</title>
+    <title>stable_pretraining.data.utils &#8212; stable-pretraining 0.1.5.dev9+ga3fef4983 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=5ef36221"></script>
+    <script src="../../../_static/documentation_options.js?v=294ffceb"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.5.dev8+ga73b31270 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.5.dev9+ga3fef4983 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -358,6 +358,142 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">default_generator</span><span class="p">,</span> <span class="n">randperm</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Subset</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_num_workers</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Automatically determine the optimal number of DataLoader workers.</span>
+
+<span class="sd">    This function computes the ideal number of worker processes for PyTorch</span>
+<span class="sd">    DataLoaders based on available CPU resources and distributed training</span>
+<span class="sd">    configuration. It provides a zero-configuration approach that works</span>
+<span class="sd">    reliably across different environments.</span>
+
+<span class="sd">    The calculation logic:</span>
+<span class="sd">        1. Detect CPUs available to this process (respects affinity/cgroups)</span>
+<span class="sd">        2. Divide by world_size if using DDP (each rank spawns its own workers)</span>
+<span class="sd">        3. Return the result (always &gt;= 1)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: Number of DataLoader workers to use. Minimum value is 1.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - Uses `os.sched_getaffinity(0)` on Linux to respect CPU affinity masks</span>
+<span class="sd">          set by job schedulers (SLURM), containers (Docker), or taskset.</span>
+<span class="sd">        - Falls back to `os.cpu_count()` on macOS/Windows.</span>
+<span class="sd">        - In DDP mode, automatically divides by world_size since each process</span>
+<span class="sd">          independently spawns workers.</span>
+<span class="sd">        - Should be called AFTER distributed initialization for accurate results.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; # Simple usage</span>
+<span class="sd">        &gt;&gt;&gt; num_workers = get_num_workers()</span>
+<span class="sd">        &gt;&gt;&gt; loader = DataLoader(dataset, num_workers=num_workers)</span>
+
+<span class="sd">        &gt;&gt;&gt; # In a Lightning DataModule</span>
+<span class="sd">        &gt;&gt;&gt; class MyDataModule(L.LightningDataModule):</span>
+<span class="sd">        ...     def train_dataloader(self):</span>
+<span class="sd">        ...         return DataLoader(</span>
+<span class="sd">        ...             self.train_dataset,</span>
+<span class="sd">        ...             num_workers=get_num_workers(),</span>
+<span class="sd">        ...             shuffle=True,</span>
+<span class="sd">        ...         )</span>
+
+<span class="sd">        &gt;&gt;&gt; # Example outputs:</span>
+<span class="sd">        &gt;&gt;&gt; # - 16 CPUs, single GPU: returns 16</span>
+<span class="sd">        &gt;&gt;&gt; # - 32 CPUs, 4 GPUs (DDP): returns 8 per GPU</span>
+<span class="sd">        &gt;&gt;&gt; # - 8 CPUs, 8 GPUs (DDP): returns 1 per GPU</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        - PyTorch DataLoader: https://pytorch.org/docs/stable/data.html</span>
+<span class="sd">        - CPU affinity: https://man7.org/linux/man-pages/man2/sched_setaffinity.2.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;🔍 Starting automatic num_workers detection&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Step 1: Detect available CPUs</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">num_cpus</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sched_getaffinity</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;✓ Detected </span><span class="si">{</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2"> CPUs via sched_getaffinity (respects affinity mask)&quot;</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Using sched_getaffinity ensures we respect SLURM/Docker/cgroup limits&quot;</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="c1"># Fallback for systems without sched_getaffinity (macOS, Windows)</span>
+        <span class="n">num_cpus</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">num_cpus</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;⚠️  os.cpu_count() returned None, defaulting to 1 CPU&quot;</span><span class="p">)</span>
+            <span class="n">num_cpus</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;✓ Detected </span><span class="si">{</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2"> CPUs via os.cpu_count() (fallback for non-Linux)&quot;</span>
+            <span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total CPUs available to this process: </span><span class="si">{</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Step 2: Check for distributed training</span>
+    <span class="n">world_size</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">rank</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">is_distributed</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;torch.distributed is available, checking initialization status...&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">is_initialized</span><span class="p">():</span>
+            <span class="n">is_distributed</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">world_size</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">get_world_size</span><span class="p">()</span>
+            <span class="n">rank</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">get_rank</span><span class="p">()</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🌐 DDP detected: world_size=</span><span class="si">{</span><span class="n">world_size</span><span class="si">}</span><span class="s2">, rank=</span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Each of </span><span class="si">{</span><span class="n">world_size</span><span class="si">}</span><span class="s2"> processes will spawn its own DataLoader workers&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;torch.distributed available but not initialized (single-process training)&quot;</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;torch.distributed not available (CPU-only PyTorch build)&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Step 3: Calculate workers</span>
+    <span class="k">if</span> <span class="n">is_distributed</span> <span class="ow">and</span> <span class="n">world_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">num_workers</span> <span class="o">=</span> <span class="n">num_cpus</span> <span class="o">//</span> <span class="n">world_size</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;📊 DDP mode: </span><span class="si">{</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2"> CPUs ÷ </span><span class="si">{</span><span class="n">world_size</span><span class="si">}</span><span class="s2"> ranks = </span><span class="si">{</span><span class="n">num_workers</span><span class="si">}</span><span class="s2"> workers per rank&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">num_workers</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;⚠️  Only </span><span class="si">{</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2"> CPUs for </span><span class="si">{</span><span class="n">world_size</span><span class="si">}</span><span class="s2"> ranks results in 0 workers/rank. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Setting to 1 worker minimum.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">num_workers</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">num_workers</span> <span class="o">=</span> <span class="n">num_cpus</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Single-process mode: using all </span><span class="si">{</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2"> CPUs for DataLoader workers&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Step 4: Ensure minimum of 1</span>
+    <span class="n">num_workers</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">)</span>
+
+    <span class="c1"># Final summary</span>
+    <span class="k">if</span> <span class="n">is_distributed</span><span class="p">:</span>
+        <span class="n">total_workers</span> <span class="o">=</span> <span class="n">num_workers</span> <span class="o">*</span> <span class="n">world_size</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;✅ Final configuration: </span><span class="si">{</span><span class="n">num_workers</span><span class="si">}</span><span class="s2"> workers/rank × </span><span class="si">{</span><span class="n">world_size</span><span class="si">}</span><span class="s2"> ranks = </span><span class="si">{</span><span class="n">total_workers</span><span class="si">}</span><span class="s2"> total workers&quot;</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ Final configuration: </span><span class="si">{</span><span class="n">num_workers</span><span class="si">}</span><span class="s2"> DataLoader workers&quot;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Returning num_workers=</span><span class="si">{</span><span class="n">num_workers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;🏁 num_workers detection complete</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">num_workers</span>
 
 
 <div class="viewcode-block" id="fold_views">
