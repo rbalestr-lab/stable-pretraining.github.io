@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.5.dev12+gff9b822d4.d20251103 documentation</title>
+    <title>stable_pretraining.backbone.utils &#8212; stable-pretraining 0.1.5.dev13+gdb5531c28.d20251104 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=258b397b"></script>
+    <script src="../../../_static/documentation_options.js?v=02e58618"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.5.dev12+gff9b822d4.d20251103 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.5.dev13+gdb5531c28.d20251104 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -369,6 +369,34 @@ document.write(`
     <span class="n">ViTConfig</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">ViTModel</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_TRANSFORMERS_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">register_lr_scale_hook</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">lr_scale</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Registers a hook that scales gradients and applies weight decay during backward pass.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        module: PyTorch module/layer</span>
+<span class="sd">        lr_scale: Scaling factor for the learning rate (scales gradients)</span>
+<span class="sd">        weight_decay: L2 penalty coefficient (default: 0.0)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        module: The same module (for chaining)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_hook</span><span class="p">(</span><span class="n">param</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">gradient_scaling_hook</span><span class="p">(</span><span class="n">grad</span><span class="p">):</span>
+            <span class="c1"># Add weight decay (L2 regularization)</span>
+            <span class="k">if</span> <span class="n">weight_decay</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">grad</span> <span class="o">=</span> <span class="n">grad</span> <span class="o">+</span> <span class="n">weight_decay</span> <span class="o">*</span> <span class="n">param</span><span class="o">.</span><span class="n">data</span>
+            <span class="c1"># Scale gradient (equivalent to scaling learning rate)</span>
+            <span class="k">return</span> <span class="n">grad</span> <span class="o">*</span> <span class="n">lr_scale</span>
+
+        <span class="k">return</span> <span class="n">gradient_scaling_hook</span>
+
+    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+        <span class="n">param</span><span class="o">.</span><span class="n">register_hook</span><span class="p">(</span><span class="n">make_hook</span><span class="p">(</span><span class="n">param</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">module</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">vit_hf</span><span class="p">(</span>

@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.module &#8212; stable-pretraining 0.1.5.dev12+gff9b822d4.d20251103 documentation</title>
+    <title>stable_pretraining.module &#8212; stable-pretraining 0.1.5.dev13+gdb5531c28.d20251104 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=258b397b"></script>
+    <script src="../../_static/documentation_options.js?v=02e58618"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.5.dev12+gff9b822d4.d20251103 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.5.dev13+gdb5531c28.d20251104 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -419,6 +419,11 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">callbacks_modules</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callbacks_metrics</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">()</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_to_name</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_gradient_clip_val</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_gradient_clip_algorithm</span> <span class="o">=</span> <span class="p">{}</span>
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Module does not accept positional arguments (*args). Please use keyword arguments instead (e.g., Module(forward=my_forward, hparams=my_hparams)).&quot;</span>
@@ -611,6 +616,8 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">on_train_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Double checking optimizers!&quot;</span><span class="p">)</span>
         <span class="n">optimizers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizers</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">optimizers</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">optimizers</span> <span class="o">=</span> <span class="p">[</span><span class="n">optimizers</span><span class="p">]</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`self.optimizers() gave us </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">optimizers</span><span class="p">)</span><span class="si">}</span><span class="s2"> optimizers&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">optimizers</span><span class="p">)):</span>
             <span class="c1"># check if optimizer i is named and well setup</span>
@@ -871,11 +878,6 @@ document.write(`
 <span class="sd">            - decoder                 -&gt; None (no match, no parameters collected)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Configuring optimizers and learning rate schedulers...&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_index_to_name</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_frequencies</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_gradient_clip_val</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer_gradient_clip_algorithm</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="c1"># Early exit for disabled optimization</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;optim&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">optim</span><span class="p">:</span>
