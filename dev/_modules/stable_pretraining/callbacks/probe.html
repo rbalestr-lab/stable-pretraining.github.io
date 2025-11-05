@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.callbacks.probe &#8212; stable-pretraining 0.1.5.dev14+g3c98e7043.d20251104 documentation</title>
+    <title>stable_pretraining.callbacks.probe &#8212; stable-pretraining 0.1.5.dev15+gbfece4aae.d20251105 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=bd4c6a82"></script>
+    <script src="../../../_static/documentation_options.js?v=32a1efcd"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.5.dev14+g3c98e7043.d20251104 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.5.dev15+gbfece4aae.d20251105 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -387,13 +387,14 @@ document.write(`
 <span class="sd">            - dict: {&quot;type&quot;: &quot;AdamW&quot;, &quot;lr&quot;: 1e-3, ...}</span>
 <span class="sd">            - partial: pre-configured optimizer factory</span>
 <span class="sd">            - optimizer instance or callable</span>
-<span class="sd">            - None: inherits from main Module&#39;s optimizer config (default)</span>
+<span class="sd">            - None: uses LARS(lr=0.1, clip_lr=True, eta=0.02, exclude_bias_n_norm=True,</span>
+<span class="sd">              weight_decay=0), which is the standard for SSL linear probes (default)</span>
 <span class="sd">        scheduler: Learning rate scheduler configuration. Can be:</span>
 <span class="sd">            - str: scheduler name (e.g., &quot;CosineAnnealingLR&quot;, &quot;StepLR&quot;)</span>
 <span class="sd">            - dict: {&quot;type&quot;: &quot;CosineAnnealingLR&quot;, &quot;T_max&quot;: 1000, ...}</span>
 <span class="sd">            - partial: pre-configured scheduler factory</span>
 <span class="sd">            - scheduler instance or callable</span>
-<span class="sd">            - None: inherits from main Module&#39;s scheduler config (default)</span>
+<span class="sd">            - None: uses ConstantLR(factor=1.0), maintaining constant learning rate (default)</span>
 <span class="sd">        accumulate_grad_batches: Number of batches to accumulate gradients before</span>
 <span class="sd">            optimizer step. Default is 1 (no accumulation).</span>
 <span class="sd">        metrics: Metrics to track during training/validation. Can be dict, list, tuple,</span>

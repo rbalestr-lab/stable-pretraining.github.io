@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>OnlineProbe &#8212; stable-pretraining 0.1.5.dev14+g3c98e7043.d20251104 documentation</title>
+    <title>OnlineProbe &#8212; stable-pretraining 0.1.5.dev15+gbfece4aae.d20251105 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=bd4c6a82"></script>
+    <script src="../../_static/documentation_options.js?v=32a1efcd"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -136,7 +136,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.5.dev14+g3c98e7043.d20251104 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.5.dev15+gbfece4aae.d20251105 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -432,18 +432,22 @@ metrics/modules.</p></li>
 <li><p><strong>probe</strong> – The probe module to train. Can be a nn.Module instance, callable that
 returns a module, or Hydra config to instantiate.</p></li>
 <li><p><strong>loss_fn</strong> – Loss function for probe training (e.g., nn.CrossEntropyLoss()).</p></li>
-<li><p><strong>optimizer</strong> – Optimizer configuration for the probe. Can be:
+<li><p><strong>optimizer</strong> – <p>Optimizer configuration for the probe. Can be:
 - str: optimizer name (e.g., “AdamW”, “SGD”, “LARS”)
 - dict: {“type”: “AdamW”, “lr”: 1e-3, …}
 - partial: pre-configured optimizer factory
 - optimizer instance or callable
-- None: inherits from main Module’s optimizer config (default)</p></li>
+- None: uses LARS(lr=0.1, clip_lr=True, eta=0.02, exclude_bias_n_norm=True,</p>
+<blockquote>
+<div><p>weight_decay=0), which is the standard for SSL linear probes (default)</p>
+</div></blockquote>
+</p></li>
 <li><p><strong>scheduler</strong> – Learning rate scheduler configuration. Can be:
 - str: scheduler name (e.g., “CosineAnnealingLR”, “StepLR”)
 - dict: {“type”: “CosineAnnealingLR”, “T_max”: 1000, …}
 - partial: pre-configured scheduler factory
 - scheduler instance or callable
-- None: inherits from main Module’s scheduler config (default)</p></li>
+- None: uses ConstantLR(factor=1.0), maintaining constant learning rate (default)</p></li>
 <li><p><strong>accumulate_grad_batches</strong> – Number of batches to accumulate gradients before
 optimizer step. Default is 1 (no accumulation).</p></li>
 <li><p><strong>metrics</strong> – Metrics to track during training/validation. Can be dict, list, tuple,
