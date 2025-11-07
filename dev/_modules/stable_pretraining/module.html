@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stable_pretraining.module &#8212; stable-pretraining 0.1.5.dev21+gcdafb4949.d20251106 documentation</title>
+    <title>stable_pretraining.module &#8212; stable-pretraining 0.1.5.dev22+g1c538ca25.d20251107 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=60af226a"></script>
+    <script src="../../_static/documentation_options.js?v=15ea9a8d"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -135,7 +135,7 @@
   
   
   
-    <p class="title logo__title">stable-pretraining 0.1.5.dev21+gcdafb4949.d20251106 documentation</p>
+    <p class="title logo__title">stable-pretraining 0.1.5.dev22+g1c538ca25.d20251107 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -598,11 +598,15 @@ document.write(`
                     <span class="n">gradient_clip_val</span><span class="o">=</span><span class="n">clip_val</span><span class="p">,</span>
                     <span class="n">gradient_clip_algorithm</span><span class="o">=</span><span class="n">clip_algo</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="c1"># Use precision plugin for proper AMP handling with multiple optimizers</span>
+            <span class="n">base_opt</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="s2">&quot;optimizer&quot;</span><span class="p">,</span> <span class="n">opt</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">precision_plugin</span><span class="o">.</span><span class="n">optimizer_step</span><span class="p">(</span>
+                <span class="n">optimizer</span><span class="o">=</span><span class="n">base_opt</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">closure</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span>
+            <span class="p">)</span>
             <span class="n">zero_grad_opts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
             <span class="c1"># Step its scheduler if it exists</span>
             <span class="k">if</span> <span class="n">schedulers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">assert</span> <span class="n">schedulers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">==</span> <span class="n">opt</span><span class="o">.</span><span class="n">optimizer</span>
+                <span class="k">assert</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">schedulers</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="s2">&quot;optimizer&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="n">base_opt</span>
                 <span class="n">schedulers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
         <span class="c1"># zero grad what&#39;s needed</span>
